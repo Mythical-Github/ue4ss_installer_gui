@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "galena"
+name = "ue4ss_installer"
 version = "0.0.1"
 description = ""
 readme = "README.md"
@@ -22,13 +22,10 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
 ]
 dependencies = [
-  "requests",
-  "pygetwindow",
-  "screeninfo",
   "tomlkit",
-  "pywinctl",
-  "dynaconf",
-  "dearpygui"
+  "dearpygui",
+  "requests",
+  "screeninfo"
 ]
 
 [tool.hatch.envs.dev]
@@ -48,12 +45,12 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/Mythical-Github/galena/blob/main/README.md"
-Issues = "https://github.com/Mythical-Github/galena/issues"
-Source = "https://github.com/Mythical-Github/galena"
+Documentation = "https://github.com/Mythical-Github/ue4ss_installer/blob/main/README.md"
+Issues = "https://github.com/Mythical-Github/ue4ss_installer/issues"
+Source = "https://github.com/Mythical-Github/ue4ss_installer"
 
 [project.scripts]
-galena = "galena.__main__:main"
+ue4ss_installer = "ue4ss_installer.__main__:main"
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -76,7 +73,7 @@ dependencies = [
 
 [tool.hatch.envs.build.scripts]
 exe = [
-  "pyinstaller --noconfirm --onefile --console --name galena src/galena/__main__.py",
+  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer src/ue4ss_installer/__main__.py",
 ]
 
 
@@ -130,4 +127,4 @@ dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/galena"]
+packages = ["src/ue4ss_installer"]

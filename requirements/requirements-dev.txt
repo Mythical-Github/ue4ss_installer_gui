@@ -5,9 +5,6 @@
 # - commitizen
 # - py_project_dev_tools@ git+https://github.com/Mythical-Github/py_project_dev_tools
 # - dearpygui
-# - dynaconf
-# - pygetwindow
-# - pywinctl
 # - requests
 # - screeninfo
 # - tomlkit
@@ -33,8 +30,6 @@ decli==0.6.2
     # via commitizen
 distlib==0.3.9
     # via virtualenv
-dynaconf==3.2.10
-    # via hatch.envs.dev
 filelock==3.18.0
     # via virtualenv
 identify==2.6.9
@@ -61,23 +56,8 @@ prompt-toolkit==3.0.50
     # via questionary
 py-project-dev-tools @ git+https://github.com/Mythical-Github/py_project_dev_tools@4c90459d55182759c2abf0a0f35e636b8475add8
     # via hatch.envs.dev
-pygetwindow==0.0.9
-    # via hatch.envs.dev
 pygments==2.19.1
     # via rich
-pymonctl==0.92
-    # via pywinctl
-pyrect==0.2.0
-    # via pygetwindow
-pywin32==310
-    # via
-    #   pymonctl
-    #   pywinbox
-    #   pywinctl
-pywinbox==0.7
-    # via pywinctl
-pywinctl==0.4.1
-    # via hatch.envs.dev
 pyyaml==6.0.2
     # via
     #   commitizen
@@ -98,11 +78,6 @@ tomlkit==0.13.2
     # via
     #   hatch.envs.dev
     #   commitizen
-typing-extensions==4.13.2
-    # via
-    #   pymonctl
-    #   pywinbox
-    #   pywinctl
 urllib3==2.4.0
     # via requests
 virtualenv==20.30.0
