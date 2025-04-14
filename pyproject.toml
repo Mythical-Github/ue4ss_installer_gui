@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ue4ss_installer"
+name = "ue4ss_installer_gui"
 version = "0.0.1"
 description = ""
 readme = "README.md"
@@ -45,12 +45,12 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/Mythical-Github/ue4ss_installer/blob/main/README.md"
-Issues = "https://github.com/Mythical-Github/ue4ss_installer/issues"
-Source = "https://github.com/Mythical-Github/ue4ss_installer"
+Documentation = "https://github.com/Mythical-Github/ue4ss_installer_gui/blob/main/README.md"
+Issues = "https://github.com/Mythical-Github/ue4ss_installer_gui/issues"
+Source = "https://github.com/Mythical-Github/ue4ss_installer_gui"
 
 [project.scripts]
-ue4ss_installer = "ue4ss_installer.__main__:main"
+ue4ss_installer_gui = "ue4ss_installer_gui.__main__:main"
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -73,7 +73,7 @@ dependencies = [
 
 [tool.hatch.envs.build.scripts]
 exe = [
-  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer src/ue4ss_installer/__main__.py",
+  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui src/ue4ss_installer_gui/__main__.py",
 ]
 
 
@@ -106,18 +106,6 @@ update_changelog_on_bump = true
 
 [tool.hatch.envs.x86_64-pc-windows-msvc]
 dependencies = [
-  "pywin32",
-  "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
-]
-
-[tool.hatch.envs.i686-pc-windows-msvc]
-dependencies = [
-  "pywin32",
-  "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
-]
-
-[tool.hatch.envs.aarch64-unknown-linux-gnu]
-dependencies = [
   "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
 ]
 
@@ -127,4 +115,4 @@ dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/ue4ss_installer"]
+packages = ["src/ue4ss_installer_gui"]

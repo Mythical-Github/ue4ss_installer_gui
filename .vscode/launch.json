@@ -74,8 +74,8 @@
     },
     {
       "args": [],
-      "module": "ue4ss_installer",
-      "name": "ue4ss_installer",
+      "module": "ue4ss_installer_gui",
+      "name": "ue4ss_installer_gui",
       "request": "launch",
       "type": "debugpy"
     }

@@ -1,19 +1,27 @@
 import os
+
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer import file_io, main_screen, constants, settings
+from ue4ss_installer_gui import file_io, main_screen, constants, settings
 
 
 def main():
     settings.init_settings()
     dpg.create_context()
 
-    icon_path = os.path.normpath(f'{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico')
+    icon_path = os.path.normpath(
+        f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
+    )
     if not os.path.isfile(icon_path):
         icon_missing_error = f"Icon file not found at {icon_path}"
         raise FileNotFoundError(icon_missing_error)
 
-    dpg.create_viewport(title=" ", width=constants.window_width, height=constants.window_height, resizable=False)
+    dpg.create_viewport(
+        title=" ",
+        width=constants.window_width,
+        height=constants.window_height,
+        resizable=False,
+    )
     dpg.set_viewport_small_icon(icon_path)
     dpg.set_viewport_large_icon(icon_path)
 

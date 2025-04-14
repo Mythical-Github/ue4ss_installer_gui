@@ -8,6 +8,7 @@ SCRIPT_DIR = (
     else Path(__file__).resolve().parent
 )
 
+
 def get_all_drive_letter_paths() -> list[str]:
     drive_letters = []
     for drive in range(0, 26):
