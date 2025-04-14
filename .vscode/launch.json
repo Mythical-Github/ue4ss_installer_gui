@@ -71,6 +71,13 @@
       "name": "make_exe_release",
       "request": "launch",
       "type": "debugpy"
+    },
+    {
+      "args": [],
+      "module": "ue4ss_installer",
+      "name": "ue4ss_installer",
+      "request": "launch",
+      "type": "debugpy"
     }
   ],
   "version": "0.2.0"

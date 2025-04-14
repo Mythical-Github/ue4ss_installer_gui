@@ -1,2 +1,2 @@
-# galena
- Universal app installer, dynamically populated through configs
+# UE4SS Installer
+A gui installer for ue4ss, heavily inspired by melon loader's gui installer.
