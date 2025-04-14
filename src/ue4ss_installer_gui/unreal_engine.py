@@ -1,16 +1,16 @@
 import os
 from typing import List
 from pathlib import Path
-from typing import Union, List
+from typing import Union
+
 
 def get_all_directory_paths_in_tree(root_directory: Union[str, Path]) -> List[Path]:
     root = Path(root_directory)
-    return [p for p in root.rglob('*') if p.is_dir()]
+    return [p for p in root.rglob("*") if p.is_dir()]
 
 
 def get_all_unreal_game_directories_in_directory_tree(
-    root_directory: str,
-    include_uninstalled_existing_game_dirs: bool = True
+    root_directory: str, include_uninstalled_existing_game_dirs: bool = True
 ) -> List[str]:
     unreal_game_trees = []
 
@@ -31,10 +31,9 @@ def get_all_unreal_game_directories_in_directory_tree(
             else:
                 has_exe = False
                 for dirpath, _, filenames in os.walk(sub_dir_path):
-                    if any(fname.lower().endswith('.exe') for fname in filenames):
+                    if any(fname.lower().endswith(".exe") for fname in filenames):
                         has_exe = True
                         break
                 if has_exe:
                     unreal_game_trees.append(sub_dir_path)
-    print(unreal_game_trees)
     return unreal_game_trees

@@ -1,5 +1,5 @@
-site_name: ue4ss_installer
-site_url: https://Mythical-Github.github.io/ue4ss_installer/
+site_name: ue4ss_installer_gui
+site_url: https://Mythical-Github.github.io/ue4ss_installer_gui/
 
 theme:
   name: material
@@ -58,14 +58,14 @@ nav:
 extra_css:
   - stylesheets/extra.css
 
-repo_url: https://github.com/Mythical-Github/ue4ss_installer
-repo_name: ue4ss_installer
+repo_url: https://github.com/Mythical-Github/ue4ss_installer_gui
+repo_name: ue4ss_installer_gui
 
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Mythical-Github/ue4ss_installer
-      name: ue4ss_installer on Github
+      link: https://github.com/Mythical-Github/ue4ss_installer_gui
+      name: ue4ss_installer_gui on Github
     - icon: fontawesome/brands/discord
       link: https://discord.gg/EvUuAD4QvS
-      name: ue4ss_installer Discord Server
+      name: ue4ss_installer_gui Discord Server

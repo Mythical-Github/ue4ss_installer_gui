@@ -9,6 +9,7 @@ class GamePlatforms(Enum):
     EPIC = "Epic"
     OTHER = "Other"
 
+
 @dataclass
 class GameInfo:
     game_title: str

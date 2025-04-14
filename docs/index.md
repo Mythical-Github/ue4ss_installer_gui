@@ -1,4 +1,4 @@
-# Welcome to ue4ss_installer
+# Welcome to ue4ss_installer_gui
 
 For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
