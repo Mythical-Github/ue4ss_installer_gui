@@ -106,18 +106,6 @@ update_changelog_on_bump = true
 
 [tool.hatch.envs.x86_64-pc-windows-msvc]
 dependencies = [
-  "pywin32",
-  "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
-]
-
-[tool.hatch.envs.i686-pc-windows-msvc]
-dependencies = [
-  "pywin32",
-  "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
-]
-
-[tool.hatch.envs.aarch64-unknown-linux-gnu]
-dependencies = [
   "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
 ]
 
