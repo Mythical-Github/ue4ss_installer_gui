@@ -21,7 +21,7 @@ def init_settings():
     logger.log_message(f"Settings initialized from {SETTINGS_FILE}")
 
 
-def load_settings() -> tomlkit.TOMLDocument:
+def get_settings() -> tomlkit.TOMLDocument:
     if not os.path.isfile(SETTINGS_FILE):
         logger.log_message(f"Settings file {SETTINGS_FILE} does not exist!")
         raise FileNotFoundError("Missing settings file.")

@@ -11,11 +11,14 @@
 #     keep mods and settings checkbox, ticked on by default
 #     horizontal
 #         switches between
-#             reinstall/uninstall/install/verify/progress bar for downloading
+#             reinstall/uninstall/
+#             install/a list of horizontals
+#                         for each horizontal
+#                             check box
+#                             text label of the release file name/extensionn
+#             progress bar for downloading
 
-# filter releases download files by
-#     "zMapGenBP.zip"
-#     "zCustomGameConfigs.zip"
+# filter default things to install ticked releases download files by
 #     "Dev" and "UE4SS"
 #     not "Dev" and "UE4SS"
 #     if not "Dev" in any "XInput"

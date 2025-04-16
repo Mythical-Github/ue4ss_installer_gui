@@ -43,8 +43,11 @@ def get_file_names_to_download_links_from_github_repo_tag(
     return download_links
 
 
-def test():
-    repo = "https://github.com/UE4SS-RE/RE-UE4SS"
-    print(get_all_pre_release_tags_from_repo_url(repo))
-    print(get_all_normal_release_tags_from_repo_url(repo))
-    print(get_file_names_to_download_links_from_github_repo_tag(repo, "v2.2.1-Hotfix"))
+# have this do the latest stable release later
+def get_default_ue4ss_version_tag() -> str:
+    default_tag = ""
+    return default_tag
+
+
+def is_ue4ss_installed():
+    return

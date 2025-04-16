@@ -1,8 +1,13 @@
 import os
 
+from ue4ss_installer_gui.screens import main as main_screen
+
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import file_io, main_screen, constants, settings
+from ue4ss_installer_gui import file_io, constants, settings
+
+# when loading autopopulation, if a game dir exists, but game is uninstalled, do now show it unless, there is an ue4ss installation
+# when this happens maybe show a warning or exclamation point mark or something
 
 
 def main():
@@ -31,7 +36,7 @@ def main():
     main_screen.push_main_screen()
     dpg.set_viewport_pos([constants.x, constants.y])
     dpg.setup_dearpygui()
-    dpg.set_primary_window("MainWindow", True)
+    dpg.set_primary_window("main_window", True)
     dpg.show_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()

@@ -7,7 +7,7 @@ from ue4ss_installer_gui import file_io
 def get_all_steam_game_directories() -> list[pathlib.Path]:
     steam_directories = []
     for drive_letter in file_io.get_all_drive_letter_paths():
-        if drive_letter == "C":
+        if drive_letter.startswith("C"):
             steam_directory = os.path.normpath(
                 f"{drive_letter}Program Files (x86)/Steam/steamapps/common"
             )

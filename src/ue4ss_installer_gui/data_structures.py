@@ -12,8 +12,8 @@ class GamePlatforms(Enum):
 
 @dataclass
 class GameInfo:
-    game_title: str
     install_dir: Path
+    game_title: str
     ue4ss_version: str
     installed_files: List[Path] = field(default_factory=list)
     platform: GamePlatforms = GamePlatforms.OTHER
