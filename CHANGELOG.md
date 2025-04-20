@@ -1,3 +1,9 @@
+## 0.1.0-dev.14564099472 (2025-04-20)
+
+### Fix
+
+- **main.pyw**: Fixed renaming wrong main file
+
 ## 0.1.0-dev.14564078159 (2025-04-20)
 
 ### Fix
