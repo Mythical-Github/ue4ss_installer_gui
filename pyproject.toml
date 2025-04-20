@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ue4ss_installer_gui"
-version = "0.1.0-dev.14477465302"
+version = "0.1.0-dev.14564041888"
 description = "GUI installer for UE4SS"
 readme = "README.md"
 requires-python = ">=3.9.1"
