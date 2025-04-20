@@ -1,26 +1,15 @@
-import os
 import webbrowser
 import pathlib
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui.screens import add_game
+from ue4ss_installer_gui.screens import add_game, configure_game
 
-from ue4ss_installer_gui import (
-    steam,
-    epic,
-    unreal_engine,
-    constants,
-    settings,
-    unreal,
-    ue4ss,
-)
-
-# have to handle when people uninstall games, and leave eu4ss, and when people fully nuke
+from ue4ss_installer_gui import constants, settings
 
 
 scroll_area_height = (
-    constants.window_height
+    constants.WINDOW_HEIGHT
     - (
         constants.HEADER_HEIGHT
         + constants.SUBHEADER_HEIGHT
@@ -32,13 +21,15 @@ scroll_area_height = (
 )
 
 
+used_game_button_strings = set()
+
+
 def init_main_screen_header():
     with dpg.group(horizontal=True):
-        title = "UE4SS Installer"
         char_width = 10
-        title_width = len(title) * char_width
-        dpg.add_spacer(width=(constants.window_width - title_width) // 2)
-        dpg.add_text(title, tag="HeaderText")
+        title_width = len(constants.APP_TITLE) * char_width
+        dpg.add_spacer(width=(constants.WINDOW_WIDTH - title_width) // 2)
+        dpg.add_text(constants.APP_TITLE, tag="HeaderText")
         dpg.bind_item_font("HeaderText", "header_font")
 
 
@@ -49,48 +40,47 @@ def init_main_screen_sub_header():
 
     with dpg.group(horizontal=False):
         dpg.add_spacer(height=0)
+        dpg.add_text(subheader_text, wrap=constants.WINDOW_WIDTH - 40)
 
-        dpg.add_text(subheader_text, wrap=constants.window_width - 40)
+
+def add_new_game_button_pressed_callback(sender, app_data, user_data):
+    configure_game.push_configure_game_screen(game_directory=pathlib.Path(user_data))
 
 
-def get_game_dirs_in_settings() -> list[pathlib.Path]:
-    settings_game_dirs = []
-    loaded_settings = settings.get_settings()
-    games_list = loaded_settings.get("games", {})
-    for entry in games_list:
-        settings_game_dirs.append(entry.get("install_dir"))
-    for settings_game_dir in settings_game_dirs:
-        print(settings_game_dir)
-    return settings_game_dirs
+def add_new_game_to_games_list(game_name: str, game_directory: str):
+    global used_game_button_strings
+    base_name = game_name
+    count = 1
+
+    while game_name in used_game_button_strings:
+        count += 1
+        game_name = f"{base_name} #{count}"
+
+    used_game_button_strings.add(game_name)
+
+    with dpg.group(horizontal=True, parent="GameListScroll"):
+        dpg.add_button(
+            label=game_name,
+            tag=f"{game_name}_button",
+            width=-1,
+            height=28,
+            user_data=game_directory,
+            callback=add_new_game_button_pressed_callback,
+        )
+    dpg.add_spacer(height=6, parent="GameListScroll")
 
 
 def init_main_screen_game_list_scroll_box():
     with dpg.child_window(
         width=-1, height=scroll_area_height, tag="GameListScroll", autosize_x=True
     ):
-        # make sure that even games from settings files don't cause double entries from auto detected entries
-        all_game_dirs = [
-            game
-            for dir_source in (
-                steam.get_all_steam_game_directories(),
-                epic.get_all_epic_games_game_directories(),
+        game_titles_to_install_dirs = settings.get_game_titles_to_install_dirs()
+        all_game_titles = sorted(game_titles_to_install_dirs.keys())
+
+        for game_name in all_game_titles:
+            add_new_game_to_games_list(
+                game_name, game_titles_to_install_dirs[game_name]
             )
-            for base_dir in dir_source
-            for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
-                str(base_dir)
-            )
-        ]
-        str_game_settings_list = []
-        for game_dir in get_game_dirs_in_settings():
-            print(f"game_dir: {game_dir}")
-            str_game_settings_list.append(game_dir)
-        all_game_dirs.extend(str_game_settings_list)
-        for game_dir in all_game_dirs:
-            if (
-                unreal.does_directory_contain_unreal_game(pathlib.Path(game_dir))
-                or ue4ss.is_ue4ss_installed()
-            ):
-                add_new_game_to_games_list(os.path.basename(game_dir))
 
 
 def init_main_screen_footer_section():
@@ -120,7 +110,7 @@ def init_main_screen_footer_section():
                     lambda: webbrowser.open("https://github.com/UE4SS-RE/RE-UE4SS"),
                 )
 
-            dpg.add_spacer(width=constants.window_width - (4 * 50 + 20 + 160) - 24)
+            dpg.add_spacer(width=constants.WINDOW_WIDTH - (4 * 50 + 20 + 160) - 24)
 
             dpg.add_button(label="Add Game Manually", width=160, height=30, tag="ag")
             dpg.set_item_callback("ag", callback=add_game.choose_directory)
@@ -128,11 +118,11 @@ def init_main_screen_footer_section():
 
 def push_main_screen():
     with dpg.window(
-        label="UE4SS Installer",
+        label=constants.APP_TITLE,
         tag="main_window",
         no_title_bar=True,
-        width=constants.window_width,
-        height=constants.window_height,
+        width=constants.WINDOW_WIDTH,
+        height=constants.WINDOW_HEIGHT,
     ):
         dpg.add_spacer(height=10)
         init_main_screen_header()
@@ -142,13 +132,3 @@ def push_main_screen():
         init_main_screen_game_list_scroll_box()
         dpg.add_spacer(height=10)
         init_main_screen_footer_section()
-
-
-def add_new_game_to_games_list(game_name: str):
-    with dpg.group(horizontal=True, parent="GameListScroll"):
-        dpg.add_spacer()
-        dpg.add_button(label=game_name, tag=f"{game_name}_button", width=532, height=28)
-        # add a game platform button here, when applicable
-        # add a ue4ss version number here, when applicable
-        # if a manually installed game, a button to remove it from the settings file
-    dpg.add_spacer(height=6, parent="GameListScroll")

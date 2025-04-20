@@ -5,33 +5,23 @@ from ue4ss_installer_gui.screens import main
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import data_structures, settings, constants, ue4ss, file_io
-
-
-# make sure it allows multiple game installs of the same game, show some _1 _2 or something
-# have it check the game dir not the game title for if it already exists later
-# if it's not an unreal game make it show a different popup, right now it says it's already in the list
+from ue4ss_installer_gui import (
+    data_structures,
+    settings,
+    constants,
+    ue4ss,
+    unreal_engine,
+)
 
 
 def game_dir_actually_has_unreal_game_check(game_dir_path: pathlib.Path):
-    acceptable_dirs = [
-        f"{file_io.SCRIPT_DIR}/Engine/Binaries",
-        f"{file_io.SCRIPT_DIR}/Engine/Shared",
-        f"{file_io.SCRIPT_DIR}/Engine/Shared",
-    ]
-    acceptable_files = [f"{file_io.SCRIPT_DIR}/Manifest_NonUFSFiles_Win64.txt"]
-    for acceptable_dir in acceptable_dirs:
-        if os.path.isdir(os.path.normpath(acceptable_dir)):
-            return True
-    for acceptable_file in acceptable_files:
-        if os.path.isfile(os.path.normpath(acceptable_file)):
-            return True
-    init_not_an_unreal_game_popup(game_dir_path)
-    from time import sleep
-
-    sleep(0.1)
-    dpg.configure_item("not_an_unreal_game_pop_up", show=True)
-    return False
+    if not unreal_engine.does_directory_contain_unreal_game(game_dir_path):
+        if settings.has_inited_settings:
+            init_not_an_unreal_game_popup(game_dir_path)
+            dpg.split_frame()
+            dpg.configure_item("not_an_unreal_game_pop_up", show=True)
+        return False
+    return True
 
 
 def call_dismiss_pop_up_game_already_in_list():
@@ -51,7 +41,7 @@ def init_not_an_unreal_game_popup(game_directory: pathlib.Path):
         no_title_bar=True,
         min_size=[100, 140],
     )
-    message = " The following game directory does not contain an unreal game:"
+    message = "The following game directory does not contain an unreal game or an ue4ss installation:"
     message_two = os.path.normpath(str(game_directory))
     dpg.add_text(message, parent="not_an_unreal_game_pop_up", wrap=384)
     dpg.add_text(message_two, parent="not_an_unreal_game_pop_up", wrap=384)
@@ -67,14 +57,14 @@ def init_not_an_unreal_game_popup(game_directory: pathlib.Path):
 
 def init_game_already_in_list_pop_up(game_directory: pathlib.Path):
     dpg.add_window(
-        modal=True,  # this is randomly breaking it right now
+        modal=True,
         tag="game_already_exists_popup",
         no_title_bar=True,
-        width=constants.window_width - 200,
-        height=constants.window_height - 700,
-        pos=(100, constants.y + 100),
+        width=constants.WINDOW_WIDTH - 200,
+        height=constants.WINDOW_HEIGHT - 700,
+        pos=(100, constants.Y + 100),
     )
-    message = " The following game already exists in the games list:"
+    message = "The following game already exists in the games list:"
     message_two = os.path.normpath(str(game_directory))
     dpg.add_text(message, parent="game_already_exists_popup", wrap=384)
     dpg.add_text(message_two, parent="game_already_exists_popup", wrap=384)
@@ -89,7 +79,6 @@ def init_game_already_in_list_pop_up(game_directory: pathlib.Path):
 
 
 def game_already_in_list_check(game_directory: pathlib.Path) -> bool:
-    # this checks currently only the games in settings, it needs to also check the autopopulated list
     game_entries = settings.get_settings().get("games", {})
     is_game_already_in_list = False
     for game_entry in game_entries:
@@ -99,22 +88,23 @@ def game_already_in_list_check(game_directory: pathlib.Path) -> bool:
             is_game_already_in_list = True
             break
     if is_game_already_in_list:
-        init_game_already_in_list_pop_up(game_directory)
-        from time import sleep
-
-        sleep(0.1)
-        dpg.configure_item("game_already_exists_popup", show=True)
+        if settings.has_inited_settings:
+            init_game_already_in_list_pop_up(game_directory)
+            dpg.split_frame()
+            dpg.configure_item("game_already_exists_popup", show=True)
         return True
     return False
 
 
 def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
+    if not os.path.isdir(game_dir_path):
+        return False
     was_valid = True
-    if game_already_in_list_check(game_dir_path) == True:
+    if game_already_in_list_check(game_dir_path):
         was_valid = False
-    if game_dir_actually_has_unreal_game_check(game_dir_path) == False:
+    if not game_dir_actually_has_unreal_game_check(game_dir_path):
         was_valid = False
-    if was_valid == False:
+    if not was_valid:
         return was_valid
     loaded_settings = settings.get_settings()
     game_entry = data_structures.GameInfo(
@@ -130,11 +120,11 @@ def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
         new_installed_files.append(file)
 
     game_entry_dict = {
-        "game_title": game_entry.game_title,
         "install_dir": str(game_entry.install_dir),
+        "game_title": game_entry.game_title,
         "ue4ss_version": game_entry.ue4ss_version,
         "installed_files": new_installed_files,
-        "platform": game_entry.platform.name,
+        "platform": game_entry.platform.value,
     }
 
     games_list = loaded_settings.get("games", [])
@@ -146,9 +136,15 @@ def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
 
 
 def callback_directory_selected(sender, app_data):
-    if add_manual_game_to_settings_file(pathlib.Path(app_data["file_path_name"])):
+    game_directory = pathlib.Path(app_data["file_path_name"])
+    game_name = os.path.basename(game_directory)
+    if add_manual_game_to_settings_file(game_directory):
         dpg.delete_item("directory_picker")
-        main.add_new_game_to_games_list(os.path.basename(app_data["file_path_name"]))
+        # have this later add it so it's in the list alphabetically, using before= seems to replace entries
+        main.add_new_game_to_games_list(
+            constants.GAME_PATHS_TO_DISPLAY_NAMES.get(game_name, game_name),
+            str(game_directory),
+        )
 
 
 def choose_directory():
@@ -160,7 +156,7 @@ def choose_directory():
         show=True,
         callback=callback_directory_selected,
         tag="directory_picker",
-        width=constants.window_width - 80,
-        height=constants.window_height - 80,
+        width=constants.WINDOW_WIDTH - 80,
+        height=constants.WINDOW_HEIGHT - 80,
         modal=True,
     )

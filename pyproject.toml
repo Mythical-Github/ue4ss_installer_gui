@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "ue4ss_installer_gui"
 version = "0.1.0-dev.14477465302"
-description = ""
+description = "GUI installer for UE4SS"
 readme = "README.md"
 requires-python = ">=3.9.1"
 license = { file = "LICENSE" }
@@ -30,15 +30,6 @@ dependencies = [
 
 [tool.hatch.envs.dev]
 dependencies = [
-  "pre-commit",
-  "commitizen",
-  "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
-]
-
-[tool.hatch.envs.docs]
-dependencies = [
-  "mkdocs-material",
-  "mkdocstrings-python",
   "pre-commit",
   "commitizen",
   "py_project_dev_tools @ git+https://github.com/Mythical-Github/py_project_dev_tools"
@@ -73,9 +64,8 @@ dependencies = [
 
 [tool.hatch.envs.build.scripts]
 exe = [
-  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui src/ue4ss_installer_gui/__main__.py",
+  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui --icon=assets/images/project_main_icon.ico src/ue4ss_installer_gui/__main__.py",
 ]
-
 
 [tool.hatch.envs.scripts]
 template = "scripts"
@@ -89,10 +79,6 @@ refresh-deps = [
   "python -c \"import os; os.remove('requirements.txt')\"",
   "hatch env create default",
 ]
-
-[tool.typos]
-[tool.typos.default]
-extend-words = { ue = "ue" }
 
 [tool.pyright]
 extraPaths = [".venv/Lib/site-packages"]
@@ -116,3 +102,7 @@ dependencies = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ue4ss_installer_gui"]
+
+[tool.typos]
+[tool.typos.default]
+extend-words = { ue4ss = "ue4ss", ue = "ue" }

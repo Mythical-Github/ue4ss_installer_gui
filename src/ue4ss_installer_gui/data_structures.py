@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Type, Any
 from pathlib import Path
 from dataclasses import dataclass, field
 
@@ -17,3 +17,14 @@ class GameInfo:
     ue4ss_version: str
     installed_files: List[Path] = field(default_factory=list)
     platform: GamePlatforms = GamePlatforms.OTHER
+
+
+def get_enum_from_val(enum_cls: Type[Enum], value: Any) -> Enum:
+    for entry in enum_cls:
+        if entry.value == value:
+            return entry
+    raise ValueError(f"{value} is not a valid value for {enum_cls.__name__}")
+
+
+def get_enum_strings_from_enum(enum_cls: Type[Enum]) -> list[str]:
+    return [entry.value for entry in enum_cls]

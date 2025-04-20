@@ -1,39 +1,97 @@
 import os
-from typing import List
 from pathlib import Path
-from typing import Union
+from typing import List, Union
+
+from ue4ss_installer_gui import constants
+
+MAX_DEPTH = 2
 
 
-def get_all_directory_paths_in_tree(root_directory: Union[str, Path]) -> List[Path]:
-    root = Path(root_directory)
-    return [p for p in root.rglob("*") if p.is_dir()]
+def is_unreal_game_dir(
+    root_dir: str, max_depth: int = MAX_DEPTH, include_uninstalled: bool = True
+) -> bool:
+    content_found = False
+    win_found = False
+    exe_found = False
+
+    stack = [(root_dir, 0)]
+
+    while stack:
+        path, depth = stack.pop()
+        if depth > max_depth:
+            continue
+
+        try:
+            with os.scandir(path) as entries:
+                for entry in entries:
+                    if entry.is_dir(follow_symlinks=False):
+                        name = entry.name
+                        if name == "Content":
+                            content_found = True
+                        elif name in ("Win64", "WinGDK"):
+                            win_found = True
+
+                        if (
+                            content_found
+                            and win_found
+                            and (include_uninstalled or exe_found)
+                        ):
+                            return True
+
+                        stack.append((entry.path, depth + 1))
+
+                    elif entry.is_file(follow_symlinks=False):
+                        if (
+                            not include_uninstalled
+                            and not exe_found
+                            and entry.name.lower().endswith(".exe")
+                        ):
+                            exe_found = True
+
+                            if content_found and win_found:
+                                return True
+
+        except PermissionError:
+            continue
+
+    return content_found and win_found and (include_uninstalled or exe_found)
 
 
 def get_all_unreal_game_directories_in_directory_tree(
-    root_directory: str, include_uninstalled_existing_game_dirs: bool = True
+    root_directory: Union[str, Path],
+    include_uninstalled_existing_game_dirs: bool = True,
+    max_depth: int = MAX_DEPTH,
 ) -> List[str]:
-    unreal_game_trees = []
+    unreal_game_trees: List[str] = []
+    root = Path(root_directory)
 
-    for sub_dir_name in os.listdir(root_directory):
-        sub_dir_path = os.path.join(root_directory, sub_dir_name)
-        if not os.path.isdir(sub_dir_path):
+    for sub in root.iterdir():
+        if not sub.is_dir():
             continue
 
-        # Collect all folder names (base names only) recursively under sub_dir_path
-        directories = get_all_directory_paths_in_tree(sub_dir_path)
-        dir_names = []
-        for directory in directories:
-            dir_names.append(os.path.basename(directory))
-
-        if ("Win64" in dir_names or "WinGDK" in dir_names) and "Content" in dir_names:
-            if include_uninstalled_existing_game_dirs:
-                unreal_game_trees.append(sub_dir_path)
-            else:
-                has_exe = False
-                for dirpath, _, filenames in os.walk(sub_dir_path):
-                    if any(fname.lower().endswith(".exe") for fname in filenames):
-                        has_exe = True
-                        break
-                if has_exe:
-                    unreal_game_trees.append(sub_dir_path)
+        if is_unreal_game_dir(
+            str(sub), max_depth, include_uninstalled_existing_game_dirs
+        ):
+            unreal_game_trees.append(str(sub))
+        for game_name in constants.MULTI_GAME_NAMES:
+            if os.path.basename(str(sub)).strip() == game_name:
+                unreal_game_trees.extend(
+                    get_all_unreal_game_directories_in_directory_tree(sub)
+                )
     return unreal_game_trees
+
+
+def does_directory_contain_unreal_game(directory: Path) -> bool:
+    acceptable_dirs = [
+        f"{directory}/Engine/Binaries",
+        f"{directory}/Engine/Shared",
+        f"{directory}/Engine/Shared",
+    ]
+    acceptable_files = [f"{directory}/Manifest_NonUFSFiles_Win64.txt"]
+    for acceptable_dir in acceptable_dirs:
+        if os.path.isdir(os.path.normpath(acceptable_dir)):
+            return True
+    for acceptable_file in acceptable_files:
+        if os.path.isfile(os.path.normpath(acceptable_file)):
+            return True
+    return False
