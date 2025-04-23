@@ -1,125 +1,123 @@
 import os
-import requests
 import pathlib
+import requests
+from typing import Dict, List
+from dataclasses import dataclass, field
+
+# To store cached repo releases info
+cached_repo_releases_info = None
 
 
-ALL_TAGS = []
-PRE_RELEASE_TAGS = []
-NORMAL_RELEASE_TAGS = []
+@dataclass
+class ReleaseAssetInfo:
+    tag: str
+    is_prerelease: bool
+    is_latest: bool
+    has_assets: bool
+    created_at: str
+    assets: Dict[str, str] = field(default_factory=dict)
 
 
-DEFAULT_ALL_TAGS = [
-    "v3.0.1",
-    "v3.0.0",
-    "v2.5.2",
-    "v2.5.1",
-    "v2.5.0",
-    "v2.3.1-Hotfix",
-    "v2.3.0",
-    "v2.2.1-Hotfix",
-    "v2.2.0",
-    "v2.1.1-HotFix",
-    "v2.1.0",
-    "v2.0.0.1Alpha-Hotfix",
-    "v2.0Alpha",
-    "v1.3.6",
-    "v1.3.5-RE",
-    "experimental-latest",
-    "experimental",
-]
-DEFAULT_PRE_RELEASE_TAGS = [
-    "v2.0.0.1Alpha-Hotfix",
-    "v1.3.6",
-    "v1.3.5-RE",
-    "experimental-latest",
-    "experimental",
-]
-DEFAULT_NORMAL_RELEASE_TAGS = [
-    "v3.0.1",
-    "v3.0.0",
-    "v2.5.2",
-    "v2.5.1",
-    "v2.5.0",
-    "v2.3.1-Hotfix",
-    "v2.3.0",
-    "v2.2.1-Hotfix",
-    "v2.2.0",
-    "v2.1.1-HotFix",
-    "v2.1.0",
-    "v2.0Alpha",
-]
+@dataclass
+class RepositoryReleasesInfo:
+    owner: str
+    repo: str
+    tags: List[ReleaseAssetInfo]
 
 
-def get_all_tags_from_repo_url(repo_url: str) -> list[str]:
-    """Returns a list of all Git tags from the GitHub repository."""
-    repo = repo_url.rstrip("/").replace("https://github.com/", "")
-    url = f"https://api.github.com/repos/{repo}/tags"
-    tags = []
+def cache_repo_releases_info(owner: str, repo: str):
+    """
+    Caches the repo releases information to avoid redundant API calls.
+    """
+    global cached_repo_releases_info
+    if cached_repo_releases_info is None:
+        cached_repo_releases_info = get_all_release_assets(owner, repo)
 
+
+def get_file_name_to_download_links_from_tag(tag: str) -> dict[str, str]:
+    """
+    Given a tag, return a dictionary mapping filenames to their download links.
+    """
+    global cached_repo_releases_info
+    if cached_repo_releases_info is None:
+        raise Exception(
+            "Repo release info is not cached. Please call cache_repo_releases_info first."
+        )
+
+    # Find the release by tag name
+    for tag_info in cached_repo_releases_info.tags:
+        if tag_info.tag == tag:
+            return tag_info.assets
+
+    return {}
+
+
+def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
+    """
+    Fetches all release tags with metadata for a GitHub repo, sorted from newest to oldest.
+    """
+    url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+    headers = {"Accept": "application/vnd.github.v3+json"}
+
+    all_releases = []
     page = 1
+
     while True:
-        response = requests.get(url, params={"per_page": 100, "page": page})
+        response = requests.get(
+            url, headers=headers, params={"page": page, "per_page": 100}
+        )
         if response.status_code != 200:
-            print(f"Failed to fetch tags: {response.status_code}")
+            raise Exception(
+                f"GitHub API error: {response.status_code} - {response.text}"
+            )
+        releases = response.json()
+        if not releases:
             break
-
-        data = response.json()
-        if not data:
-            break
-
-        tags.extend(tag["name"] for tag in data)
+        all_releases.extend(releases)
         page += 1
 
-    return tags
+    # Sort by creation date (descending)
+    sorted_releases = sorted(
+        all_releases, key=lambda r: r.get("created_at", ""), reverse=True
+    )
 
+    tag_infos = []
 
-def get_all_pre_release_tags_from_repo_url(repo_url: str) -> list[str]:
-    """Returns a list of pre-release tags from the GitHub repository."""
-    repo = repo_url.rstrip("/").replace("https://github.com/", "")
-    url = f"https://api.github.com/repos/{repo}/releases"
-    response = requests.get(url)
-    releases = response.json()
+    latest_tag = None
+    for release in sorted_releases:
+        if not release.get("prerelease", False):
+            latest_tag = release.get("tag_name")
+            break
 
-    pre_release_tags = [
-        release["tag_name"] for release in releases if release.get("prerelease")
-    ]
-    return pre_release_tags
+    for release in sorted_releases:
+        tag = release.get("tag_name")
+        is_prerelease = release.get("prerelease", False)
+        created_at = release.get("created_at", "")
+        assets_list = release.get("assets", [])
+        assets = {asset["name"]: asset["browser_download_url"] for asset in assets_list}
 
+        tag_infos.append(
+            ReleaseAssetInfo(
+                tag=tag,
+                is_prerelease=is_prerelease,
+                is_latest=(tag == latest_tag),
+                has_assets=bool(assets),
+                created_at=created_at,
+                assets=assets,
+            )
+        )
 
-def get_all_normal_release_tags_from_repo_url(repo_url: str) -> list[str]:
-    """Returns a list of normal (non-pre-release) tags from the GitHub repository."""
-    repo = repo_url.rstrip("/").replace("https://github.com/", "")
-    url = f"https://api.github.com/repos/{repo}/releases"
-    response = requests.get(url)
-    releases = response.json()
-
-    normal_release_tags = [
-        release["tag_name"] for release in releases if not release.get("prerelease")
-    ]
-    return normal_release_tags
-
-
-def get_file_names_to_download_links_from_github_repo_tag(
-    repo_url: str, tag: str
-) -> dict[str, str]:
-    """Returns a dictionary mapping file names to download URLs for a specific release tag."""
-    repo = repo_url.rstrip("/").replace("https://github.com/", "")
-    url = f"https://api.github.com/repos/{repo}/releases/tags/{tag}"
-    response = requests.get(url)
-    release = response.json()
-
-    download_links = {
-        asset["name"]: asset["browser_download_url"]
-        for asset in release.get("assets", [])
-    }
-    return download_links
+    return RepositoryReleasesInfo(owner=owner, repo=repo, tags=tag_infos)
 
 
 def get_default_ue4ss_version_tag() -> str:
-    return "latest"
+    return get_normal_release_tags_with_assets()[0]
 
 
 def is_ue4ss_installed(game_directory: pathlib.Path) -> bool:
+    """
+    Checks if UE4SS is installed in the provided game directory.
+    """
     if os.path.isdir(game_directory):
         for dir_one_level_in in game_directory.iterdir():
             if not dir_one_level_in.is_dir():
@@ -141,3 +139,54 @@ def is_ue4ss_installed(game_directory: pathlib.Path) -> bool:
             ).is_file():
                 return True
     return False
+
+
+def get_all_tags_with_assets() -> List[str]:
+    """
+    Returns all tag names that have associated assets (regardless of release type).
+    """
+    global cached_repo_releases_info
+    if cached_repo_releases_info is None:
+        raise Exception(
+            "Repo release info is not cached. Please call cache_repo_releases_info first."
+        )
+
+    return [
+        tag_info.tag
+        for tag_info in cached_repo_releases_info.tags
+        if tag_info.has_assets
+    ]
+
+
+def get_pre_release_tags_with_assets() -> List[str]:
+    """
+    Returns all prerelease tag names that have associated assets.
+    """
+    global cached_repo_releases_info
+    if cached_repo_releases_info is None:
+        raise Exception(
+            "Repo release info is not cached. Please call cache_repo_releases_info first."
+        )
+
+    return [
+        tag_info.tag
+        for tag_info in cached_repo_releases_info.tags
+        if tag_info.has_assets and tag_info.is_prerelease
+    ]
+
+
+def get_normal_release_tags_with_assets() -> List[str]:
+    """
+    Returns all normal (non-prerelease) tag names that have associated assets.
+    """
+    global cached_repo_releases_info
+    if cached_repo_releases_info is None:
+        raise Exception(
+            "Repo release info is not cached. Please call cache_repo_releases_info first."
+        )
+
+    return [
+        tag_info.tag
+        for tag_info in cached_repo_releases_info.tags
+        if tag_info.has_assets and not tag_info.is_prerelease
+    ]

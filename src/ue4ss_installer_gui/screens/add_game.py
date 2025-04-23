@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from ue4ss_installer_gui.screens import main
+from ue4ss_installer_gui.screens import main_screen
 
 import dearpygui.dearpygui as dpg
 
@@ -96,43 +96,51 @@ def game_already_in_list_check(game_directory: pathlib.Path) -> bool:
     return False
 
 
-def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
-    if not os.path.isdir(game_dir_path):
-        return False
-    was_valid = True
-    if game_already_in_list_check(game_dir_path):
-        was_valid = False
-    if not game_dir_actually_has_unreal_game_check(game_dir_path):
-        was_valid = False
-    if not was_valid:
-        return was_valid
+def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dict:
+    bool_list = []
     loaded_settings = settings.get_settings()
-    game_entry = data_structures.GameInfo(
-        install_dir=game_dir_path,
-        game_title=os.path.basename(str(game_dir_path)),
-        ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
-        installed_files=[],
-        platform=data_structures.GamePlatforms.OTHER,
-    )
+    for game_dir_path in game_dir_paths:
+        if not os.path.isdir(game_dir_path):
+            bool_list.append(False)
+        was_valid = True
+        if game_already_in_list_check(game_dir_path):
+            was_valid = False
+        if not game_dir_actually_has_unreal_game_check(game_dir_path):
+            was_valid = False
+        if not was_valid:
+            bool_list.append(was_valid)
+        game_entry = data_structures.GameInfo(
+            install_dir=game_dir_path,
+            game_title=os.path.basename(str(game_dir_path)),
+            ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
+            platform=data_structures.GamePlatforms.OTHER,
+            using_developer_version=False,
+            show_pre_releases=False,
+            using_keep_mods_and_settings=False,
+            installed_files=[],
+        )
 
-    new_installed_files = []
-    for file in game_entry.installed_files:
-        new_installed_files.append(file)
+        new_installed_files = []
+        for file in game_entry.installed_files:
+            new_installed_files.append(file)
 
-    game_entry_dict = {
-        "install_dir": str(game_entry.install_dir),
-        "game_title": game_entry.game_title,
-        "ue4ss_version": game_entry.ue4ss_version,
-        "installed_files": new_installed_files,
-        "platform": game_entry.platform.value,
-    }
+        game_entry_dict = {
+            "install_dir": str(game_entry.install_dir),
+            "game_title": game_entry.game_title,
+            "ue4ss_version": game_entry.ue4ss_version,
+            "platform": game_entry.platform.value,
+            "using_developer_version": game_entry.using_developer_version,
+            "show_pre_releases": game_entry.show_pre_releases,
+            "using_keep_mods_and_settings": game_entry.using_keep_mods_and_settings,
+            "installed_files": new_installed_files,
+        }
 
-    games_list = loaded_settings.get("games", [])
-    games_list.append(game_entry_dict)
-    loaded_settings["games"] = games_list
+        games_list = loaded_settings.get("games", [])
+        games_list.append(game_entry_dict)
+        loaded_settings["games"] = games_list
 
-    settings.save_settings(loaded_settings)
-    return was_valid
+        bool_list.append(was_valid)
+    return loaded_settings
 
 
 def callback_directory_selected(sender, app_data):
@@ -141,7 +149,7 @@ def callback_directory_selected(sender, app_data):
     if add_manual_game_to_settings_file(game_directory):
         dpg.delete_item("directory_picker")
         # have this later add it so it's in the list alphabetically, using before= seems to replace entries
-        main.add_new_game_to_games_list(
+        main_screen.add_new_game_to_games_list(
             constants.GAME_PATHS_TO_DISPLAY_NAMES.get(game_name, game_name),
             str(game_directory),
         )
@@ -160,3 +168,48 @@ def choose_directory():
         height=constants.WINDOW_HEIGHT - 80,
         modal=True,
     )
+
+
+def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
+    if not os.path.isdir(game_dir_path):
+        return False
+    was_valid = True
+    if game_already_in_list_check(game_dir_path):
+        was_valid = False
+    if not game_dir_actually_has_unreal_game_check(game_dir_path):
+        was_valid = False
+    if not was_valid:
+        return was_valid
+    loaded_settings = settings.get_settings()
+    game_entry = data_structures.GameInfo(
+        install_dir=game_dir_path,
+        game_title=os.path.basename(str(game_dir_path)),
+        ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
+        platform=data_structures.GamePlatforms.OTHER,
+        using_developer_version=False,
+        show_pre_releases=False,
+        using_keep_mods_and_settings=False,
+        installed_files=[],
+    )
+
+    new_installed_files = []
+    for file in game_entry.installed_files:
+        new_installed_files.append(file)
+
+    game_entry_dict = {
+        "install_dir": str(game_entry.install_dir),
+        "game_title": game_entry.game_title,
+        "ue4ss_version": game_entry.ue4ss_version,
+        "platform": game_entry.platform.value,
+        "using_developer_version": game_entry.using_developer_version,
+        "show_pre_releases": game_entry.show_pre_releases,
+        "using_keep_mods_and_settings": game_entry.using_keep_mods_and_settings,
+        "installed_files": new_installed_files,
+    }
+
+    games_list = loaded_settings.get("games", [])
+    games_list.append(game_entry_dict)
+    loaded_settings["games"] = games_list
+
+    settings.save_settings(loaded_settings)
+    return was_valid

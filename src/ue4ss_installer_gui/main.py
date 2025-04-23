@@ -2,7 +2,7 @@ import os
 import ctypes
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui.screens import main as main_screen
+from ue4ss_installer_gui.screens import main_screen as main_screen
 from ue4ss_installer_gui import file_io, constants, settings, logger, initialization
 
 
@@ -30,7 +30,6 @@ def on_viewport_ready(sender, app_data):
 def init_logging():
     logger.set_log_base_dir(os.path.normpath(f"{file_io.SCRIPT_DIR}/logs"))
     logger.configure_logging()
-    logger.log_message("test")
 
 
 def main():
@@ -54,9 +53,10 @@ def main():
     dpg.set_viewport_small_icon(icon_path)
     dpg.set_viewport_large_icon(icon_path)
 
-    with dpg.font_registry():
-        with dpg.font("C:/Windows/Fonts/segoeui.ttf", 20, tag="header_font"):
-            dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
+    # if not settings.is_linux():
+    #     with dpg.font_registry():
+    #         with dpg.font("C:/Windows/Fonts/segoeui.ttf", 20, tag="header_font"):
+    #             dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
 
     main_screen.push_main_screen()
     dpg.set_viewport_pos([constants.X, constants.Y])
@@ -64,9 +64,9 @@ def main():
     dpg.set_primary_window("main_window", True)
 
     dpg.set_viewport_resize_callback(on_viewport_ready)
-    dpg.show_viewport()
 
     remove_maximize_button(constants.APP_TITLE)
 
+    dpg.show_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()

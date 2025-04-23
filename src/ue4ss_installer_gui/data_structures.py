@@ -15,8 +15,11 @@ class GameInfo:
     install_dir: Path
     game_title: str
     ue4ss_version: str
+    platform: GamePlatforms
+    using_developer_version: bool
+    show_pre_releases: bool
+    using_keep_mods_and_settings: bool
     installed_files: List[Path] = field(default_factory=list)
-    platform: GamePlatforms = GamePlatforms.OTHER
 
 
 def get_enum_from_val(enum_cls: Type[Enum], value: Any) -> Enum:

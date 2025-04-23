@@ -30,7 +30,8 @@ def init_main_screen_header():
         title_width = len(constants.APP_TITLE) * char_width
         dpg.add_spacer(width=(constants.WINDOW_WIDTH - title_width) // 2)
         dpg.add_text(constants.APP_TITLE, tag="HeaderText")
-        dpg.bind_item_font("HeaderText", "header_font")
+        # if not settings.is_linux():
+        #     dpg.bind_item_font("HeaderText", "header_font")
 
 
 def init_main_screen_sub_header():
@@ -44,7 +45,7 @@ def init_main_screen_sub_header():
 
 
 def add_new_game_button_pressed_callback(sender, app_data, user_data):
-    configure_game.push_configure_game_screen(game_directory=pathlib.Path(user_data))
+    configure_game.push_configure_game_screen(user_data=pathlib.Path(user_data))
 
 
 def add_new_game_to_games_list(game_name: str, game_directory: str):
@@ -126,9 +127,9 @@ def push_main_screen():
     ):
         dpg.add_spacer(height=10)
         init_main_screen_header()
-        dpg.add_spacer(height=5)
+        dpg.add_spacer(height=6)
         init_main_screen_sub_header()
         dpg.add_spacer(height=10)
         init_main_screen_game_list_scroll_box()
-        dpg.add_spacer(height=10)
+        dpg.add_spacer(height=8)
         init_main_screen_footer_section()
