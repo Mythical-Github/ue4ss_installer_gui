@@ -1,3 +1,2 @@
-
 # make a screen that shows a message and has a button to close
 # for stuff like success, failed, install succeeded, etc...

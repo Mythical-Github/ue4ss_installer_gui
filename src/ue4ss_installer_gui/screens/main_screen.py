@@ -125,11 +125,14 @@ def push_main_screen():
         width=constants.WINDOW_WIDTH,
         height=constants.WINDOW_HEIGHT,
     ):
-        dpg.add_spacer(height=10)
+        offset = 0
+        if settings.is_linux():
+            offset = 12
+        dpg.add_spacer(height=10 + offset)
         init_main_screen_header()
-        dpg.add_spacer(height=6)
+        dpg.add_spacer(height=6 + offset)
         init_main_screen_sub_header()
-        dpg.add_spacer(height=10)
+        dpg.add_spacer(height=10 + offset)
         init_main_screen_game_list_scroll_box()
-        dpg.add_spacer(height=8)
+        dpg.add_spacer(height=8 + offset)
         init_main_screen_footer_section()

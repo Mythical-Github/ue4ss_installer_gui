@@ -1,5 +1,4 @@
 import os
-import ctypes
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui.screens import main_screen as main_screen
@@ -7,20 +6,23 @@ from ue4ss_installer_gui import file_io, constants, settings, logger, initializa
 
 
 def remove_maximize_button(title=constants.APP_TITLE):
-    GWL_STYLE = -16
-    WS_MAXIMIZEBOX = 0x00010000
-    WS_THICKFRAME = 0x00040000
-    SWP_FLAGS = 0x0027
+    if settings.is_windows():
+        import ctypes
 
-    hwnd = ctypes.windll.user32.FindWindowW(None, title)
+        GWL_STYLE = -16
+        WS_MAXIMIZEBOX = 0x00010000
+        WS_THICKFRAME = 0x00040000
+        SWP_FLAGS = 0x0027
 
-    original_style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
+        hwnd = ctypes.windll.user32.FindWindowW(None, title)
 
-    new_style = original_style & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME
+        original_style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
 
-    ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, new_style)
+        new_style = original_style & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME
 
-    ctypes.windll.user32.SetWindowPos(hwnd, None, 0, 0, 0, 0, SWP_FLAGS)
+        ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, new_style)
+
+        ctypes.windll.user32.SetWindowPos(hwnd, None, 0, 0, 0, 0, SWP_FLAGS)
 
 
 def on_viewport_ready(sender, app_data):

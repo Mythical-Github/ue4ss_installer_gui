@@ -85,7 +85,10 @@ def does_directory_contain_unreal_game(directory: Path) -> bool:
     acceptable_dirs = [
         f"{directory}/Engine/Binaries",
         f"{directory}/Engine/Shared",
-        f"{directory}/Engine/Shared",
+        f"{directory}/Windows/Engine/Shared",
+        f"{directory}/Windows/Engine/Shared",
+        f"{directory}/WindowsNoEditor/Engine/Shared",
+        f"{directory}/WindowsNoEditor/Engine/Shared",
     ]
     acceptable_files = [f"{directory}/Manifest_NonUFSFiles_Win64.txt"]
     for acceptable_dir in acceptable_dirs:

@@ -1,3 +1,4 @@
+import os
 from screeninfo import get_monitors
 
 PRIMARY_MONITOR = get_monitors()[0]
@@ -31,9 +32,10 @@ INVALID_GAMES = ["place_holder_title_name"]
 # a dict of sub paths to friendly display names, this will override normal display names, useful for games
 # where the default name is messy, or indistinguishable
 GAME_PATHS_TO_DISPLAY_NAMES = {
-    r"Poppy Playtime\WindowsNoEditor": "Poppy Playtime - Chapter 1",
+    os.path.normpath("Poppy Playtime/WindowsNoEditor"): "Poppy Playtime - Chapter 1",
     "PlaytimeLauncher": "Poppy Playtime - Launcher",
     "TheKillingAntidotePlaytest": "The Killing Antidote Playtest",
     "TheKillingAntidote": "The Killing Antidote",
     "BronzebeardsTavern-Windows": "Bronzebeard's Tavern",
+    os.path.normpath("Aero GPX/WindowsNoEditor"): 'Aero GPX'
 }
