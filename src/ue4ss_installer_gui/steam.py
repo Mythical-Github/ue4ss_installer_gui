@@ -20,11 +20,8 @@ def get_all_steam_game_directories() -> list[pathlib.Path]:
                 steam_directory = os.path.normpath(
                     f"{drive_letter}SteamLibrary/steamapps/common"
                 )
-            common_path = pathlib.Path(steam_directory)
-            if common_path.is_dir():
-                for game_dir in common_path.iterdir():
-                    if game_dir.is_dir():
-                        steam_directories.append(game_dir)
+            if os.path.isdir(steam_directory):
+                steam_directories.append(steam_directory)
 
     else:  # Assume Linux or similar Unix-like system
         steamapps_dirs = [
