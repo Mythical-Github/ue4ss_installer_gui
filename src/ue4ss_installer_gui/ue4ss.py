@@ -4,7 +4,7 @@ import requests
 from typing import Dict, List
 from dataclasses import dataclass, field
 
-# To store cached repo releases info
+
 cached_repo_releases_info = None
 
 
@@ -44,7 +44,6 @@ def get_file_name_to_download_links_from_tag(tag: str) -> dict[str, str]:
             "Repo release info is not cached. Please call cache_repo_releases_info first."
         )
 
-    # Find the release by tag name
     for tag_info in cached_repo_releases_info.tags:
         if tag_info.tag == tag:
             return tag_info.assets
@@ -76,7 +75,6 @@ def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
         all_releases.extend(releases)
         page += 1
 
-    # Sort by creation date (descending)
     sorted_releases = sorted(
         all_releases, key=lambda r: r.get("created_at", ""), reverse=True
     )

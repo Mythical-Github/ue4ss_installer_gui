@@ -2,10 +2,8 @@ import pathlib
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import settings, ue4ss, constants
+from ue4ss_installer_gui import settings, ue4ss, constants, translator
 from ue4ss_installer_gui.screens import setup_screen
-
-# localization
 
 
 def update_game_info_field_from_ui(
@@ -84,13 +82,13 @@ def push_installing_from_zip_screen(sender, app_data, user_data):
         dpg.delete_item(screen_tag)
     setup_screen.push_setup_screen(
         tag=screen_tag,
-        task_text="Installing UE4SS from a zip file",
+        task_text=translator.translator.translate('installing_from_zip_ue4ss_task_text'),
         finished_all_steps_function=push_configure_game_screen,
         user_data=user_data,
         step_text_to_step_functions={
-            "Uninstalling old UE4SS files": uninstall_ue4ss,
-            "Installing UE4SS": install_ue4ss_through_zip,
-            "Cleaning up temp files": clean_up_temp_files,
+            translator.translator.translate('uninstalling_old_ue4ss_files_step_text'): uninstall_ue4ss,
+            translator.translator.translate('installing_ue4ss_step_text'): install_ue4ss_through_zip,
+            translator.translator.translate('cleaning_up_temp_files_step_text'): clean_up_temp_files,
         },
     )
 
@@ -120,14 +118,14 @@ def push_installing_screen(sender, app_data, user_data):
         dpg.delete_item(screen_tag)
     setup_screen.push_setup_screen(
         tag=screen_tag,
-        task_text="Installing UE4SS",
+        task_text=translator.translator.translate('installing_ue4ss_task_text'),
         finished_all_steps_function=push_configure_game_screen,
         user_data=user_data,
         step_text_to_step_functions={
-            "Uninstalling old UE4SS files": uninstall_ue4ss,
-            "Downloading UE4SS zip": download_ue4ss,
-            "Installing UE4SS": install_ue4ss,
-            "Cleaning up temp files": clean_up_temp_files,
+            translator.translator.translate('uninstalling_old_ue4ss_files_step_text'): uninstall_ue4ss,
+            translator.translator.translate('downloading_ue4ss_zip_step_text'): download_ue4ss,
+            translator.translator.translate('installing_ue4ss_step_text'): install_ue4ss,
+            translator.translator.translate('cleaning_up_temp_files_step_text'): clean_up_temp_files,
         },
     )
 
@@ -138,14 +136,14 @@ def push_reinstalling_screen(sender, app_data, user_data):
         dpg.delete_item(screen_tag)
     setup_screen.push_setup_screen(
         tag=screen_tag,
-        task_text="Reinstalling UE4SS",
+        task_text=translator.translator.translate('reinstalling_ue4ss_task_text'),
         finished_all_steps_function=push_configure_game_screen,
         user_data=user_data,
         step_text_to_step_functions={
-            "Uninstalling old UE4SS files": uninstall_ue4ss,
-            "Downloading UE4SS zip": download_ue4ss,
-            "Installing UE4SS": install_ue4ss,
-            "Cleaning up temp files": clean_up_temp_files,
+            translator.translator.translate('uninstalling_old_ue4ss_files_step_text'): uninstall_ue4ss,
+            translator.translator.translate('downloading_ue4ss_zip_step_text'): download_ue4ss,
+            translator.translator.translate('installing_ue4ss_step_text'): install_ue4ss,
+            translator.translator.translate('cleaning_up_temp_files_step_text'): clean_up_temp_files,
         },
     )
 
@@ -156,10 +154,10 @@ def push_uninstalling_screen(sender, app_data, user_data):
         dpg.delete_item(screen_tag)
     setup_screen.push_setup_screen(
         tag=screen_tag,
-        task_text="Uninstalling UE4SS",
+        task_text=translator.translator.translate('uninstalling_ue4ss_task_text'),
         finished_all_steps_function=push_configure_game_screen,
         user_data=user_data,
-        step_text_to_step_functions={"Uninstalling UE4SS": uninstall_ue4ss},
+        step_text_to_step_functions={translator.translator.translate('uninstalling_old_ue4ss_files_step_text'): uninstall_ue4ss},
     )
 
 
@@ -211,14 +209,13 @@ def push_configure_game_screen(user_data):
         dpg.add_spacer(parent="configure_game_modal")
 
         with dpg.group(horizontal=True, parent="configure_game_modal", width=-1):
-            dpg.add_text("Game Directory:")
-            dpg.add_text(str(game_info.install_dir), wrap=398)
+            dpg.add_text(translator.translator.translate('game_directory_text_label'))
+            dpg.add_text(str(game_info.install_dir), wrap=376)
 
         dpg.add_spacer(parent="configure_game_modal")
 
         with dpg.group(horizontal=True, parent="configure_game_modal", width=-1):
-            dpg.add_text("UE4SS Version:")
-            # have this default value be grabbed from the settings, same with the items, based on various values
+            dpg.add_text(translator.translator.translate('ue4ss_version_text_label'))
             if game_info.show_pre_releases:
                 combo_items = ue4ss.get_all_tags_with_assets()
             else:
@@ -236,7 +233,6 @@ def push_configure_game_screen(user_data):
             )
 
         dpg.add_spacer(parent="configure_game_modal")
-
         with dpg.group(horizontal=True, parent="configure_game_modal"):
             dpg.add_checkbox(
                 default_value=game_info.show_pre_releases,
@@ -244,8 +240,7 @@ def push_configure_game_screen(user_data):
                 callback=on_using_pre_releases_check_box_toggled,
                 user_data=user_data,
             )
-            dpg.add_text("Enable pre-releases")
-
+            dpg.add_text(translator.translator.translate('enable_pre_releases_text_label'))
         with dpg.group(horizontal=True, parent="configure_game_modal"):
             dpg.add_checkbox(
                 default_value=game_info.using_keep_mods_and_settings,
@@ -253,7 +248,7 @@ def push_configure_game_screen(user_data):
                 callback=on_keep_mods_and_settings_check_box_toggled,
                 user_data=user_data,
             )
-            dpg.add_text("Keep mods and settings")
+            dpg.add_text(translator.translator.translate('keep_mods_and_settings_text_label'))
 
         with dpg.group(horizontal=True, parent="configure_game_modal"):
             dpg.add_checkbox(
@@ -262,7 +257,7 @@ def push_configure_game_screen(user_data):
                 callback=on_developer_check_box_toggled,
                 user_data=user_data,
             )
-            dpg.add_text("Install developer version (when applicable)")
+            dpg.add_text(translator.translator.translate('install_developer_version_text_label'))
 
         dpg.add_spacer(parent="configure_game_modal")
 
@@ -271,28 +266,28 @@ def push_configure_game_screen(user_data):
         ):
             should_show_buttons = get_should_show_uninstall_button(user_data)
             dpg.add_button(
-                label="Install",
+                label=translator.translator.translate('install_button_text'),
                 height=28,
                 callback=push_installing_screen,
                 user_data=pathlib.Path(user_data),
                 show=not should_show_buttons,
             )
             dpg.add_button(
-                label="Install from zip",
+                label=translator.translator.translate('install_from_zip_button_text'),
                 height=28,
                 callback=push_installing_from_zip_screen_file_selection,
                 user_data=pathlib.Path(user_data),
                 show=not should_show_buttons,
             )
             dpg.add_button(
-                label="Reinstall",
+                label=translator.translator.translate('reinstall_button_text'),
                 height=28,
                 callback=push_reinstalling_screen,
                 user_data=pathlib.Path(user_data),
                 show=should_show_buttons,
-            )
+            ) 
             dpg.add_button(
-                label="Uninstall",
+                label=translator.translator.translate('uninstall_button_text'),
                 height=28,
                 callback=push_uninstalling_screen,
                 user_data=pathlib.Path(user_data),
@@ -301,9 +296,8 @@ def push_configure_game_screen(user_data):
         resize_install_related_buttons()
 
         dpg.add_spacer(parent="configure_game_modal", height=-1)
-
         dpg.add_button(
-            label="Close",
+            label=translator.translator.translate('close_button_text'),
             parent="configure_game_modal",
             width=-1,
             height=28,

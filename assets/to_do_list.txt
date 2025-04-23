@@ -1,0 +1,7 @@
+# async dir scan
+# better steam and epic game population
+# install/uninstall/reinstall/install from zip functionality finish
+# functionality for choosing the files to install in a combo box for the exp branch
+# pop ups for when an install fails or succeedds
+# pack the icons within the executable
+# retest on linux

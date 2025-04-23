@@ -55,7 +55,6 @@ def rename_latest_log(log_dir):
             new_name = f"{log_information.log_prefix}_{timestamp}.log"
             new_log_path = os.path.join(log_dir, new_name)
 
-            # Ensure the new log file name is unique
             counter = 1
             while os.path.isfile(new_log_path):
                 new_name = f"{log_information.log_prefix}_{timestamp}_({counter}).log"

@@ -25,7 +25,8 @@ dependencies = [
   "tomlkit",
   "dearpygui",
   "requests",
-  "screeninfo"
+  "screeninfo",
+  "babel"
 ]
 
 [tool.hatch.envs.dev]

@@ -2,6 +2,7 @@ import os
 import pathlib
 
 from ue4ss_installer_gui.screens import main_screen
+from ue4ss_installer_gui import translator
 
 import dearpygui.dearpygui as dpg
 
@@ -41,7 +42,7 @@ def init_not_an_unreal_game_popup(game_directory: pathlib.Path):
         no_title_bar=True,
         min_size=[100, 140],
     )
-    message = "The following game directory does not contain an unreal game or an ue4ss installation:"
+    message = translator.translator.translate('invalid_game_directory_selected_error_text')
     message_two = os.path.normpath(str(game_directory))
     dpg.add_text(message, parent="not_an_unreal_game_pop_up", wrap=384)
     dpg.add_text(message_two, parent="not_an_unreal_game_pop_up", wrap=384)
@@ -64,13 +65,14 @@ def init_game_already_in_list_pop_up(game_directory: pathlib.Path):
         height=constants.WINDOW_HEIGHT - 700,
         pos=(100, constants.Y + 100),
     )
-    message = "The following game already exists in the games list:"
+    # game_already_exists_in_list_error
+    message = translator.translator.translate('game_already_exists_in_list_error')
     message_two = os.path.normpath(str(game_directory))
     dpg.add_text(message, parent="game_already_exists_popup", wrap=384)
     dpg.add_text(message_two, parent="game_already_exists_popup", wrap=384)
     dpg.add_separator(parent="game_already_exists_popup")
     dpg.add_button(
-        label="Close",
+        label=translator.translator.translate('close_button_text'),
         parent="game_already_exists_popup",
         width=-1,
         height=-1,
@@ -147,12 +149,11 @@ def callback_directory_selected(sender, app_data):
     game_directory = pathlib.Path(app_data["file_path_name"])
     game_name = os.path.basename(game_directory)
     if add_manual_game_to_settings_file(game_directory):
-        dpg.delete_item("directory_picker")
-        # have this later add it so it's in the list alphabetically, using before= seems to replace entries
         main_screen.add_new_game_to_games_list(
             constants.GAME_PATHS_TO_DISPLAY_NAMES.get(game_name, game_name),
             str(game_directory),
         )
+        main_screen.refresh_game_list_scroll_box()
 
 
 def choose_directory():

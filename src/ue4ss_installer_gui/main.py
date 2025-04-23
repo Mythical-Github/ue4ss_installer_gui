@@ -2,7 +2,7 @@ import os
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui.screens import main_screen as main_screen
-from ue4ss_installer_gui import file_io, constants, settings, logger, initialization
+from ue4ss_installer_gui import file_io, constants, settings, logger, initialization, translator
 
 
 def remove_maximize_button(title=constants.APP_TITLE):
@@ -38,11 +38,17 @@ def main():
     initialization.init()
     settings.init_settings()
     init_logging()
+    translator.init_translator()
     dpg.create_context()
 
-    icon_path = os.path.normpath(
-        f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
-    )
+    if settings.is_windows():
+        icon_path = os.path.normpath(
+            f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
+        )
+    else:
+        icon_path = os.path.normpath(
+            f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.png"
+        )
     if not os.path.isfile(icon_path):
         raise FileNotFoundError(f"Icon file not found at {icon_path}")
 
@@ -54,11 +60,6 @@ def main():
     )
     dpg.set_viewport_small_icon(icon_path)
     dpg.set_viewport_large_icon(icon_path)
-
-    # if not settings.is_linux():
-    #     with dpg.font_registry():
-    #         with dpg.font("C:/Windows/Fonts/segoeui.ttf", 20, tag="header_font"):
-    #             dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
 
     main_screen.push_main_screen()
     dpg.set_viewport_pos([constants.X, constants.Y])

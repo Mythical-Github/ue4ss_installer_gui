@@ -23,7 +23,7 @@ def get_all_steam_game_directories() -> list[pathlib.Path]:
             if os.path.isdir(steam_directory):
                 steam_directories.append(steam_directory)
 
-    else:  # Assume Linux or similar Unix-like system
+    else:
         steamapps_dirs = [
             os.path.expanduser("~/.steam/steam/steamapps"),
             os.path.expanduser("~/.local/share/Steam/steamapps"),
@@ -39,7 +39,6 @@ def get_all_steam_game_directories() -> list[pathlib.Path]:
                     if game_dir.is_dir():
                         steam_directories.append(game_dir)
 
-            # Parse libraryfolders.vdf for additional Steam libraries
             vdf_path = pathlib.Path(steamapps) / "libraryfolders.vdf"
             if vdf_path.exists():
                 try:

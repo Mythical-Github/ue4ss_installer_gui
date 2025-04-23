@@ -17,15 +17,6 @@ show_pre_releases = false
 using_keep_mods_and_settings = false
 
 [[games]]
-install_dir = "D:\\SteamLibrary\\steamapps\\common\\GrannyRemake\\GrannyRemake"
-game_title = "GrannyRemake"
-ue4ss_version = "v3.0.1"
-platform = "Other"
-using_developer_version = false
-show_pre_releases = false
-using_keep_mods_and_settings = false
-
-[[games]]
 install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Zedfest"
 game_title = "Zedfest"
 ue4ss_version = "v3.0.1"
@@ -109,7 +100,7 @@ using_keep_mods_and_settings = false
 [[games]]
 install_dir = "D:\\SteamLibrary\\steamapps\\common\\Hello Neighbor"
 game_title = "Hello Neighbor"
-ue4ss_version = "v3.0.1"
+ue4ss_version = "v2.3.0"
 platform = "Other"
 using_developer_version = false
 show_pre_releases = false

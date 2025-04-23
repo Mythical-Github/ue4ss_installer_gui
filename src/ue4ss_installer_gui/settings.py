@@ -44,13 +44,13 @@ def to_toml_value(value):
             table[k] = to_toml_value(v)
         return table
     elif isinstance(value, list):
-        if all(isinstance(i, dict) for i in value):  # list of dicts = array of tables
+        if all(isinstance(i, dict) for i in value):
             aot = tomlkit.aot()
             for item in value:
                 aot.append(to_toml_value(item))
             return aot
         else:
-            return value  # normal list
+            return value
     else:
         return value
 
@@ -128,6 +128,11 @@ def init_settings():
             str(base_dir)
         )
     ]
+    for base_dir in settings.get_settings().get('custom_game_directories', []):
+        for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+            str(base_dir)
+        ):
+            all_game_dirs.append(game)
     str_game_settings_list = []
     for game_dir in settings.get_game_dirs_in_settings():
         str_game_settings_list.append(game_dir)
