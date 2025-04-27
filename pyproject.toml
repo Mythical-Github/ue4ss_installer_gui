@@ -65,7 +65,7 @@ dependencies = [
 
 [tool.hatch.envs.build.scripts]
 exe = [
-  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui --icon=assets/images/project_main_icon.ico --add-data=assets/images/project_main_icon.ico;assets/images/project_main_icon.ico --add-data=assets/images/project_main_icon.png;assets/images/project_main_icon.png src/ue4ss_installer_gui/__main__.pyw"
+  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui --icon=assets/images/project_main_icon.ico src/ue4ss_installer_gui/__main__.pyw"
 ]
 
 [tool.hatch.envs.scripts]
