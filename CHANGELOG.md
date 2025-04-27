@@ -1,3 +1,9 @@
+## 1.0.2 (2025-04-27)
+
+### Fix
+
+- **assets/base/assets/localization**: fixed missing localization
+
 ## 1.0.1 (2025-04-27)
 
 ### Fix
