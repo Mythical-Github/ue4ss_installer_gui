@@ -1,11 +1,12 @@
 import os
 import pathlib
 import requests
-from typing import Dict, List
-from dataclasses import dataclass, field
+from typing import List
+from dataclasses import dataclass
 
 
 cached_repo_releases_info = None
+
 
 @dataclass
 class ReleaseTagAssetInfo:
@@ -98,13 +99,14 @@ def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
         is_prerelease = release.get("prerelease", False)
         created_at = release.get("created_at", "")
         assets_list = release.get("assets", [])
-        
+
         assets = [
             ReleaseTagAssetInfo(
                 file_name=asset["name"],
                 download_link=asset["browser_download_url"],
-                created_at=asset["created_at"]
-            ) for asset in assets_list
+                created_at=asset["created_at"],
+            )
+            for asset in assets_list
         ]
 
         tag_infos.append(
@@ -122,8 +124,8 @@ def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
 
 
 def get_default_ue4ss_version_tag() -> str:
-    if cached_repo_releases_info == None:
-        return 'latest'
+    if cached_repo_releases_info is None:
+        return "latest"
     else:
         return get_normal_release_tags_with_assets()[0]
 

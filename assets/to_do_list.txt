@@ -6,7 +6,7 @@ Next:
 Later:
 
 # have the uninstall and installing check all files were purged/installed at the end and push screen based on that
-    if the passed zip is invalid or something it shouldn't be succesful either
+    if the passed zip is invalid or something it shouldn't be successful either
 
 
 Maybes:

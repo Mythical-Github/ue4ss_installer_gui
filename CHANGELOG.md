@@ -1,9 +1,15 @@
+## 1.0.1-dev.14689800227 (2025-04-27)
+
+### Fix
+
+- **pyproject.toml-and-main.py**: fixed icon packaging issue
+
 ## 1.0.0 (2025-04-27)
 
 ### Feat
 
-- **all**: final initial verison
-- **all**: final initial verison
+- **all**: final initial version
+- **all**: final initial version
 - **all**: added localization
 
 ### Fix

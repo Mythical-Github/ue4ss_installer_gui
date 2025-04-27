@@ -8,9 +8,10 @@ from ue4ss_installer_gui import file_io, settings
 def get_windows_steam_registry_paths() -> list[pathlib.Path]:
     """Get Steam library paths from Windows Registry."""
     import winreg
+
     steam_dirs = []
     try:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, fr"Software\Valve\Steam") as key:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as key:
             steam_path, _ = winreg.QueryValueEx(key, "SteamPath")
             steamapps_common = pathlib.Path(steam_path) / "steamapps" / "common"
             if steamapps_common.is_dir():

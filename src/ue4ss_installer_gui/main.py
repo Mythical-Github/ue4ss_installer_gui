@@ -2,7 +2,7 @@ import os
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui.screens import main_screen as main_screen
-from ue4ss_installer_gui import file_io, constants, settings, logger, initialization, translator
+from ue4ss_installer_gui import file_io, constants, settings, initialization
 
 
 def remove_maximize_button(title=constants.APP_TITLE):
@@ -31,28 +31,17 @@ def on_viewport_ready(sender, app_data):
 
 def main():
     initialization.init()
-
-    if settings.is_exe():
-        if settings.is_windows():
-            icon_path = os.path.normpath(
-                f"{file_io.PACKED_DIR}/assets/images/project_main_icon.ico/project_main_icon.ico"
-            )
-        else:
-            icon_path = os.path.normpath(
-                f"{file_io.PACKED_DIR}/assets/images/project_main_icon.png/project_main_icon.png"
-            )
+    if settings.is_windows():
+        icon_path = os.path.normpath(
+            f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
+        )
     else:
-        if settings.is_windows():
-            icon_path = os.path.normpath(
-                f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
-            )
-        else:
-            icon_path = os.path.normpath(
-                f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.png"
-            )
+        icon_path = os.path.normpath(
+            f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.png"
+        )
     if not os.path.isfile(icon_path):
         raise FileNotFoundError(f"Icon file not found at {icon_path}")
-    
+
     dpg.create_context()
 
     dpg.create_viewport(

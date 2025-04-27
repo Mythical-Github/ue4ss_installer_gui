@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ue4ss_installer_gui"
-version = "1.0.0"
+version = "1.0.1-dev.14689800227"
 description = "GUI installer for UE4SS"
 readme = "README.md"
 requires-python = ">=3.9.1"
@@ -65,7 +65,7 @@ dependencies = [
 
 [tool.hatch.envs.build.scripts]
 exe = [
-  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui --icon=assets/images/project_main_icon.ico --add-data=assets/images/project_main_icon.ico;assets/images/ --add-data=assets/images/project_main_icon.png;assets/images/ src/ue4ss_installer_gui/__main__.pyw"
+  "pyinstaller --noconfirm --onefile --console --name ue4ss_installer_gui --icon=assets/images/project_main_icon.ico src/ue4ss_installer_gui/__main__.pyw"
 ]
 
 [tool.hatch.envs.scripts]
