@@ -1,10 +1,10 @@
-from babel.plural import PluralRule
-import json
-from string import Template
-import glob
 import os
+import glob
+import json
 import locale
+from string import Template
 from datetime import datetime
+from babel.plural import PluralRule
 from babel.dates import format_datetime
 
 from ue4ss_installer_gui import file_io
@@ -28,17 +28,13 @@ def init_translator():
 
 class Translator():
     def __init__(self, translations_folder, file_format='json', default_locale='en'):
-        # initialization
         self.data = {}
         self.locale = 'en'
         self.plural_rule = PluralRule({'one': 'n is 1'})
 
-        # check if format is supported
         if file_format in supported_format:
-            # get list of files with specific extensions
             files = glob.glob(os.path.join(translations_folder, f'*.{file_format}'))
             for fil in files:
-                # get the name of the file without extension, will be used as locale name
                 loc = os.path.splitext(os.path.basename(fil))[0]
                 with open(fil, 'r', encoding='utf8') as f:
                     if file_format == 'json':
@@ -63,15 +59,12 @@ class Translator():
         return self.plural_rule
 
     def translate(self, key, **kwargs):
-        # return the key instead of translation text if locale is not supported
         if self.locale not in self.data:
             return key
 
         text = self.data[self.locale].get(key, key)
-        # type dict represents key with plural form
         if type(text) == dict:
             count = kwargs.get('count', 1)
-            # parse count to int
             try:
                 count = int(count)
             except Exception:

@@ -1,4 +1,5 @@
 import os
+import sys
 import tomlkit
 import pathlib
 import platform
@@ -226,11 +227,13 @@ def game_info_data_class_to_game_info_dict(game_info: data_structures.GameInfo) 
         "install_dir": str(game_info.install_dir),
         "game_title": game_info.game_title,
         "ue4ss_version": game_info.ue4ss_version,
+        "last_installed_version": game_info.last_installed_version,
         "platform": game_info.platform.value
         if hasattr(game_info.platform, "value")
         else game_info.platform,
         "using_developer_version": game_info.using_developer_version,
         "show_pre_releases": game_info.show_pre_releases,
+        "using_portable_version": game_info.using_portable_version,
         "using_keep_mods_and_settings": game_info.using_keep_mods_and_settings,
         "installed_files": [str(path) for path in game_info.installed_files],
     }
@@ -241,6 +244,7 @@ def game_info_dict_to_game_info_data_class(game_dict: dict) -> data_structures.G
         install_dir=pathlib.Path(game_dict["install_dir"]),
         game_title=game_dict["game_title"],
         ue4ss_version=game_dict["ue4ss_version"],
+        last_installed_version=game_dict.get('last_installed_version', ''),
         platform=data_structures.GamePlatforms(
             data_structures.get_enum_from_val(
                 data_structures.GamePlatforms, game_dict["platform"]
@@ -248,6 +252,7 @@ def game_info_dict_to_game_info_data_class(game_dict: dict) -> data_structures.G
         ),
         using_developer_version=game_dict["using_developer_version"],
         show_pre_releases=game_dict["show_pre_releases"],
+        using_portable_version=game_dict.get("using_portable_version", False),
         using_keep_mods_and_settings=game_dict["using_keep_mods_and_settings"],
         installed_files=[
             pathlib.Path(installed_file_path)
@@ -295,3 +300,12 @@ def remove_game_entries_by_game_dirs(
 
         loaded_settings["games"] = updated_games
     return loaded_settings
+
+
+def is_exe():
+    """
+    Checks if the currently running script is a PyInstaller-built executable (.exe).
+    
+    :return: True if running as a PyInstaller-built executable, False otherwise.
+    """
+    return getattr(sys, 'frozen', False) and os.path.isfile(sys.executable)

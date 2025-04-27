@@ -1,7 +1,15 @@
-# async dir scan
-# better steam and epic game population
-# install/uninstall/reinstall/install from zip functionality finish
-# functionality for choosing the files to install in a combo box for the exp branch
-# pop ups for when an install fails or succeedds
-# pack the icons within the executable
+Next:
+
 # retest on linux
+
+
+Later:
+
+# have the uninstall and installing check all files were purged/installed at the end and push screen based on that
+    if the passed zip is invalid or something it shouldn't be succesful either
+
+
+Maybes:
+
+# async dir scan/loading screen
+# option to configure a specific ue4ss installation, like toggline mods, ini values, etc...

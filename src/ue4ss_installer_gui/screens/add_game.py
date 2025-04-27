@@ -115,9 +115,11 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
             install_dir=game_dir_path,
             game_title=os.path.basename(str(game_dir_path)),
             ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
+            last_installed_version='',
             platform=data_structures.GamePlatforms.OTHER,
             using_developer_version=False,
             show_pre_releases=False,
+            using_portable_version=False,
             using_keep_mods_and_settings=False,
             installed_files=[],
         )
@@ -187,8 +189,10 @@ def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
         game_title=os.path.basename(str(game_dir_path)),
         ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
         platform=data_structures.GamePlatforms.OTHER,
+        last_installed_version='',
         using_developer_version=False,
         show_pre_releases=False,
+        using_portable_version=False,
         using_keep_mods_and_settings=False,
         installed_files=[],
     )

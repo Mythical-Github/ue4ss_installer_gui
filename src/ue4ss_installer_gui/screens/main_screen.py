@@ -43,8 +43,8 @@ def init_main_screen_sub_header():
         dpg.add_text(subheader_text, wrap=constants.WINDOW_WIDTH - 40)
 
 
-def add_new_game_button_pressed_callback(sender, app_data, user_data):
-    configure_game.push_configure_game_screen(user_data=pathlib.Path(user_data))
+def game_button_clicked_callback(sender, app_data, user_data):
+    configure_game.push_configure_game_screen(sender, app_data, user_data=pathlib.Path(user_data))
 
 
 def add_new_game_to_games_list(game_name: str, game_directory: str):
@@ -65,7 +65,7 @@ def add_new_game_to_games_list(game_name: str, game_directory: str):
             width=-1,
             height=28,
             user_data=game_directory,
-            callback=add_new_game_button_pressed_callback,
+            callback=game_button_clicked_callback,
         )
     dpg.add_spacer(height=6, parent="GameListScroll")
 
@@ -86,6 +86,7 @@ def refresh_game_list_scroll_box():
 
     game_titles_to_install_dirs = settings.get_game_titles_to_install_dirs()
     all_game_titles = sorted(game_titles_to_install_dirs.keys())
+    print(all_game_titles)
 
     for game_name in all_game_titles:
         add_new_game_to_games_list(

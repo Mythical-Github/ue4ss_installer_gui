@@ -29,28 +29,31 @@ def on_viewport_ready(sender, app_data):
     remove_maximize_button(constants.APP_TITLE)
 
 
-def init_logging():
-    logger.set_log_base_dir(os.path.normpath(f"{file_io.SCRIPT_DIR}/logs"))
-    logger.configure_logging()
-
-
 def main():
     initialization.init()
-    settings.init_settings()
-    init_logging()
-    translator.init_translator()
-    dpg.create_context()
 
-    if settings.is_windows():
-        icon_path = os.path.normpath(
-            f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
-        )
+    if settings.is_exe():
+        if settings.is_windows():
+            icon_path = os.path.normpath(
+                f"{file_io.PACKED_DIR}/assets/images/project_main_icon.ico/project_main_icon.ico"
+            )
+        else:
+            icon_path = os.path.normpath(
+                f"{file_io.PACKED_DIR}/assets/images/project_main_icon.png/project_main_icon.png"
+            )
     else:
-        icon_path = os.path.normpath(
-            f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.png"
-        )
+        if settings.is_windows():
+            icon_path = os.path.normpath(
+                f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
+            )
+        else:
+            icon_path = os.path.normpath(
+                f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.png"
+            )
     if not os.path.isfile(icon_path):
         raise FileNotFoundError(f"Icon file not found at {icon_path}")
+    
+    dpg.create_context()
 
     dpg.create_viewport(
         title=constants.APP_TITLE,

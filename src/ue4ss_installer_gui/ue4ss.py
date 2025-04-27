@@ -7,6 +7,12 @@ from dataclasses import dataclass, field
 
 cached_repo_releases_info = None
 
+@dataclass
+class ReleaseTagAssetInfo:
+    file_name: str
+    download_link: str
+    created_at: str
+
 
 @dataclass
 class ReleaseAssetInfo:
@@ -15,7 +21,7 @@ class ReleaseAssetInfo:
     is_latest: bool
     has_assets: bool
     created_at: str
-    assets: Dict[str, str] = field(default_factory=dict)
+    assets: list[ReleaseTagAssetInfo]
 
 
 @dataclass
@@ -46,7 +52,7 @@ def get_file_name_to_download_links_from_tag(tag: str) -> dict[str, str]:
 
     for tag_info in cached_repo_releases_info.tags:
         if tag_info.tag == tag:
-            return tag_info.assets
+            return {asset.file_name: asset.download_link for asset in tag_info.assets}
 
     return {}
 
@@ -92,7 +98,15 @@ def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
         is_prerelease = release.get("prerelease", False)
         created_at = release.get("created_at", "")
         assets_list = release.get("assets", [])
-        assets = {asset["name"]: asset["browser_download_url"] for asset in assets_list}
+        
+        # Convert assets to ReleaseTagAssetInfo instances
+        assets = [
+            ReleaseTagAssetInfo(
+                file_name=asset["name"],
+                download_link=asset["browser_download_url"],
+                created_at=asset["created_at"]
+            ) for asset in assets_list
+        ]
 
         tag_infos.append(
             ReleaseAssetInfo(
@@ -109,7 +123,10 @@ def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
 
 
 def get_default_ue4ss_version_tag() -> str:
-    return get_normal_release_tags_with_assets()[0]
+    if cached_repo_releases_info == None:
+        return 'latest'
+    else:
+        return get_normal_release_tags_with_assets()[0]
 
 
 def is_ue4ss_installed(game_directory: pathlib.Path) -> bool:
