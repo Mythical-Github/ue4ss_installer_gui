@@ -1,3 +1,10 @@
+## 1.0.1-dev.14695257228 (2025-04-27)
+
+### Fix
+
+- **assets/base/assets/localization**: fixed missing localization
+- **all**: linter fixes
+
 ## 1.0.1-dev.14689800227 (2025-04-27)
 
 ### Fix
