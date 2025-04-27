@@ -7,19 +7,17 @@ MAX_DEPTH = 2
 
 
 def get_all_win_gdk_dirs_in_dir_tree(directory: pathlib.Path) -> List[pathlib.Path]:
-    return [
-        p for p in directory.rglob('*') if p.is_dir() and p.name == "WinGDK"
-    ]
+    return [p for p in directory.rglob("*") if p.is_dir() and p.name == "WinGDK"]
 
 
 def get_all_win_64_dirs_in_dir_tree(directory: pathlib.Path) -> List[pathlib.Path]:
-    return [
-        p for p in directory.rglob('*') if p.is_dir() and p.name == "Win64"
-    ]
+    return [p for p in directory.rglob("*") if p.is_dir() and p.name == "Win64"]
 
 
 def get_all_main_exe_dirs_in_dir_tree(directory: pathlib.Path) -> List[pathlib.Path]:
-    return get_all_win_gdk_dirs_in_dir_tree(directory) + get_all_win_64_dirs_in_dir_tree(directory)
+    return get_all_win_gdk_dirs_in_dir_tree(
+        directory
+    ) + get_all_win_64_dirs_in_dir_tree(directory)
 
 
 def does_dir_tree_contain_multiple_main_exe_dirs(directory: pathlib.Path) -> bool:
@@ -68,7 +66,10 @@ def is_unreal_game_dir(
                         elif name == "Binaries":
                             binaries_win64 = pathlib.Path(entry.path) / "Win64"
                             if binaries_win64.is_dir():
-                                if any(f.suffix.lower() == ".exe" for f in binaries_win64.glob("*.exe")):
+                                if any(
+                                    f.suffix.lower() == ".exe"
+                                    for f in binaries_win64.glob("*.exe")
+                                ):
                                     binaries_win64_found = True
                         stack.append((pathlib.Path(entry.path), depth + 1))
 
@@ -92,7 +93,6 @@ def is_unreal_game_dir(
     return content_found and win_found and (include_uninstalled or exe_found)
 
 
-
 def get_all_unreal_game_directories_in_directory_tree(
     root_directory: Union[str, pathlib.Path],
     include_uninstalled_existing_game_dirs: bool = True,
@@ -105,7 +105,11 @@ def get_all_unreal_game_directories_in_directory_tree(
         if depth > max_depth:
             return
 
-        if is_unreal_game_dir(current_dir, max_depth=1, include_uninstalled=include_uninstalled_existing_game_dirs):
+        if is_unreal_game_dir(
+            current_dir,
+            max_depth=1,
+            include_uninstalled=include_uninstalled_existing_game_dirs,
+        ):
             unreal_game_dirs.append(str(current_dir))
 
         try:
@@ -140,8 +144,10 @@ def does_directory_contain_unreal_game(directory: pathlib.Path) -> bool:
     if not any(checks):
         for subdir in ("Windows", "WindowsNoEditor"):
             sub_path = directory / subdir
-            checks.extend([
-                does_dir_contain_engine_binaries_folder(sub_path),
-                does_dir_contain_engine_shared_folder(sub_path),
-            ])
+            checks.extend(
+                [
+                    does_dir_contain_engine_binaries_folder(sub_path),
+                    does_dir_contain_engine_shared_folder(sub_path),
+                ]
+            )
     return any(checks)

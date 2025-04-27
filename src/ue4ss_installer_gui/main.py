@@ -2,7 +2,7 @@ import os
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui.screens import main_screen as main_screen
-from ue4ss_installer_gui import file_io, constants, settings, logger, initialization, translator
+from ue4ss_installer_gui import file_io, constants, settings, initialization
 
 
 def remove_maximize_button(title=constants.APP_TITLE):
@@ -41,7 +41,7 @@ def main():
         )
     if not os.path.isfile(icon_path):
         raise FileNotFoundError(f"Icon file not found at {icon_path}")
-    
+
     dpg.create_context()
 
     dpg.create_viewport(

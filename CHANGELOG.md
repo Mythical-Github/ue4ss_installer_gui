@@ -8,8 +8,8 @@
 
 ### Feat
 
-- **all**: final initial verison
-- **all**: final initial verison
+- **all**: final initial version
+- **all**: final initial version
 - **all**: added localization
 
 ### Fix

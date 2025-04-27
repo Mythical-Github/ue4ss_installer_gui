@@ -37,5 +37,5 @@ GAME_PATHS_TO_DISPLAY_NAMES = {
     "TheKillingAntidotePlaytest": "The Killing Antidote Playtest",
     "TheKillingAntidote": "The Killing Antidote",
     "BronzebeardsTavern-Windows": "Bronzebeard's Tavern",
-    os.path.normpath("Aero GPX/WindowsNoEditor"): 'Aero GPX'
+    os.path.normpath("Aero GPX/WindowsNoEditor"): "Aero GPX",
 }

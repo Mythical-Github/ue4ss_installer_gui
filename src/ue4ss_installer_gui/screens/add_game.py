@@ -42,7 +42,9 @@ def init_not_an_unreal_game_popup(game_directory: pathlib.Path):
         no_title_bar=True,
         min_size=[100, 140],
     )
-    message = translator.translator.translate('invalid_game_directory_selected_error_text')
+    message = translator.translator.translate(
+        "invalid_game_directory_selected_error_text"
+    )
     message_two = os.path.normpath(str(game_directory))
     dpg.add_text(message, parent="not_an_unreal_game_pop_up", wrap=384)
     dpg.add_text(message_two, parent="not_an_unreal_game_pop_up", wrap=384)
@@ -65,13 +67,13 @@ def init_game_already_in_list_pop_up(game_directory: pathlib.Path):
         height=constants.WINDOW_HEIGHT - 700,
         pos=(100, constants.Y + 100),
     )
-    message = translator.translator.translate('game_already_exists_in_list_error')
+    message = translator.translator.translate("game_already_exists_in_list_error")
     message_two = os.path.normpath(str(game_directory))
     dpg.add_text(message, parent="game_already_exists_popup", wrap=384)
     dpg.add_text(message_two, parent="game_already_exists_popup", wrap=384)
     dpg.add_separator(parent="game_already_exists_popup")
     dpg.add_button(
-        label=translator.translator.translate('close_button_text'),
+        label=translator.translator.translate("close_button_text"),
         parent="game_already_exists_popup",
         width=-1,
         height=-1,
@@ -114,7 +116,7 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
             install_dir=game_dir_path,
             game_title=os.path.basename(str(game_dir_path)),
             ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
-            last_installed_version='',
+            last_installed_version="",
             platform=data_structures.GamePlatforms.OTHER,
             using_developer_version=False,
             show_pre_releases=False,
@@ -188,7 +190,7 @@ def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
         game_title=os.path.basename(str(game_dir_path)),
         ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
         platform=data_structures.GamePlatforms.OTHER,
-        last_installed_version='',
+        last_installed_version="",
         using_developer_version=False,
         show_pre_releases=False,
         using_portable_version=False,

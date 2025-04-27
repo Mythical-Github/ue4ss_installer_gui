@@ -129,7 +129,7 @@ def init_settings():
             str(base_dir)
         )
     ]
-    for base_dir in settings.get_settings().get('custom_game_directories', []):
+    for base_dir in settings.get_settings().get("custom_game_directories", []):
         for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
             str(base_dir)
         ):
@@ -244,7 +244,7 @@ def game_info_dict_to_game_info_data_class(game_dict: dict) -> data_structures.G
         install_dir=pathlib.Path(game_dict["install_dir"]),
         game_title=game_dict["game_title"],
         ue4ss_version=game_dict["ue4ss_version"],
-        last_installed_version=game_dict.get('last_installed_version', ''),
+        last_installed_version=game_dict.get("last_installed_version", ""),
         platform=data_structures.GamePlatforms(
             data_structures.get_enum_from_val(
                 data_structures.GamePlatforms, game_dict["platform"]
@@ -305,7 +305,7 @@ def remove_game_entries_by_game_dirs(
 def is_exe():
     """
     Checks if the currently running script is a PyInstaller-built executable (.exe).
-    
+
     :return: True if running as a PyInstaller-built executable, False otherwise.
     """
-    return getattr(sys, 'frozen', False) and os.path.isfile(sys.executable)
+    return getattr(sys, "frozen", False) and os.path.isfile(sys.executable)
