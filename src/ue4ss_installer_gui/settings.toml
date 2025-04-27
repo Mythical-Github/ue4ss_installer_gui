@@ -1,1 +1,73 @@
-games = [{game_title = "docs",install_dir = "C:\\Users\\Mythical\\Documents\\GitHub\\ue4ss_installer_gui\\docs",ue4ss_version = "",installed_files = [],platform = "OTHER"}, {game_title = "TheKillingAntidote",install_dir = "D:\\games\\manual_install\\TheKillingAntidote",ue4ss_version = "",installed_files = [],platform = "OTHER"}, {game_title = "TheKillingAntidote",install_dir = "D:\\games\\manual_install\\TheKillingAntidote",ue4ss_version = "",installed_files = [],platform = "OTHER"}]
+[[games]]
+install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Aero GPX\\WindowsNoEditor"
+game_title = "WindowsNoEditor"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[[games]]
+install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Poppy Playtime\\PlaytimeLauncher"
+game_title = "PlaytimeLauncher"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[[games]]
+install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Poppy Playtime\\WindowsNoEditor"
+game_title = "WindowsNoEditor"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[[games]]
+install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Zedfest"
+game_title = "Zedfest"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[[games]]
+install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Aero GPX\\WindowsNoEditor"
+game_title = "WindowsNoEditor"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+last_installed_version = ""
+using_portable_version = false
+
+[[games]]
+install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Poppy Playtime\\PlaytimeLauncher"
+game_title = "PlaytimeLauncher"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[[games]]
+install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Poppy Playtime\\WindowsNoEditor"
+game_title = "WindowsNoEditor"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[[games]]
+install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Zedfest"
+game_title = "Zedfest"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
