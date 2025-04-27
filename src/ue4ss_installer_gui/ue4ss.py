@@ -99,7 +99,6 @@ def get_all_release_assets(owner: str, repo: str) -> RepositoryReleasesInfo:
         created_at = release.get("created_at", "")
         assets_list = release.get("assets", [])
         
-        # Convert assets to ReleaseTagAssetInfo instances
         assets = [
             ReleaseTagAssetInfo(
                 file_name=asset["name"],

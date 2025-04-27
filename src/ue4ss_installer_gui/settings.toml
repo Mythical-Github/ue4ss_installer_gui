@@ -42,17 +42,17 @@ platform = "Other"
 using_developer_version = false
 show_pre_releases = false
 using_keep_mods_and_settings = false
+last_installed_version = ""
+using_portable_version = false
 
 [[games]]
 install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Poppy Playtime\\PlaytimeLauncher"
 game_title = "PlaytimeLauncher"
 ue4ss_version = "latest"
 platform = "Other"
-using_developer_version = true
+using_developer_version = false
 show_pre_releases = false
 using_keep_mods_and_settings = false
-last_installed_version = ""
-using_portable_version = false
 
 [[games]]
 install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Poppy Playtime\\WindowsNoEditor"
@@ -66,10 +66,8 @@ using_keep_mods_and_settings = false
 [[games]]
 install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Zedfest"
 game_title = "Zedfest"
-ue4ss_version = "experimental"
+ue4ss_version = "latest"
 platform = "Other"
 using_developer_version = false
 show_pre_releases = false
 using_keep_mods_and_settings = false
-last_installed_version = "UE4SS_v3.0.1.zip"
-using_portable_version = false
