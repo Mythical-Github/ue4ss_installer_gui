@@ -34,7 +34,7 @@ UE4SS consists of an injectable LUA scripting system, SDK generator, live proper
 
 
 ### Join the Discord
-If you have any problems, suggestions, or just want to chat, feel free to join the [Discord](https://discord.gg/7qhRGHF9Tt)
+If you have any problems, suggestions, or just want to chat, feel free to join the [Discord](https://discord.gg/EvUuAD4QvS)
 
 
 ### Suggestions
