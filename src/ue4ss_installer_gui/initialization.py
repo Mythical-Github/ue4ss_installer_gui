@@ -2,14 +2,18 @@ import os
 import asyncio
 
 from ue4ss_installer_gui import ue4ss, settings, translator, logger, file_io
+from ue4ss_installer_gui.checks import online_check
 
 
 def init():
+    online_check.init_is_online()
+    print(f'Is online: {online_check.is_online}')
     logger.set_log_base_dir(os.path.normpath(f"{file_io.SCRIPT_DIR}/logs"))
     logger.configure_logging()
     settings.init_settings()
     translator.init_translator()
-    asyncio.run(auto_fetch_tags_on_start())
+    if online_check.is_online:
+        asyncio.run(auto_fetch_tags_on_start())
     asyncio.run(auto_scan_dirs())
 
 
