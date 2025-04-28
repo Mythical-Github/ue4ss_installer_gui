@@ -1,6 +1,6 @@
 ## UE4SS Installer GUI
 
-This is a gui installer/manager for [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS).
+This is a gui installer/manager for [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS).\
 UE4SS consists of an injectable LUA scripting system, SDK generator, live property editor, other dumping utilities for UE4/5 games and more.
 
 
@@ -9,7 +9,7 @@ UE4SS consists of an injectable LUA scripting system, SDK generator, live proper
 
 
 ### Project Example:
-<img src="https://github.com/user-attachments/assets/b3716580-c31c-4691-8ec6-7c4299a9f83e" alt="example" width="50%" height="50%">
+<img src="https://github.com/user-attachments/assets/f6a0ec21-4ee3-4f52-8eeb-2b79cafddf98" alt="example" width="50%" height="50%">
 
   
 ### Features:
@@ -54,11 +54,16 @@ When creating an issue, please provide as much information as possible, includin
 Contributions are always appreciated, but please keep in mind the following:
 - Before coding new features, try to make an issue to see if the idea/implementation needs any tweaking, or is out of scope
 - Please make sure all code submissions pass all pre-commit checks
+- If you're interested in adding new localization, it's as simple as, you can copy, paste, and rename the en.json in both locations, translate, and submit
+
+
+### Credits
+Inspired by [MelonLoader.Installer](https://github.com/LavaGang/MelonLoader.Installer)
 
 
 ### Technologies:
 
-- **[DearPyGUI](https://github.com/Textualize/textual)** - Framework for creating TUI (Text User Interfaces) with Python.
+- **[DearPyGUI](https://github.com/hoffstadt/DearPyGui)** - Dear PyGui: A fast and powerful Graphical User Interface Toolkit for Python with minimal dependencies.
 - **[Hatch](https://github.com/pypa/hatch)** - Modern project management tool for Python.
 - **[UV](https://github.com/astral-sh/uv)** - An extremely fast Python package and project manager, written in Rust.
 - **[PyInstaller](https://github.com/pyinstaller/pyinstaller)** - Tool to convert Python programs into standalone executables.
