@@ -1,6 +1,6 @@
 ## UE4SS Installer GUI
 
-This is a gui installer/manager for [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS).\
+This is an unofficial gui installer/manager for [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS).\
 UE4SS consists of an injectable LUA scripting system, SDK generator, live property editor, other dumping utilities for UE4/5 games and more.
 
 
