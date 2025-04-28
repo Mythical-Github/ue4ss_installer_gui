@@ -1,9 +1,8 @@
 Next:
 
+# automated releases pack windows exe into the linux release somehow, fix this
 # offline check removes social buttons
-# loading screen for scanning games
 # fix installs that only have ue4ss files
-# seems at times dupes for games can appear from the above as well right now
 # sometimes it doesn't properly remember the preferences of the checkboxes
 # sometimes the install button can be pressed, when no file to install is selected, prevent this somehow
 # bring back keep mods and settings and make uninstall more robust

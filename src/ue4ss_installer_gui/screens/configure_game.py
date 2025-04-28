@@ -254,8 +254,8 @@ def clean_up_temp_files(user_data):
 
 
 def push_installing_from_zip_screen(sender, app_data, user_data):
-    last_installed_file = ''  # have this use provided file later
-    ue4ss_version = ''  # have this use provided file later
+    last_installed_file = ""  # have this use provided file later
+    ue4ss_version = ""  # have this use provided file later
     update_game_info_field_from_ui(
         user_data, "last_installed_version", last_installed_file
     )
@@ -457,7 +457,7 @@ def push_configure_game_screen(sender, app_data, user_data):
         #     dpg.add_text(str(game_info.install_dir), wrap=376)
 
         # dpg.add_spacer(parent="configure_game_modal")
-        
+
         if online_check.is_online:
             add_centered_text(
                 translator.translator.translate("ue4ss_version_text_label"),
@@ -535,14 +535,14 @@ def push_configure_game_screen(sender, app_data, user_data):
                     translator.translator.translate("enable_pre_releases_text_label")
                 )
 
-        # with dpg.group(horizontal=True, parent="configure_game_modal"):
-        #     dpg.add_checkbox(
-        #         default_value=game_info.using_keep_mods_and_settings,
-        #         tag="keep_mods_and_settings_check_box",
-        #         callback=on_keep_mods_and_settings_check_box_toggled,
-        #         user_data=user_data,
-        #     )
-        #     dpg.add_text(translator.translator.translate('keep_mods_and_settings_text_label'))
+            # with dpg.group(horizontal=True, parent="configure_game_modal"):
+            #     dpg.add_checkbox(
+            #         default_value=game_info.using_keep_mods_and_settings,
+            #         tag="keep_mods_and_settings_check_box",
+            #         callback=on_keep_mods_and_settings_check_box_toggled,
+            #         user_data=user_data,
+            #     )
+            #     dpg.add_text(translator.translator.translate('keep_mods_and_settings_text_label'))
 
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
@@ -552,7 +552,9 @@ def push_configure_game_screen(sender, app_data, user_data):
                     user_data=user_data,
                 )
                 dpg.add_text(
-                    translator.translator.translate("install_developer_version_text_label")
+                    translator.translator.translate(
+                        "install_developer_version_text_label"
+                    )
                 )
 
             dpg.add_spacer(parent="configure_game_modal")
@@ -565,7 +567,9 @@ def push_configure_game_screen(sender, app_data, user_data):
                     user_data=user_data,
                 )
                 dpg.add_text(
-                    translator.translator.translate("install_portable_version_text_label")
+                    translator.translator.translate(
+                        "install_portable_version_text_label"
+                    )
                 )
 
             dpg.add_spacer(parent="configure_game_modal")
@@ -583,7 +587,9 @@ def push_configure_game_screen(sender, app_data, user_data):
                     show=not should_show_buttons,
                 )
                 dpg.add_button(
-                    label=translator.translator.translate("install_from_zip_button_text"),
+                    label=translator.translator.translate(
+                        "install_from_zip_button_text"
+                    ),
                     height=28,
                     callback=push_installing_from_zip_screen_file_selection,
                     user_data=pathlib.Path(user_data),
@@ -606,7 +612,9 @@ def push_configure_game_screen(sender, app_data, user_data):
             else:
                 should_show_buttons = get_should_show_uninstall_button(user_data)
                 dpg.add_button(
-                    label=translator.translator.translate("install_from_zip_button_text"),
+                    label=translator.translator.translate(
+                        "install_from_zip_button_text"
+                    ),
                     height=28,
                     callback=push_installing_from_zip_screen_file_selection,
                     user_data=pathlib.Path(user_data),

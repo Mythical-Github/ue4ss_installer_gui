@@ -194,7 +194,7 @@ def init_main_screen_footer_section():
 
 def push_main_screen():
     with dpg.window(
-        label=translator.translator.translate('header_text'),
+        label=translator.translator.translate("header_text"),
         tag="main_window",
         no_title_bar=True,
         width=constants.WINDOW_WIDTH,
