@@ -21,7 +21,7 @@ UE4SS consists of an injectable LUA scripting system, SDK generator, live proper
 - Supports windows/linux
 - Filterable version tag selection
 - Filterable release archive to install selection
-- Tags, and releases sorted by newest to latest
+- Tags, and releases sorted by newest to oldest
 - Open game executable directory in file browser button
 - Automatic game detection
 - Ability to provide extra directories to scan for games
