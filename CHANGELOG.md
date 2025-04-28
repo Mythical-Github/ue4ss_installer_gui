@@ -1,3 +1,11 @@
+## 1.1.0 (2025-04-28)
+
+### Feat
+
+- **fr.json**: added french localization
+
+## 1.0.3-dev.14715860055 (2025-04-28)
+
 ## 1.0.3 (2025-04-28)
 ### Fix
 - **pyproject.toml**: fixed versioning
