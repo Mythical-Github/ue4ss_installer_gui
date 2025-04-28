@@ -31,7 +31,7 @@ def init_main_screen_header():
         title_width = len(constants.APP_TITLE) * char_width
         dpg.add_spacer(width=(constants.WINDOW_WIDTH - title_width) // 2)
         dpg.add_text(
-            f"     {translator.translator.translate('header_text')}", tag="HeaderText"
+            f"{translator.translator.translate('header_text')}", tag="HeaderText"
         )
 
 
@@ -194,7 +194,7 @@ def init_main_screen_footer_section():
 
 def push_main_screen():
     with dpg.window(
-        label=constants.APP_TITLE,
+        label=translator.translator.translate('header_text'),
         tag="main_window",
         no_title_bar=True,
         width=constants.WINDOW_WIDTH,

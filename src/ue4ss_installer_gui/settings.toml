@@ -1,24 +1,6 @@
 [[games]]
-install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Aero GPX\\WindowsNoEditor"
-game_title = "WindowsNoEditor"
-ue4ss_version = "latest"
-platform = "Other"
-using_developer_version = false
-show_pre_releases = false
-using_keep_mods_and_settings = false
-
-[[games]]
-install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Poppy Playtime\\PlaytimeLauncher"
-game_title = "PlaytimeLauncher"
-ue4ss_version = "latest"
-platform = "Other"
-using_developer_version = false
-show_pre_releases = false
-using_keep_mods_and_settings = false
-
-[[games]]
-install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\Poppy Playtime\\WindowsNoEditor"
-game_title = "WindowsNoEditor"
+install_dir = "c:\\program files (x86)\\steam\\steamapps\\common\\RoboQuest"
+game_title = "RoboQuest"
 ue4ss_version = "latest"
 platform = "Other"
 using_developer_version = false
@@ -35,33 +17,15 @@ show_pre_releases = false
 using_keep_mods_and_settings = false
 
 [[games]]
-install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Aero GPX\\WindowsNoEditor"
-game_title = "WindowsNoEditor"
-ue4ss_version = "latest"
+install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RoboQuest"
+game_title = "RoboQuest"
+ue4ss_version = ""
 platform = "Other"
 using_developer_version = false
 show_pre_releases = false
 using_keep_mods_and_settings = false
 last_installed_version = ""
 using_portable_version = false
-
-[[games]]
-install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Poppy Playtime\\PlaytimeLauncher"
-game_title = "PlaytimeLauncher"
-ue4ss_version = "latest"
-platform = "Other"
-using_developer_version = false
-show_pre_releases = false
-using_keep_mods_and_settings = false
-
-[[games]]
-install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Poppy Playtime\\WindowsNoEditor"
-game_title = "WindowsNoEditor"
-ue4ss_version = "latest"
-platform = "Other"
-using_developer_version = false
-show_pre_releases = false
-using_keep_mods_and_settings = false
 
 [[games]]
 install_dir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Zedfest"

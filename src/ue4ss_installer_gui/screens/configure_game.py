@@ -7,6 +7,7 @@ import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui import settings, ue4ss, constants, translator, file_io
 from ue4ss_installer_gui.screens import setup_screen, notification_screen
+from ue4ss_installer_gui.checks import online_check
 
 
 def filter_ue4sS_tag(sender, app_data, user_data):
@@ -253,10 +254,8 @@ def clean_up_temp_files(user_data):
 
 
 def push_installing_from_zip_screen(sender, app_data, user_data):
-    last_installed_file = dpg.get_value(
-        "ue4ss_file_to_install_combo_box"
-    )  # have this use provided file later
-    ue4ss_version = dpg.get_value("tags_combo_box")  # have this use provided file later
+    last_installed_file = ''  # have this use provided file later
+    ue4ss_version = ''  # have this use provided file later
     update_game_info_field_from_ui(
         user_data, "last_installed_version", last_installed_file
     )
@@ -407,6 +406,7 @@ def add_centered_text(text, parent, wrap=None):
         dpg.add_text(text, wrap=wrap_width)
 
 
+# have the differing offline functionality occur here
 def push_configure_game_screen(sender, app_data, user_data):
     game_info = settings.get_game_info_instance_in_settings_from_game_directory(
         str(user_data)
@@ -457,82 +457,83 @@ def push_configure_game_screen(sender, app_data, user_data):
         #     dpg.add_text(str(game_info.install_dir), wrap=376)
 
         # dpg.add_spacer(parent="configure_game_modal")
+        
+        if online_check.is_online:
+            add_centered_text(
+                translator.translator.translate("ue4ss_version_text_label"),
+                parent="configure_game_modal",
+            )
 
-        add_centered_text(
-            translator.translator.translate("ue4ss_version_text_label"),
-            parent="configure_game_modal",
-        )
+            dpg.add_spacer(parent="configure_game_modal")
 
-        dpg.add_spacer(parent="configure_game_modal")
+            if game_info.show_pre_releases:
+                combo_items = ue4ss.get_all_tags_with_assets()
+            else:
+                combo_items = ue4ss.get_normal_release_tags_with_assets()
+            if game_info.ue4ss_version in combo_items:
+                default_combo_item = game_info.ue4ss_version
+            else:
+                default_combo_item = combo_items[0]
 
-        if game_info.show_pre_releases:
-            combo_items = ue4ss.get_all_tags_with_assets()
-        else:
-            combo_items = ue4ss.get_normal_release_tags_with_assets()
-        if game_info.ue4ss_version in combo_items:
-            default_combo_item = game_info.ue4ss_version
-        else:
-            default_combo_item = combo_items[0]
-
-        dpg.add_input_text(
-            width=-1,
-            hint="filter ue4ss version here...",
-            parent="configure_game_modal",
-            tag="filter_ue4ss_tag",
-            callback=filter_ue4sS_tag,
-            user_data=user_data,
-        )
-
-        dpg.add_combo(
-            tag="tags_combo_box",
-            items=combo_items,
-            default_value=default_combo_item,
-            callback=on_ue4ss_version_tag_combo_box_selected,
-            user_data=user_data,
-            width=-1,
-            parent="configure_game_modal",
-        )
-
-        dpg.add_spacer(parent="configure_game_modal")
-
-        add_centered_text(
-            translator.translator.translate("ue4ss_file_to_install_text_label"),
-            parent="configure_game_modal",
-        )
-
-        dpg.add_spacer(parent="configure_game_modal")
-
-        dpg.add_input_text(
-            hint="filter file archive to install here...",
-            parent="configure_game_modal",
-            width=-1,
-            tag="filter_ue4ss_file_to_install",
-            callback=filter_ue4ss_file_to_install,
-            user_data=user_data,
-        )
-
-        dpg.add_combo(
-            tag="ue4ss_file_to_install_combo_box",
-            items=[],
-            default_value="",
-            user_data=user_data,
-            width=-1,
-            parent="configure_game_modal",
-        )
-
-        refresh_file_to_install_combo_box(user_data)
-
-        dpg.add_spacer(parent="configure_game_modal", height=4)
-        with dpg.group(horizontal=True, parent="configure_game_modal"):
-            dpg.add_checkbox(
-                default_value=game_info.show_pre_releases,
-                tag="pre_releases_check_box",
-                callback=on_using_pre_releases_check_box_toggled,
+            dpg.add_input_text(
+                width=-1,
+                hint="filter ue4ss version here...",
+                parent="configure_game_modal",
+                tag="filter_ue4ss_tag",
+                callback=filter_ue4sS_tag,
                 user_data=user_data,
             )
-            dpg.add_text(
-                translator.translator.translate("enable_pre_releases_text_label")
+
+            dpg.add_combo(
+                tag="tags_combo_box",
+                items=combo_items,
+                default_value=default_combo_item,
+                callback=on_ue4ss_version_tag_combo_box_selected,
+                user_data=user_data,
+                width=-1,
+                parent="configure_game_modal",
             )
+
+            dpg.add_spacer(parent="configure_game_modal")
+
+            add_centered_text(
+                translator.translator.translate("ue4ss_file_to_install_text_label"),
+                parent="configure_game_modal",
+            )
+
+            dpg.add_spacer(parent="configure_game_modal")
+
+            dpg.add_input_text(
+                hint="filter file archive to install here...",
+                parent="configure_game_modal",
+                width=-1,
+                tag="filter_ue4ss_file_to_install",
+                callback=filter_ue4ss_file_to_install,
+                user_data=user_data,
+            )
+
+            dpg.add_combo(
+                tag="ue4ss_file_to_install_combo_box",
+                items=[],
+                default_value="",
+                user_data=user_data,
+                width=-1,
+                parent="configure_game_modal",
+            )
+
+            refresh_file_to_install_combo_box(user_data)
+
+            dpg.add_spacer(parent="configure_game_modal", height=4)
+            with dpg.group(horizontal=True, parent="configure_game_modal"):
+                dpg.add_checkbox(
+                    default_value=game_info.show_pre_releases,
+                    tag="pre_releases_check_box",
+                    callback=on_using_pre_releases_check_box_toggled,
+                    user_data=user_data,
+                )
+                dpg.add_text(
+                    translator.translator.translate("enable_pre_releases_text_label")
+                )
 
         # with dpg.group(horizontal=True, parent="configure_game_modal"):
         #     dpg.add_checkbox(
@@ -543,64 +544,82 @@ def push_configure_game_screen(sender, app_data, user_data):
         #     )
         #     dpg.add_text(translator.translator.translate('keep_mods_and_settings_text_label'))
 
-        with dpg.group(horizontal=True, parent="configure_game_modal"):
-            dpg.add_checkbox(
-                default_value=game_info.using_developer_version,
-                tag="developer_version_check_box",
-                callback=on_developer_check_box_toggled,
-                user_data=user_data,
-            )
-            dpg.add_text(
-                translator.translator.translate("install_developer_version_text_label")
-            )
+            with dpg.group(horizontal=True, parent="configure_game_modal"):
+                dpg.add_checkbox(
+                    default_value=game_info.using_developer_version,
+                    tag="developer_version_check_box",
+                    callback=on_developer_check_box_toggled,
+                    user_data=user_data,
+                )
+                dpg.add_text(
+                    translator.translator.translate("install_developer_version_text_label")
+                )
 
-        dpg.add_spacer(parent="configure_game_modal")
+            dpg.add_spacer(parent="configure_game_modal")
 
-        with dpg.group(horizontal=True, parent="configure_game_modal"):
-            dpg.add_checkbox(
-                default_value=game_info.using_developer_version,
-                tag="portable_version_check_box",
-                callback=on_portable_version_check_box_toggled,
-                user_data=user_data,
-            )
-            dpg.add_text(
-                translator.translator.translate("install_portable_version_text_label")
-            )
+            with dpg.group(horizontal=True, parent="configure_game_modal"):
+                dpg.add_checkbox(
+                    default_value=game_info.using_developer_version,
+                    tag="portable_version_check_box",
+                    callback=on_portable_version_check_box_toggled,
+                    user_data=user_data,
+                )
+                dpg.add_text(
+                    translator.translator.translate("install_portable_version_text_label")
+                )
 
-        dpg.add_spacer(parent="configure_game_modal")
+            dpg.add_spacer(parent="configure_game_modal")
 
         with dpg.group(
             horizontal=True, tag="button_row", parent="configure_game_modal"
         ):
-            should_show_buttons = get_should_show_uninstall_button(user_data)
-            dpg.add_button(
-                label=translator.translator.translate("install_button_text"),
-                height=28,
-                callback=push_installing_screen,
-                user_data=pathlib.Path(user_data),
-                show=not should_show_buttons,
-            )
-            dpg.add_button(
-                label=translator.translator.translate("install_from_zip_button_text"),
-                height=28,
-                callback=push_installing_from_zip_screen_file_selection,
-                user_data=pathlib.Path(user_data),
-                show=not should_show_buttons,
-            )
-            dpg.add_button(
-                label=translator.translator.translate("reinstall_button_text"),
-                height=28,
-                callback=push_reinstalling_screen,
-                user_data=pathlib.Path(user_data),
-                show=should_show_buttons,
-            )
-            dpg.add_button(
-                label=translator.translator.translate("uninstall_button_text"),
-                height=28,
-                callback=push_uninstalling_screen,
-                user_data=pathlib.Path(user_data),
-                show=should_show_buttons,
-            )
+            if online_check.is_online:
+                should_show_buttons = get_should_show_uninstall_button(user_data)
+                dpg.add_button(
+                    label=translator.translator.translate("install_button_text"),
+                    height=28,
+                    callback=push_installing_screen,
+                    user_data=pathlib.Path(user_data),
+                    show=not should_show_buttons,
+                )
+                dpg.add_button(
+                    label=translator.translator.translate("install_from_zip_button_text"),
+                    height=28,
+                    callback=push_installing_from_zip_screen_file_selection,
+                    user_data=pathlib.Path(user_data),
+                    show=not should_show_buttons,
+                )
+                dpg.add_button(
+                    label=translator.translator.translate("reinstall_button_text"),
+                    height=28,
+                    callback=push_reinstalling_screen,
+                    user_data=pathlib.Path(user_data),
+                    show=should_show_buttons,
+                )
+                dpg.add_button(
+                    label=translator.translator.translate("uninstall_button_text"),
+                    height=28,
+                    callback=push_uninstalling_screen,
+                    user_data=pathlib.Path(user_data),
+                    show=should_show_buttons,
+                )
+            else:
+                should_show_buttons = get_should_show_uninstall_button(user_data)
+                dpg.add_button(
+                    label=translator.translator.translate("install_from_zip_button_text"),
+                    height=28,
+                    callback=push_installing_from_zip_screen_file_selection,
+                    user_data=pathlib.Path(user_data),
+                    show=not should_show_buttons,
+                )
+                dpg.add_button(
+                    label=translator.translator.translate("uninstall_button_text"),
+                    height=28,
+                    callback=push_uninstalling_screen,
+                    user_data=pathlib.Path(user_data),
+                    show=should_show_buttons,
+                )
+
         resize_install_related_buttons()
 
         dpg.add_spacer(parent="configure_game_modal", height=-1)
@@ -645,6 +664,8 @@ def resize_install_related_buttons():
 
     if button_count == 2:
         button_width = 250
+    elif button_count == 1:
+        button_width = -1
     else:
         button_width = 164
 

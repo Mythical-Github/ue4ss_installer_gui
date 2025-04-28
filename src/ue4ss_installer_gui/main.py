@@ -1,7 +1,7 @@
 import os
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui.screens import main_screen as main_screen
+from ue4ss_installer_gui.screens import main_screen
 from ue4ss_installer_gui import file_io, constants, settings, initialization
 
 
@@ -54,6 +54,7 @@ def main():
     dpg.set_viewport_large_icon(icon_path)
 
     main_screen.push_main_screen()
+
     dpg.set_viewport_pos([constants.X, constants.Y])
     dpg.setup_dearpygui()
     dpg.set_primary_window("main_window", True)
