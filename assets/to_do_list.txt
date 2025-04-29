@@ -1,9 +1,9 @@
 Next:
 
-# bring back keep mods and settings and make uninstall more robust
-
 
 Later:
+
+# improve ue4ss install detection, when it hasn't been installed from this app
 
 # have the uninstall and installing check all files were purged/installed at the end and push screen based on that
     if the passed zip is invalid or something it shouldn't be successful either
@@ -14,3 +14,5 @@ Maybes:
 # async dir scan/loading screen
 # option to configure a specific ue4ss installation, like toggline mods, ini values, etc...
 # theming
+
+# optional list of downloads links to extract to various places in the ue4ss install 
