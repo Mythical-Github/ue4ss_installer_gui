@@ -1,21 +1,15 @@
 Next:
 
-# offline check removes social buttons
-# loading screen for scanning games
-# fix installs that only have ue4ss files
-# seems at times dupes for games can appear from the above as well right now
-# sometimes it doesn't properly remember the preferences of the checkboxes
-# sometimes the install button can be pressed, when no file to install is selected, prevent this somehow
-# bring back keep mods and settings and make uninstall more robust
-
 
 Later:
 
-# have the uninstall and installing check all files were purged/installed at the end and push screen based on that
-    if the passed zip is invalid or something it shouldn't be successful either
+# improve ue4ss install detection, when it hasn't been installed from this app
 
 
 Maybes:
 
 # async dir scan/loading screen
 # option to configure a specific ue4ss installation, like toggline mods, ini values, etc...
+# theming
+
+# optional list of downloads links to extract to various places in the ue4ss install

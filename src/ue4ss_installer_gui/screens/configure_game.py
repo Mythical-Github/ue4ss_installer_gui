@@ -204,25 +204,66 @@ def uninstall_ue4ss(user_data):
         user_data
     )
     exe_dir = get_exe_dir_from_game_dir(user_data)
-    if game_info:
+    if game_info is None:
+        raise RuntimeError("game info is none, uninstall ue4ss function")
+
+    for file_to_delete in game_info.installed_files:
+        file_to_delete_actual_path = os.path.normpath(f"{exe_dir}/{file_to_delete}")
+        if os.path.isfile(file_to_delete_actual_path):
+            os.remove(file_to_delete_actual_path)
+
+    files_to_clean_always = [
+        f"{exe_dir}/UE4SS.log",
+        f"{exe_dir}/ue4ss/UE4SS.log",
+        f"{exe_dir}/ue4ss/imgui.ini",
+        f"{exe_dir}/imgui.ini",
+    ]
+    for file in files_to_clean_always:
+        if os.path.isfile(file):
+            os.remove(os.path.normpath(file))
+
+    if not game_info.using_keep_mods_and_settings:
+        ue4ss_dir = os.path.normpath(f"{exe_dir}/ue4ss")
+        if os.path.isdir(ue4ss_dir):
+            shutil.rmtree(ue4ss_dir)
+        ue4ss_dir = os.path.normpath(f"{exe_dir}/Mods")
+        if os.path.isdir(ue4ss_dir):
+            shutil.rmtree(ue4ss_dir)
+
+    delete_all_empty_dirs_in_dir_tree(game_info.install_dir)
+
+    did_uninstall_work = True
+
+    for file in files_to_clean_always:
+        if os.path.isfile(file):
+            did_uninstall_work = False
+            break
+
+    if did_uninstall_work:
         for file_to_delete in game_info.installed_files:
             file_to_delete_actual_path = os.path.normpath(f"{exe_dir}/{file_to_delete}")
             if os.path.isfile(file_to_delete_actual_path):
-                os.remove(file_to_delete_actual_path)
-    delete_all_empty_dirs_in_dir_tree(user_data)
-    log_file_old = os.path.normpath(f"{exe_dir}/UE4SS.log")
-    log_file_new = os.path.normpath(f"{exe_dir}/ue4ss/UE4SS.log")
-    if os.path.isfile(log_file_old):
-        os.remove(log_file_old)
-    if os.path.isfile(log_file_new):
-        os.remove(log_file_new)
-    update_game_info_field_from_ui(user_data, "installed_files", [])
+                did_uninstall_work = False
+                break
+
+    if did_uninstall_work:
+        update_game_info_field_from_ui(user_data, "installed_files", [])
+    else:
+        push_uninstall_failed_screen(user_data=user_data)
 
 
 def install_ue4ss(user_data):
+    exe_dir = get_exe_dir_from_game_dir(user_data)
     ue4ss_zip_path = pathlib.Path(f"{file_io.SCRIPT_DIR}/temp/ue4ss.zip")
-    file_io.unzip_zip(ue4ss_zip_path, get_exe_dir_from_game_dir(user_data))
+    file_io.unzip_zip(ue4ss_zip_path, exe_dir)
     all_paths_in_zip = file_io.get_paths_of_files_in_zip(ue4ss_zip_path)
+    install_was_successful = True
+    for file in all_paths_in_zip:
+        if not os.path.isfile(os.path.normpath(f"{exe_dir}/{file}")):
+            install_was_successful = False
+            break
+    if not install_was_successful:
+        push_install_failed_screen(user_data=user_data)
     update_game_info_field_from_ui(user_data, "installed_files", all_paths_in_zip)
 
 
@@ -254,8 +295,8 @@ def clean_up_temp_files(user_data):
 
 
 def push_installing_from_zip_screen(sender, app_data, user_data):
-    last_installed_file = ''  # have this use provided file later
-    ue4ss_version = ''  # have this use provided file later
+    last_installed_file = ""  # have this use provided file later
+    ue4ss_version = ""  # have this use provided file later
     update_game_info_field_from_ui(
         user_data, "last_installed_version", last_installed_file
     )
@@ -265,7 +306,6 @@ def push_installing_from_zip_screen(sender, app_data, user_data):
         dpg.delete_item(screen_tag)
     game_directory = user_data
     zip_file = app_data["file_path_name"]
-    print(zip_file)
     user_data = [game_directory, zip_file]
     setup_screen.push_setup_screen(
         tag=screen_tag,
@@ -310,6 +350,8 @@ def push_installing_from_zip_screen_file_selection(sender, app_data, user_data):
 
 def push_installing_screen(sender, app_data, user_data):
     last_installed_file = dpg.get_value("ue4ss_file_to_install_combo_box")
+    if last_installed_file is None or last_installed_file == "":
+        return
     ue4ss_version = dpg.get_value("tags_combo_box")
     update_game_info_field_from_ui(
         user_data, "last_installed_version", last_installed_file
@@ -406,11 +448,14 @@ def add_centered_text(text, parent, wrap=None):
         dpg.add_text(text, wrap=wrap_width)
 
 
-# have the differing offline functionality occur here
 def push_configure_game_screen(sender, app_data, user_data):
     game_info = settings.get_game_info_instance_in_settings_from_game_directory(
         str(user_data)
     )
+    if online_check.is_online:
+        pos_y = 160
+    else:
+        pos_y = 300
     if game_info:
         if dpg.does_item_exist("configure_game_modal"):
             dpg.delete_item("configure_game_modal")
@@ -422,7 +467,7 @@ def push_configure_game_screen(sender, app_data, user_data):
             max_size=[524, 999],
             autosize=True,
             no_open_over_existing_popup=False,
-            pos=[30, 160],
+            pos=[30, pos_y],
         )
 
         install_dir = str(game_info.install_dir)
@@ -452,12 +497,6 @@ def push_configure_game_screen(sender, app_data, user_data):
 
         dpg.add_spacer(parent="configure_game_modal")
 
-        # with dpg.group(horizontal=True, parent="configure_game_modal", width=-1):
-        #     dpg.add_text(translator.translator.translate('game_directory_text_label'))
-        #     dpg.add_text(str(game_info.install_dir), wrap=376)
-
-        # dpg.add_spacer(parent="configure_game_modal")
-        
         if online_check.is_online:
             add_centered_text(
                 translator.translator.translate("ue4ss_version_text_label"),
@@ -523,7 +562,7 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             refresh_file_to_install_combo_box(user_data)
 
-            dpg.add_spacer(parent="configure_game_modal", height=4)
+            dpg.add_spacer(parent="configure_game_modal")
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
                     default_value=game_info.show_pre_releases,
@@ -535,15 +574,7 @@ def push_configure_game_screen(sender, app_data, user_data):
                     translator.translator.translate("enable_pre_releases_text_label")
                 )
 
-        # with dpg.group(horizontal=True, parent="configure_game_modal"):
-        #     dpg.add_checkbox(
-        #         default_value=game_info.using_keep_mods_and_settings,
-        #         tag="keep_mods_and_settings_check_box",
-        #         callback=on_keep_mods_and_settings_check_box_toggled,
-        #         user_data=user_data,
-        #     )
-        #     dpg.add_text(translator.translator.translate('keep_mods_and_settings_text_label'))
-
+            dpg.add_spacer(parent="configure_game_modal")
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
                     default_value=game_info.using_developer_version,
@@ -552,20 +583,35 @@ def push_configure_game_screen(sender, app_data, user_data):
                     user_data=user_data,
                 )
                 dpg.add_text(
-                    translator.translator.translate("install_developer_version_text_label")
+                    translator.translator.translate(
+                        "install_developer_version_text_label"
+                    )
                 )
 
             dpg.add_spacer(parent="configure_game_modal")
-
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
-                    default_value=game_info.using_developer_version,
+                    default_value=game_info.using_portable_version,
                     tag="portable_version_check_box",
                     callback=on_portable_version_check_box_toggled,
                     user_data=user_data,
                 )
                 dpg.add_text(
-                    translator.translator.translate("install_portable_version_text_label")
+                    translator.translator.translate(
+                        "install_portable_version_text_label"
+                    )
+                )
+
+            dpg.add_spacer(parent="configure_game_modal")
+            with dpg.group(horizontal=True, parent="configure_game_modal"):
+                dpg.add_checkbox(
+                    default_value=game_info.using_keep_mods_and_settings,
+                    tag="keep_mods_and_settings_check_box",
+                    callback=on_keep_mods_and_settings_check_box_toggled,
+                    user_data=user_data,
+                )
+                dpg.add_text(
+                    translator.translator.translate("keep_mods_and_settings_text_label")
                 )
 
             dpg.add_spacer(parent="configure_game_modal")
@@ -583,7 +629,9 @@ def push_configure_game_screen(sender, app_data, user_data):
                     show=not should_show_buttons,
                 )
                 dpg.add_button(
-                    label=translator.translator.translate("install_from_zip_button_text"),
+                    label=translator.translator.translate(
+                        "install_from_zip_button_text"
+                    ),
                     height=28,
                     callback=push_installing_from_zip_screen_file_selection,
                     user_data=pathlib.Path(user_data),
@@ -606,7 +654,9 @@ def push_configure_game_screen(sender, app_data, user_data):
             else:
                 should_show_buttons = get_should_show_uninstall_button(user_data)
                 dpg.add_button(
-                    label=translator.translator.translate("install_from_zip_button_text"),
+                    label=translator.translator.translate(
+                        "install_from_zip_button_text"
+                    ),
                     height=28,
                     callback=push_installing_from_zip_screen_file_selection,
                     user_data=pathlib.Path(user_data),

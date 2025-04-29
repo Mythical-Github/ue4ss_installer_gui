@@ -82,20 +82,40 @@ def init_game_already_in_list_pop_up(game_directory: pathlib.Path):
 
 
 def game_already_in_list_check(game_directory: pathlib.Path) -> bool:
-    game_entries = settings.get_settings().get("games", {})
-    is_game_already_in_list = False
+    game_entries = settings.get_settings().get("games", [])
+    normalized_new_game = os.path.normcase(os.path.normpath(str(game_directory)))
+
     for game_entry in game_entries:
-        if os.path.normpath(game_entry["install_dir"]) == os.path.normpath(
-            str(game_directory)
-        ):
-            is_game_already_in_list = True
-            break
-    if is_game_already_in_list:
-        if settings.has_inited_settings:
-            init_game_already_in_list_pop_up(game_directory)
-            dpg.split_frame()
-            dpg.configure_item("game_already_exists_popup", show=True)
-        return True
+        existing_game = os.path.normcase(os.path.normpath(game_entry["install_dir"]))
+        print(f"existing game: {existing_game}")
+        print(f"normalized new game: {normalized_new_game}")
+        if existing_game == normalized_new_game:
+            if settings.has_inited_settings:
+                init_game_already_in_list_pop_up(game_directory)
+                dpg.split_frame()
+                dpg.configure_item("game_already_exists_popup", show=True)
+            print("true was in")
+            return True
+    print("false was not in")
+    return False
+
+
+def game_already_in_list_check_multi(
+    game_directory: pathlib.Path, input_settings
+) -> bool:
+    game_entries = input_settings.get("games", [])
+    normalized_new_game = os.path.normcase(os.path.normpath(str(game_directory)))
+
+    for game_entry in game_entries:
+        existing_game = os.path.normcase(os.path.normpath(game_entry["install_dir"]))
+        if existing_game == normalized_new_game:
+            if settings.has_inited_settings:
+                init_game_already_in_list_pop_up(game_directory)
+                dpg.split_frame()
+                dpg.configure_item("game_already_exists_popup", show=True)
+            print("true was in")
+            return True
+    print("false was not in")
     return False
 
 
@@ -105,13 +125,20 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
     for game_dir_path in game_dir_paths:
         if not os.path.isdir(game_dir_path):
             bool_list.append(False)
+            continue
+
         was_valid = True
-        if game_already_in_list_check(game_dir_path):
+
+        if game_already_in_list_check_multi(game_dir_path, loaded_settings):
             was_valid = False
         if not game_dir_actually_has_unreal_game_check(game_dir_path):
             was_valid = False
+
+        bool_list.append(was_valid)
+
         if not was_valid:
-            bool_list.append(was_valid)
+            continue
+
         game_entry = data_structures.GameInfo(
             install_dir=game_dir_path,
             game_title=os.path.basename(str(game_dir_path)),
@@ -125,10 +152,6 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
             installed_files=[],
         )
 
-        new_installed_files = []
-        for file in game_entry.installed_files:
-            new_installed_files.append(file)
-
         game_entry_dict = {
             "install_dir": str(game_entry.install_dir),
             "game_title": game_entry.game_title,
@@ -137,14 +160,13 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
             "using_developer_version": game_entry.using_developer_version,
             "show_pre_releases": game_entry.show_pre_releases,
             "using_keep_mods_and_settings": game_entry.using_keep_mods_and_settings,
-            "installed_files": new_installed_files,
+            "installed_files": [],
         }
 
         games_list = loaded_settings.get("games", [])
         games_list.append(game_entry_dict)
         loaded_settings["games"] = games_list
 
-        bool_list.append(was_valid)
     return loaded_settings
 
 

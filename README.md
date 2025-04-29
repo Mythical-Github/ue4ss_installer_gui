@@ -11,7 +11,7 @@ UE4SS consists of an injectable LUA scripting system, SDK generator, live proper
 ### Project Example:
 <img src="https://github.com/user-attachments/assets/f6a0ec21-4ee3-4f52-8eeb-2b79cafddf98" alt="example" width="50%" height="50%">
 
-  
+
 ### Features:
 - Online/Offline support
 - Localization
@@ -42,7 +42,7 @@ If you have ideas or suggestions for the tool feel free to open a [suggestions i
 
 
 ### Bug Reports
-If you encounter a bug or issue, please submit a report on the [issues page](https://github.com/Mythical-Github/ue4ss_installer_gui/issues). 
+If you encounter a bug or issue, please submit a report on the [issues page](https://github.com/Mythical-Github/ue4ss_installer_gui/issues).
 When creating an issue, please provide as much information as possible, including:
 - Steps to reproduce the issue
 - What you expect to happen, versus what is happening
