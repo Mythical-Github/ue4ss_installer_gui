@@ -54,7 +54,8 @@ When creating an issue, please provide as much information as possible, includin
 Contributions are always appreciated, but please keep in mind the following:
 - Before coding new features, try to make an issue to see if the idea/implementation needs any tweaking, or is out of scope
 - Please make sure all code submissions pass all pre-commit checks
-- If you're interested in adding new localization, it's as simple as, you can copy, paste, and rename the en.json in both locations, translate, and submit
+- If you're interested in adding new localization, it's as simple as, forking the dev branch
+     you can copy, paste, and rename the en.json in both locations (there are two, one in assets/base/assets/localization, and one in src/ue4ss_installer_gui/assets/localization, translate, and submit
 
 
 ### Credits
