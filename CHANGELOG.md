@@ -1,3 +1,20 @@
+## 1.1.0-dev.14739379206 (2025-04-29)
+
+### Feat
+
+- **configure_game.py**: Added keep user files option
+- **fr.json**: added french localization
+
+### Fix
+
+- **configure_game.py**: improved install/uninstall
+- **configure_game.py**: fixed managing uninstalled games with ue4ss installs
+- **configure_game.py**: fixed portable check box preference rememberance
+- **configure_game.py**: fixed install button being usable at wrong times
+- **main_screen.py,-add_game.py**: fixed duplicate settings entries
+
+## 1.0.3-dev.14715860055 (2025-04-28)
+
 ## 1.0.3 (2025-04-28)
 ### Fix
 - **pyproject.toml**: fixed versioning
