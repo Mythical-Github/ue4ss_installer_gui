@@ -1,6 +1,5 @@
 Next:
 
-# automated releases pack windows exe into the linux release somehow, fix this
 # fix installs that only have ue4ss files
 # bring back keep mods and settings and make uninstall more robust
 
