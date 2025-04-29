@@ -406,11 +406,14 @@ def add_centered_text(text, parent, wrap=None):
         dpg.add_text(text, wrap=wrap_width)
 
 
-# have the differing offline functionality occur here
 def push_configure_game_screen(sender, app_data, user_data):
     game_info = settings.get_game_info_instance_in_settings_from_game_directory(
         str(user_data)
     )
+    if online_check.is_online:
+        pos_y = 160
+    else:
+        pos_y = 300
     if game_info:
         if dpg.does_item_exist("configure_game_modal"):
             dpg.delete_item("configure_game_modal")
@@ -422,7 +425,7 @@ def push_configure_game_screen(sender, app_data, user_data):
             max_size=[524, 999],
             autosize=True,
             no_open_over_existing_popup=False,
-            pos=[30, 160],
+            pos=[30, pos_y],
         )
 
         install_dir = str(game_info.install_dir)

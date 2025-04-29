@@ -1,9 +1,8 @@
 Next:
 
 # automated releases pack windows exe into the linux release somehow, fix this
-# offline check removes social buttons
 # fix installs that only have ue4ss files
-# sometimes it doesn't properly remember the preferences of the checkboxes
+# sometimes it doesn't properly remember the preferences of the checkboxes, probably related to force toggling off standard/portable
 # sometimes the install button can be pressed, when no file to install is selected, prevent this somehow
 # bring back keep mods and settings and make uninstall more robust
 
