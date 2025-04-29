@@ -1,4 +1,6 @@
 Next:
+Horizonatl bar that has two buttons when an ue4ss install is detected
+one for configure mods, one for oncgiure ue4ss settings
 
 
 Later:
