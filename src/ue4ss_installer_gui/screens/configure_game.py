@@ -209,13 +209,27 @@ def uninstall_ue4ss(user_data):
             file_to_delete_actual_path = os.path.normpath(f"{exe_dir}/{file_to_delete}")
             if os.path.isfile(file_to_delete_actual_path):
                 os.remove(file_to_delete_actual_path)
-    delete_all_empty_dirs_in_dir_tree(user_data)
     log_file_old = os.path.normpath(f"{exe_dir}/UE4SS.log")
     log_file_new = os.path.normpath(f"{exe_dir}/ue4ss/UE4SS.log")
     if os.path.isfile(log_file_old):
         os.remove(log_file_old)
     if os.path.isfile(log_file_new):
         os.remove(log_file_new)
+    imgui_ini_path = os.path.normpath(f"{exe_dir}/ue4ss/imgui.ini")
+    if os.path.isfile(imgui_ini_path):
+        os.remove(imgui_ini_path)
+    imgui_ini_path = os.path.normpath(f"{exe_dir}/imgui.ini")
+    if os.path.isfile(imgui_ini_path):
+        os.remove(imgui_ini_path)
+    ue4ss_dir = os.path.normpath(f"{exe_dir}/ue4ss")
+    if os.path.isdir(ue4ss_dir):
+        shutil.rmtree(ue4ss_dir)
+    ue4ss_dir = os.path.normpath(f"{exe_dir}/ue4ss/Mods")
+    if os.path.isdir(ue4ss_dir):
+        shutil.rmtree(ue4ss_dir)
+    ue4ss_dir = os.path.normpath(f"{exe_dir}/Mods")
+    if os.path.isdir(ue4ss_dir):
+        shutil.rmtree(ue4ss_dir)
     update_game_info_field_from_ui(user_data, "installed_files", [])
 
 
