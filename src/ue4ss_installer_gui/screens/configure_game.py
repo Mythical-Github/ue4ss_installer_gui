@@ -310,6 +310,8 @@ def push_installing_from_zip_screen_file_selection(sender, app_data, user_data):
 
 def push_installing_screen(sender, app_data, user_data):
     last_installed_file = dpg.get_value("ue4ss_file_to_install_combo_box")
+    if last_installed_file is None or last_installed_file == '':
+        return
     ue4ss_version = dpg.get_value("tags_combo_box")
     update_game_info_field_from_ui(
         user_data, "last_installed_version", last_installed_file
