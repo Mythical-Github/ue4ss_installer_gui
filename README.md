@@ -9,7 +9,7 @@ UE4SS consists of an injectable LUA scripting system, SDK generator, live proper
 
 
 ### Project Example:
-<img src="https://github.com/user-attachments/assets/f6a0ec21-4ee3-4f52-8eeb-2b79cafddf98" alt="example" width="50%" height="50%">
+<img src="https://github.com/user-attachments/assets/94723ebc-89d3-4f40-a4f1-984fc96af1f8" alt="example" width="50%" height="50%">
 
 
 ### Features:
