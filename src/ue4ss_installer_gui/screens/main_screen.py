@@ -77,6 +77,7 @@ def add_new_game_to_games_list(game_name: str, game_directory: str):
 def init_main_screen_game_list_scroll_box():
     global scroll_area_height
     from ue4ss_installer_gui.checks.online_check import is_online
+
     if not is_online:
         scroll_area_height = scroll_area_height + 40
     with dpg.child_window(
@@ -167,7 +168,9 @@ def init_main_screen_footer_section():
 
         dpg.add_spacer()
 
-        with dpg.group(horizontal=True, tag='socials_group', show=online_check.is_online):
+        with dpg.group(
+            horizontal=True, tag="socials_group", show=online_check.is_online
+        ):
             discord_button = dpg.add_button(
                 label=translator.translator.translate("docs_button_text"),
                 width=184,

@@ -7,7 +7,7 @@ from ue4ss_installer_gui.checks import online_check
 
 def init():
     online_check.init_is_online()
-    print(f'Is online: {online_check.is_online}')
+    print(f"Is online: {online_check.is_online}")
     logger.set_log_base_dir(os.path.normpath(f"{file_io.SCRIPT_DIR}/logs"))
     logger.configure_logging()
     settings.init_settings()
