@@ -1,3 +1,17 @@
+## 1.2.0 (2025-04-29)
+
+### Feat
+
+- **configure_game.py**: Added keep user files option
+
+### Fix
+
+- **configure_game.py**: improved install/uninstall
+- **configure_game.py**: fixed managing uninstalled games with ue4ss installs
+- **configure_game.py**: fixed portable check box preference rememberance
+- **configure_game.py**: fixed install button being usable at wrong times
+- **main_screen.py,-add_game.py**: fixed duplicate settings entries
+
 ## 1.1.0 (2025-04-28)
 
 ### Feat
