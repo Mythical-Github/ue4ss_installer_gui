@@ -566,7 +566,7 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
-                    default_value=game_info.using_developer_version,
+                    default_value=game_info.using_portable_version,
                     tag="portable_version_check_box",
                     callback=on_portable_version_check_box_toggled,
                     user_data=user_data,

@@ -2,7 +2,6 @@ Next:
 
 # automated releases pack windows exe into the linux release somehow, fix this
 # fix installs that only have ue4ss files
-# sometimes it doesn't properly remember the preferences of the checkboxes, probably related to force toggling off standard/portable
 # bring back keep mods and settings and make uninstall more robust
 
 
@@ -16,3 +15,4 @@ Maybes:
 
 # async dir scan/loading screen
 # option to configure a specific ue4ss installation, like toggline mods, ini values, etc...
+# theming
