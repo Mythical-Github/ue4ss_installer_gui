@@ -1,3 +1,9 @@
+## 1.1.0-dev.14762408134 (2025-04-30)
+
+### Feat
+
+- **congifure_game.py**: added open game paks dir button
+
 ## 1.1.0-dev.14739379206 (2025-04-29)
 
 ### Feat
