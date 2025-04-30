@@ -6,9 +6,7 @@ from string import Template
 from datetime import datetime
 from babel.plural import PluralRule
 from babel.dates import format_datetime
-
-from ue4ss_installer_gui import file_io
-
+from ue4ss_installer_gui import file_io, settings
 
 supported_format = ["json"]
 
@@ -20,10 +18,14 @@ def init_translator():
     global translator
     translator = Translator(f"{file_io.SCRIPT_DIR}/assets/localization")
 
-    system_locale = locale.getdefaultlocale()[0]
-    short_locale = system_locale.split("_")[0] if system_locale else "en"
 
-    translator.set_locale(short_locale)
+    language = settings.get_settings().get("GUI", {}).get("language", "en")
+
+    if not language:
+        system_locale = locale.getdefaultlocale()[0]
+        language = system_locale.split("_")[0] if system_locale else "en"
+
+    translator.set_locale(language)
     print(f"Using locale: {translator.get_locale()}")
     print(translator.translate("uninstall_button_text"))
 

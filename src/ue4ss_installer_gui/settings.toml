@@ -1,0 +1,13 @@
+[[games]]
+install_dir = "f:\\program files (x86)\\steam\\steamapps\\common\\EscapeTheBackrooms"
+game_title = "EscapeTheBackrooms"
+ue4ss_version = "latest"
+platform = "Other"
+using_developer_version = false
+show_pre_releases = false
+using_keep_mods_and_settings = false
+
+[GUI]
+use_custom_font = false
+custom_font_path = "C:/Windows/Fonts/msyh.ttc"
+language = "en"
