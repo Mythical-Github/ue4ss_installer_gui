@@ -19,6 +19,30 @@ from ue4ss_installer_gui.screens import add_game
 
 SETTINGS_FILE = os.path.normpath(f"{file_io.SCRIPT_DIR}/settings.toml")
 
+def add_gui_settings_if_not_exists():
+    if not os.path.isfile(SETTINGS_FILE):
+        print(f"Settings file {SETTINGS_FILE} does not exist!")
+        return
+
+    with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+        settings_data = tomlkit.load(f)
+
+    if "GUI" not in settings_data:
+        gui_settings = {
+            "use_custom_font": False,
+            "custom_font_path": "C:/Windows/Fonts/msyh.ttc",
+            "language": "en",
+        }
+        settings_data["GUI"] = gui_settings
+
+        with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+            tomlkit.dump(settings_data, f)
+        
+        print(f"[GUI] section added to {SETTINGS_FILE}")
+    else:
+        print("[GUI] section already exists.")
+        
+add_gui_settings_if_not_exists()
 
 def is_windows():
     return platform.system() == "Windows"
