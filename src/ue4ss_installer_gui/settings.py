@@ -29,7 +29,14 @@ def is_linux():
 
 
 def make_settings_file():
-    settings = {"games": []}
+    settings = {
+        "games": [],
+        "GUI": {
+            "use_custom_font": False,
+            "custom_font_path": "C:/Windows/Fonts/msyh.ttc",
+            "language": "en"
+        }
+    }
 
     toml_str = tomlkit.dumps(settings)
 
@@ -310,15 +317,3 @@ def is_exe():
     """
     return getattr(sys, "frozen", False) and os.path.isfile(sys.executable)
 
-def register_default_gui_settings():
-    loaded_settings = get_settings()
-
-    loaded_settings["GUI"] = {
-        "use_custom_font": False,
-        "custom_font_path": "C:/Windows/Fonts/msyh.ttc",
-        "language": "en"
-    }
-
-    save_settings(loaded_settings)
-    
-register_default_gui_settings()
