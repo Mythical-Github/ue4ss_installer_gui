@@ -453,9 +453,9 @@ def push_configure_game_screen(sender, app_data, user_data):
         str(user_data)
     )
     if online_check.is_online:
-        pos_y = 160
+        pos_y = 148
     else:
-        pos_y = 300
+        pos_y = 288
     if game_info:
         if dpg.does_item_exist("configure_game_modal"):
             dpg.delete_item("configure_game_modal")
@@ -672,15 +672,47 @@ def push_configure_game_screen(sender, app_data, user_data):
 
         resize_install_related_buttons()
 
-        dpg.add_spacer(parent="configure_game_modal", height=-1)
-        dpg.add_button(
-            label=translator.translator.translate("open_game_exe_directory"),
-            parent="configure_game_modal",
-            width=-1,
-            height=28,
-            callback=open_game_exe_dir,
-            user_data=str(game_info.install_dir),
-        )
+        dpg.add_spacer(parent="configure_game_modal")
+
+        with dpg.group(
+            horizontal=True, tag="button_row_dirs", parent="configure_game_modal"
+        ):
+            dpg.add_button(
+                label=translator.translator.translate("open_game_exe_directory"),
+                width=250,
+                height=28,
+                callback=open_game_exe_dir,
+                user_data=str(game_info.install_dir),
+            )
+            # finish this, have the button text be localized
+            dpg.add_button(
+                label="Open game paks directory",
+                width=250,
+                height=28,
+                callback=open_game_paks_dir,
+                user_data=str(game_info.install_dir),
+            )
+
+        # dpg.add_spacer(parent="configure_game_modal")
+        # with dpg.group(
+        #     horizontal=True, tag="configure_button_row", parent="configure_game_modal"
+        # ):
+        #     # finish this, have the button text be localized
+        #     dpg.add_button(
+        #         label='Configure Mods',
+        #         width=250,
+        #         height=28,
+        #         callback=configure_mods,
+        #         user_data=str(game_info.install_dir),
+        #     )
+        #     # finish this, have the button text be localized
+        #     dpg.add_button(
+        #         label='Configure UE4SS Settings',
+        #         width=250,
+        #         height=28,
+        #         callback=configure_ue4ss_settings,
+        #         user_data=str(game_info.install_dir),
+        #     )
 
         dpg.add_spacer(parent="configure_game_modal", height=-1)
         dpg.add_button(
@@ -780,3 +812,29 @@ def get_exe_dir_from_game_dir(game_directory: pathlib.Path) -> pathlib.Path:
                 return subdir
 
     return pathlib.Path("")
+
+
+def open_game_paks_dir(sender, app_data, game_directory: pathlib.Path):
+    exe_dir = str(get_exe_dir_from_game_dir(pathlib.Path(game_directory)))
+    game_dir = os.path.normpath(os.path.dirname(os.path.dirname(exe_dir)))
+    content_dir = os.path.normpath(f"{game_dir}/Content")
+    paks_dir = os.path.normpath(f"{content_dir}/Paks")
+    if not os.path.isdir(paks_dir):
+        if os.path.isdir(content_dir):
+            dir_to_open = content_dir
+        else:
+            return
+    else:
+        dir_to_open = paks_dir
+    if settings.is_windows():
+        subprocess.run(["explorer", dir_to_open], check=False)
+    else:
+        subprocess.run(["xdg-open", dir_to_open])
+
+
+def configure_mods():
+    return
+
+
+def configure_ue4ss_settings():
+    return
