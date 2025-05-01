@@ -29,7 +29,14 @@ def is_linux():
 
 
 def make_settings_file():
-    settings = {"games": []}
+    settings = {
+        "games": [],
+        "GUI": {
+            "use_custom_font": False,
+            "custom_font_path": "C:/Windows/Fonts/msyh.ttc",
+            "language": "en"
+        }
+    }
 
     toml_str = tomlkit.dumps(settings)
 
@@ -309,3 +316,4 @@ def is_exe():
     :return: True if running as a PyInstaller-built executable, False otherwise.
     """
     return getattr(sys, "frozen", False) and os.path.isfile(sys.executable)
+
