@@ -516,7 +516,7 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             dpg.add_input_text(
                 width=-1,
-                hint="filter ue4ss version here...",
+                hint=translator.translator.translate("filter_ue4ss_version_hint"),
                 parent="configure_game_modal",
                 tag="filter_ue4ss_tag",
                 callback=filter_ue4sS_tag,
@@ -543,7 +543,7 @@ def push_configure_game_screen(sender, app_data, user_data):
             dpg.add_spacer(parent="configure_game_modal")
 
             dpg.add_input_text(
-                hint="filter file archive to install here...",
+                hint=translator.translator.translate("filter_ue4ss_file_hint"),
                 parent="configure_game_modal",
                 width=-1,
                 tag="filter_ue4ss_file_to_install",
@@ -684,9 +684,8 @@ def push_configure_game_screen(sender, app_data, user_data):
                 callback=open_game_exe_dir,
                 user_data=str(game_info.install_dir),
             )
-            # finish this, have the button text be localized
             dpg.add_button(
-                label="Open game paks directory",
+                label=translator.translator.translate("open_game_paks_directory"),
                 width=250,
                 height=28,
                 callback=open_game_paks_dir,
