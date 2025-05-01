@@ -202,6 +202,19 @@ def init_main_screen_footer_section():
 
 
 def push_main_screen():
+    use_custom_font = settings.get_settings().get("GUI", {}).get("use_custom_font", False)
+
+    if use_custom_font:
+        font_path = settings.get_settings().get("GUI", {}).get("custom_font_path", "")
+
+        if font_path and os.path.exists(font_path):
+            with dpg.font_registry():
+                with dpg.font(font_path, 18) as custom_font:
+                    dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
+                    dpg.add_font_range_hint(dpg.mvFontRangeHint_Chinese_Simplified_Common)
+                    dpg.add_font_range_hint(dpg.mvFontRangeHint_Chinese_Full)
+            dpg.bind_font(custom_font)
+
     with dpg.window(
         label=translator.translator.translate("header_text"),
         tag="main_window",
