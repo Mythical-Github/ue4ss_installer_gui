@@ -1,26 +1,28 @@
 To Do List:
 
-Next:
 
-# add menu sections for the new gui settings stuff, also add font size scale float multiplier
-# Improve dir scanning, for games with a lot of dirs it can be too long
+Next:
+# make text button with no bacjground then does not change on press, just to have centered text
+# global settings files, accesible via the settings menu, add things like custom font path, lang select, etc... here
+# global font scale settings option
+# 
+# bottom buttons are not aligned at the center in online mode
 # when uninstalling ue4ss from a game install dir where the game is already gone, it needs to refresh the game button list
 # install from url option/other options
+# improve ue4ss install detection, when it hasn't been installed from this app
+# clear untranslated fallback
+# remember window height, width, and position preferences
+#
+# occasionally double entries happen, it seems paths are being messed up c:/ versus C:/ for example
+# 
 # configure lua/C++ menu
 # configure bp mods menu
 # configure ue4ss settings menu
 # developer section
-# basic/advanced mode
-# theming
-# improve ue4ss install detection, when it hasn't been installed from this app
-# clear untranslated fallback
-
 
 Later:
-
-# async dir scan/loading screen
-
-
-Maybes:
+# create preset, install from preset options, for specific games/situations
+# basic/advanced mode
+# better theming
 
 # optional list of downloads links to extract to various places in the ue4ss install
