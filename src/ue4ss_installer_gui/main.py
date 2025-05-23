@@ -1,8 +1,10 @@
 import os
+
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui.screens import main_screen
 from ue4ss_installer_gui import file_io, constants, settings, initialization
+import ue4ss_installer_gui.theme_management
 
 
 def remove_maximize_button(title=constants.APP_TITLE):
@@ -31,6 +33,7 @@ def on_viewport_ready(sender, app_data):
 
 def main():
     initialization.init()
+
     if settings.is_windows():
         icon_path = os.path.normpath(
             f"{file_io.SCRIPT_DIR}/assets/images/project_main_icon.ico"
@@ -44,6 +47,8 @@ def main():
 
     dpg.create_context()
 
+    dpg.bind_theme(ue4ss_installer_gui.theme_management.get_preferred_theme())
+
     dpg.create_viewport(
         title=constants.APP_TITLE,
         width=constants.WINDOW_WIDTH,
@@ -53,11 +58,11 @@ def main():
     dpg.set_viewport_small_icon(icon_path)
     dpg.set_viewport_large_icon(icon_path)
 
-    main_screen.push_main_screen()
+    main_screen.push_main_app_screen()
 
     dpg.set_viewport_pos([constants.X, constants.Y])
     dpg.setup_dearpygui()
-    dpg.set_primary_window("main_window", True)
+    dpg.set_primary_window("main_app_screen", True)
 
     dpg.set_viewport_resize_callback(on_viewport_ready)
 

@@ -26,6 +26,7 @@ def push_setup_screen(
         min_size=[524, 1],
         no_open_over_existing_popup=False,
         no_resize=True,
+        no_move=True
     ):
         # later replace these buttons with actually centered text
         dpg.add_button(
