@@ -16,12 +16,20 @@ from ue4ss_installer_gui import constants, settings, unreal_engine, translator
 from ue4ss_installer_gui.checks import online_check
 
 
+def get_footer_height() -> int:
+    if online_check.is_online:
+        FOOTER_HEIGHT = 20
+    else:
+        FOOTER_HEIGHT = 40
+    return FOOTER_HEIGHT
+
+
 scroll_area_height = (
     constants.WINDOW_HEIGHT
     - (
         constants.HEADER_HEIGHT
         + constants.SUBHEADER_HEIGHT
-        + constants.FOOTER_HEIGHT
+        + get_footer_height()
         + constants.DIVIDER_HEIGHT
         + constants.MARGIN
     )
@@ -89,7 +97,7 @@ def init_main_screen_game_list_scroll_box():
         - (
             constants.HEADER_HEIGHT
             + constants.SUBHEADER_HEIGHT
-            + constants.FOOTER_HEIGHT
+            + get_footer_height()
             + constants.DIVIDER_HEIGHT
             + constants.MARGIN
         )
