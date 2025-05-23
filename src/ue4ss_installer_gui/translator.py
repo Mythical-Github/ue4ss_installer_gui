@@ -26,7 +26,6 @@ def init_translator():
 
     translator.set_locale(language)
     print(f"Using locale: {translator.get_locale()}")
-    print(translator.translate("uninstall_button_text"))
 
 
 class Translator:
