@@ -6,7 +6,15 @@ import subprocess
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui import settings, ue4ss, constants, translator, file_io
-from ue4ss_installer_gui.screens import setup_screen, notification_screen
+from ue4ss_installer_gui.screens import (
+    main_ue4ss_screen,
+    setup_screen, 
+    notification_screen, 
+    ue4ss_mods_configurator, 
+    ue4ss_settings_configurator,
+    bp_mod_loader_configurator,
+    developer_screen
+)
 from ue4ss_installer_gui.checks import online_check
 
 
@@ -272,7 +280,6 @@ def download_ue4ss(user_data):
         user_data
     )
     if game_info:
-        print(file_io.get_temp_dir())
         os.makedirs(str(file_io.get_temp_dir()), exist_ok=True)
         file_names_to_download_links = ue4ss.get_file_name_to_download_links_from_tag(
             game_info.ue4ss_version
@@ -453,9 +460,9 @@ def push_configure_game_screen(sender, app_data, user_data):
         str(user_data)
     )
     if online_check.is_online:
-        pos_y = 148
+        pos_y = 120
     else:
-        pos_y = 288
+        pos_y = 260
     if game_info:
         if dpg.does_item_exist("configure_game_modal"):
             dpg.delete_item("configure_game_modal")
@@ -468,6 +475,8 @@ def push_configure_game_screen(sender, app_data, user_data):
             autosize=True,
             no_open_over_existing_popup=False,
             pos=[30, pos_y],
+            no_move=True,
+            no_resize=True
         )
 
         install_dir = str(game_info.install_dir)
@@ -562,7 +571,7 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             refresh_file_to_install_combo_box(user_data)
 
-            dpg.add_spacer(parent="configure_game_modal")
+            dpg.add_spacer(parent="configure_game_modal", height=4)
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
                     default_value=game_info.show_pre_releases,
@@ -692,28 +701,49 @@ def push_configure_game_screen(sender, app_data, user_data):
                 user_data=str(game_info.install_dir),
             )
 
-        # dpg.add_spacer(parent="configure_game_modal")
-        # with dpg.group(
-        #     horizontal=True, tag="configure_button_row", parent="configure_game_modal"
-        # ):
-        #     # finish this, have the button text be localized
-        #     dpg.add_button(
-        #         label='Configure Mods',
-        #         width=250,
-        #         height=28,
-        #         callback=configure_mods,
-        #         user_data=str(game_info.install_dir),
-        #     )
-        #     # finish this, have the button text be localized
-        #     dpg.add_button(
-        #         label='Configure UE4SS Settings',
-        #         width=250,
-        #         height=28,
-        #         callback=configure_ue4ss_settings,
-        #         user_data=str(game_info.install_dir),
-        #     )
+        dpg.add_spacer(parent="configure_game_modal")
+        with dpg.group(
+            horizontal=True, tag="configure_button_row", parent="configure_game_modal"
+        ):
+            # finish this, have the button text be localized
+            dpg.add_button(
+                label='Configure Lua and C++ mods',
+                width=250,
+                height=28,
+                callback=ue4ss_mods_configurator.push_ue4ss_mods_configurator_screen,
+                user_data=str(game_info.install_dir),
+            )
+            # finish this, have the button text be localized
+            dpg.add_button(
+                label='Configure UE4SS settings',
+                width=250,
+                height=28,
+                callback=ue4ss_settings_configurator.push_ue4ss_settings_configurator_screen,
+                user_data=str(game_info.install_dir),
+            )
 
-        dpg.add_spacer(parent="configure_game_modal", height=-1)
+        dpg.add_spacer(parent="configure_game_modal")
+        with dpg.group(
+            horizontal=True, tag="configure_two_button_row", parent="configure_game_modal"
+        ):
+            # finish this, have the button text be localized
+            dpg.add_button(
+                label='Configure UE4SS BP mods',
+                width=250,
+                height=28,
+                callback=bp_mod_loader_configurator.push_bp_mod_loader_configuration_screen,
+                user_data=str(game_info.install_dir),
+            )
+            # finish this, have the button text be localized
+            dpg.add_button(
+                label='Developer utilities',
+                width=250,
+                height=28,
+                callback=developer_screen.push_developer_screen,
+                user_data=str(game_info.install_dir),
+            )
+
+        dpg.add_spacer(parent="configure_game_modal")
         dpg.add_button(
             label=translator.translator.translate("close_button_text"),
             parent="configure_game_modal",
