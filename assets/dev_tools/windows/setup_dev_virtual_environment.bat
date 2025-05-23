@@ -1,11 +1,10 @@
 @echo off
+cd /d "%~dp0"
 
-cd /d %~dp0
+call install_hatch.bat
 
-set "py_project_dev_tools_exe=%CD%\..\py_project_dev_tools.exe"
+cd /d "..\..\.."
 
-set "toml=%CD%\..\..\..\pyproject.toml"
+hatch env create dev
 
-"%py_project_dev_tools_exe%" setup_virtual_environment --project_toml_path "%toml%" --env_name "dev"
-
-exit /b 0
+exit /b
