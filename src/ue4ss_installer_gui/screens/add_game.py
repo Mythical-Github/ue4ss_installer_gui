@@ -13,7 +13,6 @@ from ue4ss_installer_gui import (
     ue4ss,
     unreal_engine,
 )
-from ue4ss_installer_gui.screens import main_ue4ss_screen
 
 
 def game_dir_actually_has_unreal_game_check(game_dir_path: pathlib.Path):
@@ -188,7 +187,7 @@ def choose_directory():
         modal=True,
         width=constants.WINDOW_WIDTH - 80,
         height=constants.WINDOW_HEIGHT - 80,
-        cancel_callback=main_ue4ss_screen.push_main_screen
+        cancel_callback=main_ue4ss_screen.push_main_screen,
     )
 
 

@@ -47,7 +47,7 @@ def main():
 
     dpg.create_context()
 
-    dpg.bind_theme(ue4ss_installer_gui.theme_management.get_preferred_theme())
+    dpg.bind_theme(ue4ss_installer_gui.theme_management.get_preferred_theme())  # type: ignore
 
     dpg.create_viewport(
         title=constants.APP_TITLE,

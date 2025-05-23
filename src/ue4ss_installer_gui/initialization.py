@@ -8,7 +8,9 @@ from ue4ss_installer_gui.checks import online_check
 def init():
     settings.init_settings()
     loaded_settings = settings.get_settings()
-    use_force_offline_mode = loaded_settings.get('GUI', {}).get('use_force_offline_mode', False)
+    use_force_offline_mode = loaded_settings.get("GUI", {}).get(
+        "use_force_offline_mode", False
+    )
     if not use_force_offline_mode:
         online_check.init_is_online()
     print(f"Is online: {online_check.is_online}")

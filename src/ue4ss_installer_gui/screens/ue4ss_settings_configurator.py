@@ -3,7 +3,11 @@ import pathlib
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui.screens import configure_game
-from ue4ss_installer_gui.ue4ss import parse_ue4ss_settings_file, ConfigSection, get_ue4ss_settings_path
+from ue4ss_installer_gui.ue4ss import (
+    parse_ue4ss_settings_file,
+    ConfigSection,
+    get_ue4ss_settings_path,
+)
 
 
 # finish later, localize all text in this file
@@ -34,8 +38,10 @@ def push_ue4ss_settings_configurator_screen(sender, app_data, user_data):
         no_resize=True,
         height=-1,
     ):
-        
-        add_centered_text(text='UE4SS Settings Configurator', parent='ue4ss_settings_configurator_screen')
+        add_centered_text(
+            text="UE4SS Settings Configurator",
+            parent="ue4ss_settings_configurator_screen",
+        )
         dpg.add_spacer()
         dpg.add_button(
             label=get_settings_editor_toggle_value(),
@@ -62,25 +68,32 @@ def should_show_cancel_and_save_buttons() -> bool:
 
 def refresh_settings_scroll_box(game_exe_directory: pathlib.Path):
     dpg.delete_item("settings_scroll_box", children_only=True)
-    add_headers_entry_to_scroll_box("settings_scroll_box", parse_ue4ss_settings_file(str(get_ue4ss_settings_path(game_exe_directory))))
+    add_headers_entry_to_scroll_box(
+        "settings_scroll_box",
+        parse_ue4ss_settings_file(str(get_ue4ss_settings_path(game_exe_directory))),
+    )
 
 
-def toggle_between_text_and_menu_settings_editor(sender, app_data, game_exe_directory: pathlib.Path):
+def toggle_between_text_and_menu_settings_editor(
+    sender, app_data, game_exe_directory: pathlib.Path
+):
     # add toggling here later
     refresh_settings_scroll_box(game_exe_directory)
 
 
 def get_settings_editor_toggle_value() -> str:
     # swap to menu editor, swap to text editor toggle
-    return 'Swap to text editor'
+    return "Swap to text editor"
 
 
-def add_headers_entry_to_scroll_box(scroll_box_tag: str, settings_list: list[ConfigSection]):
+def add_headers_entry_to_scroll_box(
+    scroll_box_tag: str, settings_list: list[ConfigSection]
+):
     for entry in settings_list:
-        if entry.header == '':
-            window_tag = f'settings_scroll_box_{str(uuid.uuid4())}'
+        if entry.header == "":
+            window_tag = f"settings_scroll_box_{str(uuid.uuid4())}"
         else:
-            window_tag = f'settings_scroll_box_{entry.header}_{str(uuid.uuid4())}'
+            window_tag = f"settings_scroll_box_{entry.header}_{str(uuid.uuid4())}"
         dpg.add_child_window(parent=scroll_box_tag, tag=window_tag)
         for config_entry in entry.config_entries:
             dpg.add_text(tag=config_entry.key, parent=window_tag)
@@ -90,4 +103,4 @@ def add_headers_entry_to_scroll_box(scroll_box_tag: str, settings_list: list[Con
 # window
 #     sub window, with scrollbox, consistents of section entries, per settings header
 #         each section will have the label at the top for the section
-#             then a sibwindow within, that has a 
+#             then a sibwindow within, that has a

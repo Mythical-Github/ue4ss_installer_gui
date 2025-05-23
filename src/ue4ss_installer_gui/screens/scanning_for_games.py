@@ -28,12 +28,13 @@ def push_scanning_for_games_modal_screen():
         no_open_over_existing_popup=False,
         width=constants.WINDOW_WIDTH - 18,
         height=constants.WINDOW_HEIGHT - 47,
-        no_move=True
+        no_move=True,
     ):
         dpg.add_spacer(height=300)
-        dpg.add_button(label='Scanning for games...', height=28, width=-1)
+        dpg.add_button(label="Scanning for games...", height=28, width=-1)
 
     threading.Thread(target=async_init_game_scanning, daemon=True).start()
+
 
 def async_init_game_scanning():
     settings.init_game_scanning()

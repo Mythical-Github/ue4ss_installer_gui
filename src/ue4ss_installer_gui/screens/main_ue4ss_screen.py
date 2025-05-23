@@ -4,7 +4,12 @@ import pathlib
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui.screens import add_game, configure_game, main_ue4ss_screen, main_settings_screen
+from ue4ss_installer_gui.screens import (
+    add_game,
+    configure_game,
+    main_ue4ss_screen,
+    main_settings_screen,
+)
 
 from ue4ss_installer_gui import constants, settings, unreal_engine, translator
 
@@ -80,16 +85,16 @@ def add_new_game_to_games_list(game_name: str, game_directory: str):
 
 def init_main_screen_game_list_scroll_box():
     scroll_area_height = (
-    constants.WINDOW_HEIGHT
-    - (
-        constants.HEADER_HEIGHT
-        + constants.SUBHEADER_HEIGHT
-        + constants.FOOTER_HEIGHT
-        + constants.DIVIDER_HEIGHT
-        + constants.MARGIN
+        constants.WINDOW_HEIGHT
+        - (
+            constants.HEADER_HEIGHT
+            + constants.SUBHEADER_HEIGHT
+            + constants.FOOTER_HEIGHT
+            + constants.DIVIDER_HEIGHT
+            + constants.MARGIN
+        )
+        - 98
     )
-    - 98
-)
     from ue4ss_installer_gui.checks.online_check import is_online
 
     if not is_online:
@@ -127,7 +132,7 @@ def push_custom_games_dir_dir_selector(sender, app_data, user_data):
         height=constants.WINDOW_HEIGHT - 80,
         modal=True,
         user_data=user_data,
-        cancel_callback=main_ue4ss_screen.push_main_screen
+        cancel_callback=main_ue4ss_screen.push_main_screen,
     )
 
 
@@ -219,32 +224,33 @@ def init_main_screen_footer_section():
                 )
 
                 dpg.add_button(
-                    label='Settings',
+                    label="Settings",
                     width=138,
                     height=30,
-                    callback=push_settings_screen
+                    callback=push_settings_screen,
                 )
         else:
             dpg.add_spacer(height=-1)
             dpg.add_button(
-                label='Settings',
-                width=-1,
-                height=28,
-                callback=push_settings_screen
+                label="Settings", width=-1, height=28, callback=push_settings_screen
             )
 
 
 def push_main_screen():
-    use_custom_font = settings.get_settings().get("GUI", {}).get("use_custom_font", False)
+    use_custom_font = (
+        settings.get_settings().get("GUI", {}).get("use_custom_font", False)
+    )
 
     if use_custom_font:
         font_path = settings.get_settings().get("GUI", {}).get("custom_font_path", "")
 
         if font_path and os.path.exists(font_path):
-            with dpg.font_registry(tag='font_reg'):
+            with dpg.font_registry(tag="font_reg"):
                 with dpg.font(font_path, 14) as custom_font:
                     dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
-                    dpg.add_font_range_hint(dpg.mvFontRangeHint_Chinese_Simplified_Common)
+                    dpg.add_font_range_hint(
+                        dpg.mvFontRangeHint_Chinese_Simplified_Common
+                    )
                     dpg.add_font_range_hint(dpg.mvFontRangeHint_Chinese_Full)
             dpg.bind_font(custom_font)
 
@@ -258,7 +264,7 @@ def push_main_screen():
         height=constants.WINDOW_HEIGHT - 47,
         no_move=True,
         no_resize=True,
-        no_open_over_existing_popup=False
+        no_open_over_existing_popup=False,
     ):
         offset = 0
         if settings.is_linux():

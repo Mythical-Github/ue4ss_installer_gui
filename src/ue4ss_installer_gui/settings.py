@@ -18,7 +18,7 @@ from ue4ss_installer_gui import (
 from ue4ss_installer_gui.screens import add_game
 
 
-config_dir = user_config_dir(appname=constants.APP_TITLE, appauthor='mythical_programs')
+config_dir = user_config_dir(appname=constants.APP_TITLE, appauthor="mythical_programs")
 
 os.makedirs(config_dir, exist_ok=True)
 
@@ -39,8 +39,8 @@ def make_settings_file():
         "GUI": {
             "use_custom_font": False,
             "custom_font_path": "C:/Windows/Fonts/msyh.ttc",
-            "language": "en"
-        }
+            "language": "en",
+        },
     }
 
     toml_str = tomlkit.dumps(settings)
@@ -131,13 +131,17 @@ def collect_all_scan_dirs():
     ):
         for base_dir in dir_source:
             all_game_dirs.extend(
-                unreal_engine.get_all_unreal_game_directories_in_directory_tree(str(base_dir))
+                unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+                    str(base_dir)
+                )
             )
 
     # Custom game directories
     for base_dir in settings.get_settings().get("custom_game_directories", []):
         all_game_dirs.extend(
-            unreal_engine.get_all_unreal_game_directories_in_directory_tree(str(base_dir))
+            unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+                str(base_dir)
+            )
         )
 
     # Game directories already in settings
@@ -152,10 +156,9 @@ def collect_games_to_add():
 
     for game_dir in all_game_dirs:
         game_path = pathlib.Path(game_dir)
-        if (
-            unreal_engine.does_directory_contain_unreal_game(game_path)
-            or ue4ss.is_ue4ss_installed(game_path)
-        ):
+        if unreal_engine.does_directory_contain_unreal_game(
+            game_path
+        ) or ue4ss.is_ue4ss_installed(game_path):
             if not get_is_game_in_settings(game_path):
                 games_to_add.append(game_path)
 
@@ -172,10 +175,9 @@ def collect_games_to_remove():
         path = pathlib.Path(install_dir)
         if not os.path.isdir(install_dir):
             games_to_remove.append(path)
-        elif (
-            not ue4ss.is_ue4ss_installed(path)
-            and not unreal_engine.does_directory_contain_unreal_game(path)
-        ):
+        elif not ue4ss.is_ue4ss_installed(
+            path
+        ) and not unreal_engine.does_directory_contain_unreal_game(path):
             games_to_remove.append(path)
 
     return games_to_remove
@@ -184,12 +186,11 @@ def collect_games_to_remove():
 def init_game_scanning():
     games_to_add = collect_games_to_add()
     games_to_remove = collect_games_to_remove()
-    
+
     game_directories = games_to_remove
     loaded_settings = add_game.add_manual_games_to_settings_file(games_to_add)
     updated_settings = remove_game_entries_by_game_dirs(
-        game_directories,
-        loaded_settings
+        game_directories, loaded_settings
     )
 
     save_settings(updated_settings)

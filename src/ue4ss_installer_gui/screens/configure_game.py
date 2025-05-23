@@ -6,15 +6,7 @@ import subprocess
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui import settings, ue4ss, constants, translator, file_io
-from ue4ss_installer_gui.screens import (
-    main_ue4ss_screen,
-    setup_screen, 
-    notification_screen, 
-    ue4ss_mods_configurator, 
-    ue4ss_settings_configurator,
-    bp_mod_loader_configurator,
-    developer_screen
-)
+from ue4ss_installer_gui.screens import setup_screen, notification_screen
 from ue4ss_installer_gui.checks import online_check
 
 
@@ -476,7 +468,7 @@ def push_configure_game_screen(sender, app_data, user_data):
             no_open_over_existing_popup=False,
             pos=[30, pos_y],
             no_move=True,
-            no_resize=True
+            no_resize=True,
         )
 
         install_dir = str(game_info.install_dir)

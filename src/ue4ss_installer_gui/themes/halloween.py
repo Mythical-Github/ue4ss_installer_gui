@@ -1,5 +1,6 @@
 import dearpygui.dearpygui as dpg
 
+
 def create_theme():
     with dpg.theme() as theme_id:
         with dpg.theme_component(dpg.mvAll):
@@ -26,7 +27,9 @@ def create_theme():
 
             # Scrollbar — orange hues
             dpg.add_theme_color(dpg.mvThemeCol_ScrollbarGrab, (200, 100, 40, 255))
-            dpg.add_theme_color(dpg.mvThemeCol_ScrollbarGrabHovered, (230, 130, 60, 255))
+            dpg.add_theme_color(
+                dpg.mvThemeCol_ScrollbarGrabHovered, (230, 130, 60, 255)
+            )
             dpg.add_theme_color(dpg.mvThemeCol_ScrollbarGrabActive, (180, 90, 30, 255))
 
     return theme_id

@@ -37,7 +37,9 @@ def does_root_dir_contain_exe(directory: pathlib.Path) -> bool:
     return any(file.suffix.lower() == ".exe" for file in directory.glob("*"))
 
 
-def collect_dirs_with_depth(root_dir: pathlib.Path, max_depth: int) -> list[pathlib.Path]:
+def collect_dirs_with_depth(
+    root_dir: pathlib.Path, max_depth: int
+) -> list[pathlib.Path]:
     all_dirs = []
 
     def walk_dir(current_path, current_depth):

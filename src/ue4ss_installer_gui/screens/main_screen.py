@@ -28,6 +28,6 @@ def push_main_app_screen():
         height=constants.WINDOW_HEIGHT,
         no_move=True,
         no_resize=True,
-        autosize=True
+        autosize=True,
     ):
         scanning_for_games.push_scanning_for_games_modal_screen()

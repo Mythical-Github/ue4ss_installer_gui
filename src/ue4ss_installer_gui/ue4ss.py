@@ -226,27 +226,25 @@ def parse_ue4ss_settings_file(filepath: str) -> List[ConfigSection]:
     current_section = None
     pending_comments = []
 
-    with open(filepath, 'r', encoding='utf-8') as file:
+    with open(filepath, "r", encoding="utf-8") as file:
         for line in file:
             stripped = line.strip()
             if not stripped:
                 continue
 
-            if stripped.startswith('[') and stripped.endswith(']'):
+            if stripped.startswith("[") and stripped.endswith("]"):
                 if current_section:
                     sections.append(current_section)
                 current_section = ConfigSection(header=stripped)
                 pending_comments = []
-            elif stripped.startswith(';'):
+            elif stripped.startswith(";"):
                 pending_comments.append(stripped)
-            elif '=' in stripped:
+            elif "=" in stripped:
                 if current_section is None:
                     current_section = ConfigSection(header="")
-                key, value = stripped.split('=', 1)
+                key, value = stripped.split("=", 1)
                 entry = ConfigEntry(
-                    key=key.strip(),
-                    value=value.strip(),
-                    comments=pending_comments
+                    key=key.strip(), value=value.strip(), comments=pending_comments
                 )
                 current_section.config_entries.append(entry)
                 pending_comments = []
@@ -260,7 +258,7 @@ def parse_ue4ss_settings_file(filepath: str) -> List[ConfigSection]:
 
 
 def write_ue4ss_settings_file(filepath: str, sections: List[ConfigSection]) -> None:
-    with open(filepath, 'w', encoding='utf-8') as file:
+    with open(filepath, "w", encoding="utf-8") as file:
         for section in sections:
             if section.header:
                 file.write(f"{section.header}\n")
@@ -273,7 +271,7 @@ def write_ue4ss_settings_file(filepath: str, sections: List[ConfigSection]) -> N
 
 def test_ue4ss_settings_print_out(sections: List[ConfigSection]):
     for section in sections:
-        if not section.header == '':
+        if not section.header == "":
             print(section.header)
         for entry in section.config_entries:
             for comment in entry.comments:
@@ -284,6 +282,7 @@ def test_ue4ss_settings_print_out(sections: List[ConfigSection]):
 
 def get_ue4ss_settings_path(game_directory: pathlib.Path) -> pathlib.Path:
     from ue4ss_installer_gui.screens.configure_game import get_exe_dir_from_game_dir
+
     exe_dir = get_exe_dir_from_game_dir(pathlib.Path(game_directory))
     path_one = os.path.normpath(f"{exe_dir}/ue4ss/UE4SS-settings.ini")
     path_two = os.path.normpath(f"{exe_dir}/UE4SS-settings.ini")
@@ -292,4 +291,4 @@ def get_ue4ss_settings_path(game_directory: pathlib.Path) -> pathlib.Path:
     elif os.path.isfile(path_two):
         return pathlib.Path(path_two)
     else:
-        raise RuntimeError('No ue4ss settigs found.')
+        raise RuntimeError("No ue4ss settings found.")
