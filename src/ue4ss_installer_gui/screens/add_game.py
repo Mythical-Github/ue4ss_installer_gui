@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from ue4ss_installer_gui.screens import main_screen
+from ue4ss_installer_gui.screens import main_ue4ss_screen
 from ue4ss_installer_gui import translator
 
 import dearpygui.dearpygui as dpg
@@ -87,16 +87,12 @@ def game_already_in_list_check(game_directory: pathlib.Path) -> bool:
 
     for game_entry in game_entries:
         existing_game = os.path.normcase(os.path.normpath(game_entry["install_dir"]))
-        print(f"existing game: {existing_game}")
-        print(f"normalized new game: {normalized_new_game}")
         if existing_game == normalized_new_game:
             if settings.has_inited_settings:
                 init_game_already_in_list_pop_up(game_directory)
                 dpg.split_frame()
                 dpg.configure_item("game_already_exists_popup", show=True)
-            print("true was in")
             return True
-    print("false was not in")
     return False
 
 
@@ -113,9 +109,7 @@ def game_already_in_list_check_multi(
                 init_game_already_in_list_pop_up(game_directory)
                 dpg.split_frame()
                 dpg.configure_item("game_already_exists_popup", show=True)
-            print("true was in")
             return True
-    print("false was not in")
     return False
 
 
@@ -129,8 +123,8 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
 
         was_valid = True
 
-        if game_already_in_list_check_multi(game_dir_path, loaded_settings):
-            was_valid = False
+        # if game_already_in_list_check_multi(game_dir_path, loaded_settings):
+        #     was_valid = False
         if not game_dir_actually_has_unreal_game_check(game_dir_path):
             was_valid = False
 
@@ -174,11 +168,11 @@ def callback_directory_selected(sender, app_data):
     game_directory = pathlib.Path(app_data["file_path_name"])
     game_name = os.path.basename(game_directory)
     if add_manual_game_to_settings_file(game_directory):
-        main_screen.add_new_game_to_games_list(
+        main_ue4ss_screen.add_new_game_to_games_list(
             constants.GAME_PATHS_TO_DISPLAY_NAMES.get(game_name, game_name),
             str(game_directory),
         )
-        main_screen.refresh_game_list_scroll_box()
+        main_ue4ss_screen.refresh_game_list_scroll_box()
 
 
 def choose_directory():
@@ -190,9 +184,10 @@ def choose_directory():
         show=True,
         callback=callback_directory_selected,
         tag="directory_picker",
+        modal=True,
         width=constants.WINDOW_WIDTH - 80,
         height=constants.WINDOW_HEIGHT - 80,
-        modal=True,
+        cancel_callback=main_ue4ss_screen.push_main_screen,
     )
 
 

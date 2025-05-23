@@ -1,11 +1,11 @@
 import os
-import sys
 import tomlkit
 import pathlib
 import platform
 
+from platformdirs import user_config_dir
+
 from ue4ss_installer_gui import (
-    file_io,
     logger,
     steam,
     epic,
@@ -17,7 +17,12 @@ from ue4ss_installer_gui import (
 )
 from ue4ss_installer_gui.screens import add_game
 
-SETTINGS_FILE = os.path.normpath(f"{file_io.SCRIPT_DIR}/settings.toml")
+
+config_dir = user_config_dir(appname=constants.APP_TITLE, appauthor="mythical_programs")
+
+os.makedirs(config_dir, exist_ok=True)
+
+SETTINGS_FILE = os.path.join(config_dir, "settings.toml")
 
 
 def is_windows():
@@ -34,8 +39,8 @@ def make_settings_file():
         "GUI": {
             "use_custom_font": False,
             "custom_font_path": "C:/Windows/Fonts/msyh.ttc",
-            "language": "en"
-        }
+            "language": "en",
+        },
     }
 
     toml_str = tomlkit.dumps(settings)
@@ -110,66 +115,91 @@ def remove_game_entry_by_game_dir(game_directory: pathlib.Path):
             updated_games.append(game)
 
     loaded_settings["games"] = updated_games
-    print(dict(loaded_settings))
     save_settings(loaded_settings)
 
 
 has_inited_settings = False
 
 
+def collect_all_scan_dirs():
+    all_game_dirs = []
+
+    # Steam and Epic Games
+    for dir_source in (
+        steam.get_all_steam_game_directories(),
+        epic.get_all_epic_games_game_directories(),
+    ):
+        for base_dir in dir_source:
+            all_game_dirs.extend(
+                unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+                    str(base_dir)
+                )
+            )
+
+    # Custom game directories
+    for base_dir in settings.get_settings().get("custom_game_directories", []):
+        all_game_dirs.extend(
+            unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+                str(base_dir)
+            )
+        )
+
+    # Game directories already in settings
+    all_game_dirs.extend(settings.get_game_dirs_in_settings())
+
+    return all_game_dirs
+
+
+def collect_games_to_add():
+    all_game_dirs = collect_all_scan_dirs()
+    games_to_add = []
+
+    for game_dir in all_game_dirs:
+        game_path = pathlib.Path(game_dir)
+        if unreal_engine.does_directory_contain_unreal_game(
+            game_path
+        ) or ue4ss.is_ue4ss_installed(game_path):
+            if not get_is_game_in_settings(game_path):
+                games_to_add.append(game_path)
+
+    return games_to_add
+
+
+def collect_games_to_remove():
+    games_to_remove = []
+    loaded_settings = get_settings()
+    all_games = loaded_settings.get("games", [])
+
+    for game in all_games:
+        install_dir = game.get("install_dir")
+        path = pathlib.Path(install_dir)
+        if not os.path.isdir(install_dir):
+            games_to_remove.append(path)
+        elif not ue4ss.is_ue4ss_installed(
+            path
+        ) and not unreal_engine.does_directory_contain_unreal_game(path):
+            games_to_remove.append(path)
+
+    return games_to_remove
+
+
+def init_game_scanning():
+    games_to_add = collect_games_to_add()
+    games_to_remove = collect_games_to_remove()
+
+    game_directories = games_to_remove
+    loaded_settings = add_game.add_manual_games_to_settings_file(games_to_add)
+    updated_settings = remove_game_entries_by_game_dirs(
+        game_directories, loaded_settings
+    )
+
+    save_settings(updated_settings)
+
+
 def init_settings():
     global has_inited_settings
     if not os.path.isfile(SETTINGS_FILE):
         make_settings_file()
-
-    games_to_remove = []
-    games_to_add = []
-
-    all_game_dirs = [
-        game
-        for dir_source in (
-            steam.get_all_steam_game_directories(),
-            epic.get_all_epic_games_game_directories(),
-        )
-        for base_dir in dir_source
-        for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
-            str(base_dir)
-        )
-    ]
-    for base_dir in settings.get_settings().get("custom_game_directories", []):
-        for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
-            str(base_dir)
-        ):
-            all_game_dirs.append(game)
-    str_game_settings_list = []
-    for game_dir in settings.get_game_dirs_in_settings():
-        str_game_settings_list.append(game_dir)
-    all_game_dirs.extend(str_game_settings_list)
-    for game_dir in all_game_dirs:
-        if unreal_engine.does_directory_contain_unreal_game(
-            pathlib.Path(game_dir)
-        ) or ue4ss.is_ue4ss_installed(pathlib.Path(game_dir)):
-            if not get_is_game_in_settings(pathlib.Path(game_dir)):
-                games_to_add.append(pathlib.Path(game_dir))
-    loaded_settings = get_settings()
-    all_games = loaded_settings.get("games", [])
-    all_game_dirs = []
-    for game in all_games:
-        install_dir = game.get("install_dir")
-        if not os.path.isdir(install_dir):
-            games_to_remove.append(pathlib.Path(install_dir))
-        if not ue4ss.is_ue4ss_installed(
-            pathlib.Path(install_dir)
-        ) and not unreal_engine.does_directory_contain_unreal_game(
-            pathlib.Path(install_dir)
-        ):
-            games_to_remove.append(pathlib.Path(install_dir))
-
-    save_settings(
-        remove_game_entries_by_game_dirs(
-            games_to_remove, add_game.add_manual_games_to_settings_file(games_to_add)
-        )
-    )
 
     has_inited_settings = True
     logger.log_message(f"Settings initialized from {SETTINGS_FILE}")
@@ -307,13 +337,3 @@ def remove_game_entries_by_game_dirs(
 
         loaded_settings["games"] = updated_games
     return loaded_settings
-
-
-def is_exe():
-    """
-    Checks if the currently running script is a PyInstaller-built executable (.exe).
-
-    :return: True if running as a PyInstaller-built executable, False otherwise.
-    """
-    return getattr(sys, "frozen", False) and os.path.isfile(sys.executable)
-

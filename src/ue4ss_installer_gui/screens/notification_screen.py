@@ -28,6 +28,7 @@ def push_notification_screen(notification_text: str, game_directory: pathlib.Pat
         no_open_over_existing_popup=False,
         no_resize=True,
         height=-1,
+        no_move=True,
     ):
         add_centered_text(notification_text, parent="notification_modal")
         dpg.add_spacer()

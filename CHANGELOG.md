@@ -1,10 +1,18 @@
+## 1.3.0-dev.14824348083 (2025-05-04)
+
+## 1.3.0-dev.14813771193 (2025-05-03)
+
+## 1.3.0-dev.14788153392 (2025-05-02)
+
+## 1.3.0-dev.14783947841 (2025-05-01)
+
 ## 1.3.0 (2025-05-01)
 
 ## 1.1.0-dev.14762408134 (2025-04-30)
 
 ### Feat
 
-- **congifure_game.py**: added open game paks dir button
+- **configure_game.py**: added open game paks dir button
 
 ## 1.1.0-dev.14739379206 (2025-04-29)
 
@@ -14,7 +22,7 @@
 
 ### Feat
 
-- **congifure_game.py**: added open game paks dir button
+- **configure_game.py**: added open game paks dir button
 
 ## 1.1.0-dev.14739379206 (2025-04-29)
 
@@ -27,7 +35,7 @@
 
 - **configure_game.py**: improved install/uninstall
 - **configure_game.py**: fixed managing uninstalled games with ue4ss installs
-- **configure_game.py**: fixed portable check box preference rememberance
+- **configure_game.py**: fixed portable check box preference remembrance
 - **configure_game.py**: fixed install button being usable at wrong times
 - **main_screen.py,-add_game.py**: fixed duplicate settings entries
 

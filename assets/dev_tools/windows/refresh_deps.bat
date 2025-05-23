@@ -1,11 +1,10 @@
 @echo off
+cd /d "%~dp0"
 
-cd /d %~dp0
+call install_hatch.bat
 
-set "py_project_dev_tools_exe=%CD%\..\py_project_dev_tools.exe"
+cd /d "..\..\.."
 
-set "toml=%CD%\..\..\..\pyproject.toml"
+hatch run uv sync
 
-"%py_project_dev_tools_exe%" refresh_deps --project_toml_path "%toml%"
-
-exit /b 0
+exit /b
