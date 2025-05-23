@@ -701,47 +701,47 @@ def push_configure_game_screen(sender, app_data, user_data):
                 user_data=str(game_info.install_dir),
             )
 
-        dpg.add_spacer(parent="configure_game_modal")
-        with dpg.group(
-            horizontal=True, tag="configure_button_row", parent="configure_game_modal"
-        ):
-            # finish this, have the button text be localized
-            dpg.add_button(
-                label='Configure Lua and C++ mods',
-                width=250,
-                height=28,
-                callback=ue4ss_mods_configurator.push_ue4ss_mods_configurator_screen,
-                user_data=str(game_info.install_dir),
-            )
-            # finish this, have the button text be localized
-            dpg.add_button(
-                label='Configure UE4SS settings',
-                width=250,
-                height=28,
-                callback=ue4ss_settings_configurator.push_ue4ss_settings_configurator_screen,
-                user_data=str(game_info.install_dir),
-            )
+        # dpg.add_spacer(parent="configure_game_modal")
+        # with dpg.group(
+        #     horizontal=True, tag="configure_button_row", parent="configure_game_modal"
+        # ):
+        #     # finish this, have the button text be localized
+        #     dpg.add_button(
+        #         label='Configure Lua and C++ mods',
+        #         width=250,
+        #         height=28,
+        #         callback=ue4ss_mods_configurator.push_ue4ss_mods_configurator_screen,
+        #         user_data=str(game_info.install_dir),
+        #     )
+        #     # finish this, have the button text be localized
+        #     dpg.add_button(
+        #         label='Configure UE4SS settings',
+        #         width=250,
+        #         height=28,
+        #         callback=ue4ss_settings_configurator.push_ue4ss_settings_configurator_screen,
+        #         user_data=str(game_info.install_dir),
+        #     )
 
-        dpg.add_spacer(parent="configure_game_modal")
-        with dpg.group(
-            horizontal=True, tag="configure_two_button_row", parent="configure_game_modal"
-        ):
-            # finish this, have the button text be localized
-            dpg.add_button(
-                label='Configure UE4SS BP mods',
-                width=250,
-                height=28,
-                callback=bp_mod_loader_configurator.push_bp_mod_loader_configuration_screen,
-                user_data=str(game_info.install_dir),
-            )
-            # finish this, have the button text be localized
-            dpg.add_button(
-                label='Developer utilities',
-                width=250,
-                height=28,
-                callback=developer_screen.push_developer_screen,
-                user_data=str(game_info.install_dir),
-            )
+        # dpg.add_spacer(parent="configure_game_modal")
+        # with dpg.group(
+        #     horizontal=True, tag="configure_two_button_row", parent="configure_game_modal"
+        # ):
+        #     # finish this, have the button text be localized
+        #     dpg.add_button(
+        #         label='Configure UE4SS BP mods',
+        #         width=250,
+        #         height=28,
+        #         callback=bp_mod_loader_configurator.push_bp_mod_loader_configuration_screen,
+        #         user_data=str(game_info.install_dir),
+        #     )
+        #     # finish this, have the button text be localized
+        #     dpg.add_button(
+        #         label='Developer utilities',
+        #         width=250,
+        #         height=28,
+        #         callback=developer_screen.push_developer_screen,
+        #         user_data=str(game_info.install_dir),
+        #     )
 
         dpg.add_spacer(parent="configure_game_modal")
         dpg.add_button(
