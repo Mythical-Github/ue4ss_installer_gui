@@ -1,3 +1,9 @@
+## 2.0.0-dev.15201360401 (2025-05-23)
+
+### Fix
+
+- **pyproject.toml**: added missing platformdirs
+
 ## 2.0.0-dev.15201304574 (2025-05-23)
 
 ### Feat
