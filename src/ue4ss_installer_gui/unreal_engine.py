@@ -3,7 +3,7 @@ import pathlib
 from typing import List, Union
 
 
-MAX_DEPTH = 2
+MAX_DEPTH = 1
 
 
 def get_all_win_gdk_dirs_in_dir_tree(directory: pathlib.Path) -> List[pathlib.Path]:
@@ -37,60 +37,41 @@ def does_root_dir_contain_exe(directory: pathlib.Path) -> bool:
     return any(file.suffix.lower() == ".exe" for file in directory.glob("*"))
 
 
+def collect_dirs_with_depth(root_dir: pathlib.Path, max_depth: int) -> list[pathlib.Path]:
+    all_dirs = []
+
+    def walk_dir(current_path, current_depth):
+        if current_depth > max_depth:
+            return
+        try:
+            entries = list(os.scandir(current_path))
+        except Exception as e:
+            print(f"Skipping {current_path}: {e}")
+            return
+
+        all_dirs.append(current_path)
+        for entry in entries:
+            if entry.is_dir(follow_symlinks=False):
+                walk_dir(pathlib.Path(entry.path), current_depth + 1)
+
+    walk_dir(root_dir, 0)
+    return all_dirs
+
+
 def is_unreal_game_dir(
     root_dir: Union[str, pathlib.Path],
-    max_depth: int = MAX_DEPTH,
+    max_depth: int = 1,
     include_uninstalled: bool = True,
 ) -> bool:
-    content_found = False
-    win_found = False
-    exe_found = False
-    binaries_win64_found = False
+    all_dirs = collect_dirs_with_depth(pathlib.Path(root_dir), max_depth)
 
-    stack = [(pathlib.Path(root_dir), 0)]
-
-    while stack:
-        path, depth = stack.pop()
-        if depth > max_depth:
-            continue
-
-        try:
-            with os.scandir(path) as entries:
-                for entry in entries:
-                    if entry.is_dir(follow_symlinks=False):
-                        name = entry.name
-                        if name == "Content":
-                            content_found = True
-                        elif name in ("Win64", "WinGDK"):
-                            win_found = True
-                        elif name == "Binaries":
-                            binaries_win64 = pathlib.Path(entry.path) / "Win64"
-                            if binaries_win64.is_dir():
-                                if any(
-                                    f.suffix.lower() == ".exe"
-                                    for f in binaries_win64.glob("*.exe")
-                                ):
-                                    binaries_win64_found = True
-                        stack.append((pathlib.Path(entry.path), depth + 1))
-
-                    elif entry.is_file(follow_symlinks=False):
-                        if entry.name.lower().endswith(".exe"):
-                            exe_found = True
-
-                    if (
-                        content_found
-                        and win_found
-                        and (include_uninstalled or exe_found)
-                    ):
-                        return True
-
-        except PermissionError:
-            continue
-
-    if binaries_win64_found:
-        return True
-
-    return content_found and win_found and (include_uninstalled or exe_found)
+    for _, directory in enumerate(all_dirs):
+        if does_directory_contain_unreal_game(directory):
+            if include_uninstalled:
+                return True
+            elif any(f.suffix.lower() == ".exe" for f in directory.glob("*.exe")):
+                return True
+    return False
 
 
 def get_all_unreal_game_directories_in_directory_tree(
@@ -111,13 +92,6 @@ def get_all_unreal_game_directories_in_directory_tree(
             include_uninstalled=include_uninstalled_existing_game_dirs,
         ):
             unreal_game_dirs.append(str(current_dir))
-
-        try:
-            for sub in current_dir.iterdir():
-                if sub.is_dir():
-                    recursive_scan(sub, depth + 1)
-        except PermissionError:
-            pass
 
     recursive_scan(root, 0)
     return unreal_game_dirs
