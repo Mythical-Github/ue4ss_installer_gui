@@ -3,7 +3,6 @@ To Do List:
 
 Next:
 # make text button with no bacjground then does not change on press, just to have centered text
-# get rid of extra space in footer in online mode
 # global settings files, accessible via the settings menu, add things like custom font path, lang select, etc... here
 # global font scale settings option
 #
