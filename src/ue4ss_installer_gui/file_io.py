@@ -50,3 +50,13 @@ def get_paths_of_files_in_zip(zip_file: pathlib.Path) -> list[str]:
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         paths_of_files_in_zip = zip_ref.namelist()
     return paths_of_files_in_zip
+
+
+def get_contents_of_file(file_path: str) -> str:
+    with open(file_path, 'r', encoding='utf-8-sig') as file:
+        return file.read()
+
+
+def save_content_to_file(content: str, file_path: str):
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write(content)
