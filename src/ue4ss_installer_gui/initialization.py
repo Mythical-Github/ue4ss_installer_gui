@@ -7,11 +7,7 @@ from ue4ss_installer_gui.checks import online_check
 
 def init():
     settings.init_settings()
-    loaded_settings = settings.get_settings()
-    use_force_offline_mode = loaded_settings.get("GUI", {}).get(
-        "use_force_offline_mode", False
-    )
-    if not use_force_offline_mode:
+    if not settings.get_use_force_online_mode_in_settings():
         online_check.init_is_online()
     print(f"Is online: {online_check.is_online}")
     logger.set_log_base_dir(os.path.normpath(f"{file_io.SCRIPT_DIR}/logs"))
