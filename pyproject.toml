@@ -26,7 +26,6 @@ dependencies = [
   "dearpygui",
   "requests",
   "screeninfo",
-  "babel",
   "platformdirs"
 ]
 
