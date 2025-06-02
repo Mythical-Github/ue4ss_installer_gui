@@ -1,19 +1,7 @@
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui.screens import scanning_for_games
-from ue4ss_installer_gui import constants
-
-
-def add_centered_text(text, parent):
-    char_width = 7.25
-    available_width = 508
-
-    text_width = len(text) * char_width
-    center_x = int((available_width - text_width) / 2) - 2
-
-    with dpg.group(horizontal=True, parent=parent):
-        dpg.add_spacer(width=center_x)
-        dpg.add_text(text)
+from ue4ss_installer_gui.screens import scanning_for_games, main_ue4ss_screen
+from ue4ss_installer_gui import constants, settings
 
 
 def push_main_app_screen():
@@ -30,4 +18,7 @@ def push_main_app_screen():
         no_resize=True,
         autosize=True,
     ):
-        scanning_for_games.push_scanning_for_games_modal_screen()
+        if settings.get_use_automatic_game_scanning_in_settings():
+            scanning_for_games.push_scanning_for_games_modal_screen()
+        else:
+            main_ue4ss_screen.push_main_screen()
