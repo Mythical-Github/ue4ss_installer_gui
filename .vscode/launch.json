@@ -77,7 +77,8 @@
       "module": "ue4ss_installer_gui",
       "name": "ue4ss_installer_gui",
       "request": "launch",
-      "type": "debugpy"
+      "type": "debugpy",
+      "justMyCode": false
     }
   ],
   "version": "0.2.0"
