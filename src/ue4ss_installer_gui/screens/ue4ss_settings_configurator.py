@@ -1,106 +1,139 @@
-import uuid
-import pathlib
+import os
+import sys
+import subprocess
+from typing import Callable, Any
+
+
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui.screens import configure_game
-from ue4ss_installer_gui.ue4ss import (
-    parse_ue4ss_settings_file,
-    ConfigSection,
-    get_ue4ss_settings_path,
-)
+from ue4ss_installer_gui import ue4ss, grid
+from ue4ss_installer_gui.screens import text_editor_screen, configure_game
+
+# there should be an edit file directly button, and a close button at the bottom
+# edit directly brings up a text editor screen
+# close button returns to the configure game screen for said game
+# above the two above buttons, should be a section that contains a scrollbox containing key value pairs iwth comments in sections that can be edited and toggled
 
 
-# finish later, localize all text in this file
+def open_settings_file_callback(sender, app_data, user_data):
+    settings_path = str(ue4ss.get_ue4ss_settings_path(user_data))
+
+    if not os.path.isfile(settings_path):
+        print(f"Settings file does not exist: {settings_path}")
+        return
+
+    try:
+        if sys.platform.startswith("win"):
+            os.startfile(settings_path)
+        elif sys.platform.startswith("linux"):
+            subprocess.Popen(["xdg-open", settings_path])
+        elif sys.platform.startswith("darwin"):
+            subprocess.Popen(["open", settings_path])
+        else:
+            print("Unsupported OS.")
+    except Exception as e:
+        print(f"Failed to open settings file: {e}")
 
 
-def add_centered_text(text, parent):
-    char_width = 7.25
-    available_width = 508
+def edit_settings_file_callback(sender, app_data, user_data):
+    if isinstance(user_data, dict):
+        payload = user_data
+    else:
+        payload = {
+            "file_path": str(ue4ss.get_ue4ss_settings_path(user_data)),
+            "finished_callback": push_screen
+        }
 
-    text_width = len(text) * char_width
-    center_x = int((available_width - text_width) / 2) - 2
-
-    with dpg.group(horizontal=True, parent=parent):
-        dpg.add_spacer(width=center_x)
-        dpg.add_text(text)
+    text_editor_screen.push_text_editor_screen(sender, app_data, payload)
 
 
-def push_ue4ss_settings_configurator_screen(sender, app_data, user_data):
-    if dpg.does_item_exist("ue4ss_settings_configurator_screen"):
-        dpg.delete_item("ue4ss_settings_configurator_screen")
+def cancel_edits_callback(sender, app_data, user_data):
+    return
+
+
+def save_edits_callback(sender, app_data, user_data):
+    return
+
+
+def push_screen(sender, app_data, user_data):
+    screen_tag = "ue4ss_settings_configurator_screen"
+    if dpg.does_item_exist(screen_tag):
+        dpg.delete_item(screen_tag)
 
     with dpg.window(
-        tag="ue4ss_settings_configurator_screen",
+        tag=screen_tag,
         modal=True,
         no_title_bar=True,
-        min_size=[524, 1],
         no_open_over_existing_popup=False,
         no_resize=True,
-        height=-1,
+        min_size=[524, 400],
+        max_size=[524, 9999],
+        no_move=True
     ):
-        add_centered_text(
-            text="UE4SS Settings Configurator",
-            parent="ue4ss_settings_configurator_screen",
-        )
-        dpg.add_spacer()
+        # settings_path = ue4ss.get_ue4ss_settings_path(user_data)
+        # settings_content = file_io.get_contents_of_file(str(settings_path))
+        # dpg.add_input_text(tag=f"{screen_tag}_input_text", default_value=settings_content, multiline=True, width=-1, height=340)
+
+        grid_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+            "button_3": {
+                dpg.add_button: {
+                    "label": "Cancel edits",
+                    "width": -1,
+                    "height": 28,
+                    "callback": cancel_edits_callback
+                }
+            },
+            "button_4": {
+                dpg.add_button: {
+                    "label": "Save edits",
+                    "width": -1,
+                    "height": 28,
+                    "callback": save_edits_callback
+                }
+            },
+            "button_1": {
+                dpg.add_button: {
+                    "label": "Edit settings file",
+                    "width": -1,
+                    "height": 28,
+                    "callback": edit_settings_file_callback,
+                    "user_data": user_data
+                }
+            },
+            "button_2": {
+                dpg.add_button: {
+                    "label": "Open settings file",
+                    "width": -1,
+                    "height": 28,
+                    "callback": open_settings_file_callback,
+                    "user_data": user_data
+                }
+            },
+        }
+        with dpg.child_window(
+            width=-1, height=400, tag="ue4ss_settings_scroll", autosize_x=True
+        ):
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+            dpg.add_button(width=-1, height=28)
+
+        grid.add_spaced_item_grid(grid_buttons)
+
         dpg.add_button(
-            label=get_settings_editor_toggle_value(),
-            width=-1,
-            height=28,
-            callback=toggle_between_text_and_menu_settings_editor,
-            user_data=user_data,
+            label="Close", height=28, width=-1, callback=lambda: configure_game.push_configure_game_screen(sender, app_data, user_data)
         )
-        # add a space then horizontal here with two buttons cancel and save for the text editing of the settings file
-        dpg.add_spacer()
-        dpg.add_button(
-            label="Close",
-            width=-1,
-            height=28,
-            callback=configure_game.push_configure_game_screen,
-            user_data=user_data,
-        )
-
-
-def should_show_cancel_and_save_buttons() -> bool:
-    should_show_buttons = True
-    return should_show_buttons
-
-
-def refresh_settings_scroll_box(game_exe_directory: pathlib.Path):
-    dpg.delete_item("settings_scroll_box", children_only=True)
-    add_headers_entry_to_scroll_box(
-        "settings_scroll_box",
-        parse_ue4ss_settings_file(str(get_ue4ss_settings_path(game_exe_directory))),
-    )
-
-
-def toggle_between_text_and_menu_settings_editor(
-    sender, app_data, game_exe_directory: pathlib.Path
-):
-    # add toggling here later
-    refresh_settings_scroll_box(game_exe_directory)
-
-
-def get_settings_editor_toggle_value() -> str:
-    # swap to menu editor, swap to text editor toggle
-    return "Swap to text editor"
-
-
-def add_headers_entry_to_scroll_box(
-    scroll_box_tag: str, settings_list: list[ConfigSection]
-):
-    for entry in settings_list:
-        if entry.header == "":
-            window_tag = f"settings_scroll_box_{str(uuid.uuid4())}"
-        else:
-            window_tag = f"settings_scroll_box_{entry.header}_{str(uuid.uuid4())}"
-        dpg.add_child_window(parent=scroll_box_tag, tag=window_tag)
-        for config_entry in entry.config_entries:
-            dpg.add_text(tag=config_entry.key, parent=window_tag)
-        dpg.add_spacer(parent=window_tag)
-
-
-# window
-#     sub window, with scrollbox, consistents of section entries, per settings header
-#         each section will have the label at the top for the section
-#             then a sibwindow within, that has a
