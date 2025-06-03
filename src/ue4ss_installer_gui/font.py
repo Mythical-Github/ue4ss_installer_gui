@@ -18,8 +18,16 @@ def set_application_font():
 
     if normalized_path and os.path.exists(normalized_path):
         if not dpg.does_item_exist(font_tag):
-            with dpg.font_registry():
-                dpg.add_font(normalized_path, 14, tag=font_tag)      
+            with dpg.font_registry():   
+                font = dpg.add_font(normalized_path, 14, tag=font_tag)
+                hints = [
+                    dpg.mvFontRangeHint_Default,
+                    dpg.mvFontRangeHint_Chinese_Full,
+                    dpg.mvFontRangeHint_Japanese,
+                    dpg.mvFontRangeHint_Cyrillic,
+                ]
+                for hint in hints:
+                    dpg.add_font_range_hint(hint, parent=font)
             print(f'font_tag generated: "{font_tag}"')
         dpg.bind_font(font_tag)
     else:
