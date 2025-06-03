@@ -1,16 +1,14 @@
 import os
 import pathlib
 
-from ue4ss_installer_gui.screens import main_screen
-from ue4ss_installer_gui import translator
+from ue4ss_installer_gui.screens import main_ue4ss_screen
+from ue4ss_installer_gui import translator, data_structures, ue4ss
 
 import dearpygui.dearpygui as dpg
 
 from ue4ss_installer_gui import (
-    data_structures,
     settings,
     constants,
-    ue4ss,
     unreal_engine,
 )
 
@@ -82,21 +80,17 @@ def init_game_already_in_list_pop_up(game_directory: pathlib.Path):
 
 
 def game_already_in_list_check(game_directory: pathlib.Path) -> bool:
-    game_entries = settings.get_settings().get("games", [])
+    game_entries = settings.get_game_entries_in_settings()
     normalized_new_game = os.path.normcase(os.path.normpath(str(game_directory)))
 
     for game_entry in game_entries:
         existing_game = os.path.normcase(os.path.normpath(game_entry["install_dir"]))
-        print(f"existing game: {existing_game}")
-        print(f"normalized new game: {normalized_new_game}")
         if existing_game == normalized_new_game:
             if settings.has_inited_settings:
                 init_game_already_in_list_pop_up(game_directory)
                 dpg.split_frame()
                 dpg.configure_item("game_already_exists_popup", show=True)
-            print("true was in")
             return True
-    print("false was not in")
     return False
 
 
@@ -113,90 +107,13 @@ def game_already_in_list_check_multi(
                 init_game_already_in_list_pop_up(game_directory)
                 dpg.split_frame()
                 dpg.configure_item("game_already_exists_popup", show=True)
-            print("true was in")
             return True
-    print("false was not in")
     return False
 
 
-def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dict:
-    bool_list = []
-    loaded_settings = settings.get_settings()
-    for game_dir_path in game_dir_paths:
-        if not os.path.isdir(game_dir_path):
-            bool_list.append(False)
-            continue
-
-        was_valid = True
-
-        if game_already_in_list_check_multi(game_dir_path, loaded_settings):
-            was_valid = False
-        if not game_dir_actually_has_unreal_game_check(game_dir_path):
-            was_valid = False
-
-        bool_list.append(was_valid)
-
-        if not was_valid:
-            continue
-
-        game_entry = data_structures.GameInfo(
-            install_dir=game_dir_path,
-            game_title=os.path.basename(str(game_dir_path)),
-            ue4ss_version=ue4ss.get_default_ue4ss_version_tag(),
-            last_installed_version="",
-            platform=data_structures.GamePlatforms.OTHER,
-            using_developer_version=False,
-            show_pre_releases=False,
-            using_portable_version=False,
-            using_keep_mods_and_settings=False,
-            installed_files=[],
-        )
-
-        game_entry_dict = {
-            "install_dir": str(game_entry.install_dir),
-            "game_title": game_entry.game_title,
-            "ue4ss_version": game_entry.ue4ss_version,
-            "platform": game_entry.platform.value,
-            "using_developer_version": game_entry.using_developer_version,
-            "show_pre_releases": game_entry.show_pre_releases,
-            "using_keep_mods_and_settings": game_entry.using_keep_mods_and_settings,
-            "installed_files": [],
-        }
-
-        games_list = loaded_settings.get("games", [])
-        games_list.append(game_entry_dict)
-        loaded_settings["games"] = games_list
-
-    return loaded_settings
-
-
-def callback_directory_selected(sender, app_data):
-    game_directory = pathlib.Path(app_data["file_path_name"])
-    game_name = os.path.basename(game_directory)
-    if add_manual_game_to_settings_file(game_directory):
-        main_screen.add_new_game_to_games_list(
-            constants.GAME_PATHS_TO_DISPLAY_NAMES.get(game_name, game_name),
-            str(game_directory),
-        )
-        main_screen.refresh_game_list_scroll_box()
-
-
-def choose_directory():
-    if dpg.does_item_exist("directory_picker"):
-        dpg.delete_item("directory_picker")
-
-    dpg.add_file_dialog(
-        directory_selector=True,
-        show=True,
-        callback=callback_directory_selected,
-        tag="directory_picker",
-        width=constants.WINDOW_WIDTH - 80,
-        height=constants.WINDOW_HEIGHT - 80,
-        modal=True,
-    )
-
-
 def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
+    if os.path.normpath(str(game_dir_path)[0]) == os.path.normpath(str(game_dir_path)[0]).lower():
+        return False
     if not os.path.isdir(game_dir_path):
         return False
     was_valid = True
@@ -225,7 +142,7 @@ def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
         new_installed_files.append(file)
 
     game_entry_dict = {
-        "install_dir": str(game_entry.install_dir),
+        "install_dir": os.path.normpath(str(game_entry.install_dir)),
         "game_title": game_entry.game_title,
         "ue4ss_version": game_entry.ue4ss_version,
         "platform": game_entry.platform.value,
@@ -241,3 +158,30 @@ def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
 
     settings.save_settings(loaded_settings)
     return was_valid
+
+
+def callback_directory_selected(sender, app_data):
+    game_directory = pathlib.Path(app_data["file_path_name"])
+    game_name = os.path.basename(game_directory)
+    if add_manual_game_to_settings_file(game_directory):
+        main_ue4ss_screen.add_new_game_to_games_list(
+            constants.GAME_PATHS_TO_DISPLAY_NAMES.get(game_name, game_name),
+            str(game_directory),
+        )
+        main_ue4ss_screen.refresh_game_list_scroll_box()
+
+
+def choose_directory():
+    if dpg.does_item_exist("directory_picker"):
+        dpg.delete_item("directory_picker")
+
+    dpg.add_file_dialog(
+        directory_selector=True,
+        show=True,
+        callback=callback_directory_selected,
+        tag="directory_picker",
+        modal=True,
+        width=constants.WINDOW_WIDTH - 80,
+        height=constants.WINDOW_HEIGHT - 80,
+        cancel_callback=main_ue4ss_screen.push_main_screen,
+    )

@@ -1,3 +1,57 @@
+## 3.0.0 (2025-06-02)
+
+## 2.0.0 (2025-05-23)
+
+## 3.0.0-dev.15400327220 (2025-06-02)
+
+### Feat
+
+- **All**: All previous commits
+
+## 2.0.0-dev.15217455808 (2025-05-23)
+
+## 2.0.0 (2025-05-23)
+
+## 2.0.0-dev.15201360401 (2025-05-23)
+
+### Fix
+
+- **pyproject.toml**: added missing platformdirs
+
+## 2.0.0-dev.15201304574 (2025-05-23)
+
+### Feat
+
+- **to_do_list.txt**: force bump
+
+## 1.3.0 (2025-05-01)
+
+## 1.3.0-dev.14824348083 (2025-05-04)
+
+## 1.3.0-dev.14813771193 (2025-05-03)
+
+## 1.3.0-dev.14788153392 (2025-05-02)
+
+## 1.3.0-dev.14783947841 (2025-05-01)
+
+## 1.3.0 (2025-05-01)
+
+## 1.1.0-dev.14762408134 (2025-04-30)
+
+### Feat
+
+- **configure_game.py**: added open game paks dir button
+
+## 1.1.0-dev.14739379206 (2025-04-29)
+
+## 1.2.0 (2025-04-29)
+
+## 1.1.0-dev.14762408134 (2025-04-30)
+
+### Feat
+
+- **configure_game.py**: added open game paks dir button
+
 ## 1.1.0-dev.14739379206 (2025-04-29)
 
 ### Feat
@@ -9,9 +63,15 @@
 
 - **configure_game.py**: improved install/uninstall
 - **configure_game.py**: fixed managing uninstalled games with ue4ss installs
-- **configure_game.py**: fixed portable check box preference rememberance
+- **configure_game.py**: fixed portable check box preference remembrance
 - **configure_game.py**: fixed install button being usable at wrong times
 - **main_screen.py,-add_game.py**: fixed duplicate settings entries
+
+## 1.1.0 (2025-04-28)
+
+### Feat
+
+- **fr.json**: added french localization
 
 ## 1.0.3-dev.14715860055 (2025-04-28)
 

@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 src/ue4ss_installer_gui/settings.toml
 /Mods
+requirements/requirements-dev.txt

@@ -1,6 +1,8 @@
 import os
 from screeninfo import get_monitors
 
+from ue4ss_installer_gui.checks.online_check import is_online
+
 PRIMARY_MONITOR = get_monitors()[0]
 
 SCREEN_WIDTH = PRIMARY_MONITOR.width
@@ -14,7 +16,6 @@ Y = int((SCREEN_HEIGHT - WINDOW_HEIGHT) / 2)
 
 HEADER_HEIGHT = 40
 SUBHEADER_HEIGHT = 30
-FOOTER_HEIGHT = 28
 DIVIDER_HEIGHT = 15
 MARGIN = 40
 

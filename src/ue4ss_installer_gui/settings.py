@@ -1,23 +1,45 @@
 import os
-import sys
 import tomlkit
 import pathlib
 import platform
 
+from platformdirs import user_config_dir
+
 from ue4ss_installer_gui import (
-    file_io,
     logger,
     steam,
     epic,
     unreal_engine,
-    settings,
     ue4ss,
     constants,
-    data_structures,
+    data_structures
 )
-from ue4ss_installer_gui.screens import add_game
 
-SETTINGS_FILE = os.path.normpath(f"{file_io.SCRIPT_DIR}/settings.toml")
+
+config_dir = user_config_dir(appname=constants.APP_TITLE, appauthor="mythical_programs")
+
+os.makedirs(config_dir, exist_ok=True)
+
+SETTINGS_FILE = os.path.join(config_dir, "settings.toml")
+
+
+# def get_valid_language_options() -> list[str]:
+#     specified_dir = os.path.normpath(f'{file_io.SCRIPT_DIR}/assets/localization')
+
+#     if not os.path.isdir(specified_dir):
+#         return []
+
+#     language_options = [
+#         os.path.splitext(file)[0]
+#         for file in os.listdir(specified_dir)
+#         if os.path.isfile(os.path.join(specified_dir, file))
+#     ]
+
+#     return language_options
+
+
+def get_default_locale() -> str:
+    return 'en'
 
 
 def is_windows():
@@ -29,7 +51,14 @@ def is_linux():
 
 
 def make_settings_file():
-    settings = {"games": []}
+    settings = {
+        "games": [],
+        "GUI": {
+            "use_custom_font": False,
+            f"custom_font_path": get_system_font_path(),
+            "language": "en",
+        },
+    }
 
     toml_str = tomlkit.dumps(settings)
 
@@ -74,9 +103,8 @@ def save_settings(settings_dictionary: dict):
 
 
 def get_is_game_in_settings(game_directory: pathlib.Path) -> bool:
-    game_entries = settings.get_settings().get("games", {})
     is_game_already_in_list = False
-    for game_entry in game_entries:
+    for game_entry in get_game_entries_in_settings():
         if os.path.normpath(game_entry["install_dir"]) == os.path.normpath(
             str(game_directory)
         ):
@@ -103,66 +131,78 @@ def remove_game_entry_by_game_dir(game_directory: pathlib.Path):
             updated_games.append(game)
 
     loaded_settings["games"] = updated_games
-    print(dict(loaded_settings))
     save_settings(loaded_settings)
 
 
 has_inited_settings = False
 
 
+def collect_all_scan_dirs():
+    all_game_dirs = []
+
+    # Steam and Epic Games
+    for dir_source in (
+        steam.get_all_steam_game_directories(),
+        epic.get_all_epic_games_game_directories(),
+    ):
+        for base_dir in dir_source:
+            all_game_dirs.extend(
+                unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+                    str(base_dir)
+                )
+            )
+
+    # Custom game directories
+    for base_dir in get_settings().get("custom_game_directories", []):
+        all_game_dirs.extend(
+            unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+                str(base_dir)
+            )
+        )
+
+    # Game directories already in settings
+    all_game_dirs.extend(get_game_dirs_in_settings())
+
+    return all_game_dirs
+
+
+def collect_games_to_add():
+    all_game_dirs = collect_all_scan_dirs()
+    games_to_add = []
+
+    for game_dir in all_game_dirs:
+        game_path = pathlib.Path(game_dir)
+        if unreal_engine.does_directory_contain_unreal_game(
+            game_path
+        ) or ue4ss.is_ue4ss_installed(game_path):
+            if not get_is_game_in_settings(game_path):
+                games_to_add.append(game_path)
+
+    return games_to_add
+
+
+def collect_games_to_remove():
+    games_to_remove = []
+    loaded_settings = get_settings()
+    all_games = loaded_settings.get("games", [])
+
+    for game in all_games:
+        install_dir = game.get("install_dir")
+        path = pathlib.Path(install_dir)
+        if not os.path.isdir(install_dir):
+            games_to_remove.append(path)
+        elif not ue4ss.is_ue4ss_installed(
+            path
+        ) and not unreal_engine.does_directory_contain_unreal_game(path):
+            games_to_remove.append(path)
+
+    return games_to_remove
+
+
 def init_settings():
     global has_inited_settings
     if not os.path.isfile(SETTINGS_FILE):
         make_settings_file()
-
-    games_to_remove = []
-    games_to_add = []
-
-    all_game_dirs = [
-        game
-        for dir_source in (
-            steam.get_all_steam_game_directories(),
-            epic.get_all_epic_games_game_directories(),
-        )
-        for base_dir in dir_source
-        for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
-            str(base_dir)
-        )
-    ]
-    for base_dir in settings.get_settings().get("custom_game_directories", []):
-        for game in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
-            str(base_dir)
-        ):
-            all_game_dirs.append(game)
-    str_game_settings_list = []
-    for game_dir in settings.get_game_dirs_in_settings():
-        str_game_settings_list.append(game_dir)
-    all_game_dirs.extend(str_game_settings_list)
-    for game_dir in all_game_dirs:
-        if unreal_engine.does_directory_contain_unreal_game(
-            pathlib.Path(game_dir)
-        ) or ue4ss.is_ue4ss_installed(pathlib.Path(game_dir)):
-            if not get_is_game_in_settings(pathlib.Path(game_dir)):
-                games_to_add.append(pathlib.Path(game_dir))
-    loaded_settings = get_settings()
-    all_games = loaded_settings.get("games", [])
-    all_game_dirs = []
-    for game in all_games:
-        install_dir = game.get("install_dir")
-        if not os.path.isdir(install_dir):
-            games_to_remove.append(pathlib.Path(install_dir))
-        if not ue4ss.is_ue4ss_installed(
-            pathlib.Path(install_dir)
-        ) and not unreal_engine.does_directory_contain_unreal_game(
-            pathlib.Path(install_dir)
-        ):
-            games_to_remove.append(pathlib.Path(install_dir))
-
-    save_settings(
-        remove_game_entries_by_game_dirs(
-            games_to_remove, add_game.add_manual_games_to_settings_file(games_to_add)
-        )
-    )
 
     has_inited_settings = True
     logger.log_message(f"Settings initialized from {SETTINGS_FILE}")
@@ -181,16 +221,37 @@ def get_settings() -> tomlkit.TOMLDocument:
 
 def get_game_dirs_in_settings() -> list[pathlib.Path]:
     settings_game_dirs = []
-    loaded_settings = settings.get_settings()
-    games_list = loaded_settings.get("games", {})
-    for entry in games_list:
-        settings_game_dirs.append(entry.get("install_dir"))
+    for entry in get_game_entries_in_settings():
+        settings_game_dirs.append(os.path.normpath(entry.get("install_dir")))
     return settings_game_dirs
+
+
+def get_install_dirs_to_game_titles() -> dict[str, str]:
+    install_dir_dict = {}
+    for game in get_game_entries_in_settings():
+        game_title = game.get("game_title")
+        install_dir = game.get("install_dir")
+
+        if game_title in constants.INVALID_GAMES:
+            continue
+
+        matched = False
+        for game_key in constants.GAME_PATHS_TO_DISPLAY_NAMES.keys():
+            if game_key in install_dir:
+                display_name = constants.GAME_PATHS_TO_DISPLAY_NAMES[game_key]
+                install_dir_dict[install_dir] = display_name
+                matched = True
+                break
+
+        if not matched:
+            install_dir_dict[install_dir] = game_title
+
+    return install_dir_dict
 
 
 def get_game_titles_to_install_dirs() -> dict[str, str]:
     game_dict = {}
-    for game in get_settings().get("games", []):
+    for game in get_game_entries_in_settings():
         game_title = game.get("game_title")
         install_dir = game.get("install_dir")
 
@@ -214,7 +275,7 @@ def get_game_titles_to_install_dirs() -> dict[str, str]:
 def get_game_info_instance_in_settings_from_game_directory(
     game_directory: str,
 ) -> data_structures.GameInfo | None:
-    for game in get_settings().get("games", []):
+    for game in get_game_entries_in_settings():
         if os.path.normpath(game.get("install_dir")) == os.path.normpath(
             game_directory
         ):
@@ -224,7 +285,7 @@ def get_game_info_instance_in_settings_from_game_directory(
 
 def game_info_data_class_to_game_info_dict(game_info: data_structures.GameInfo) -> dict:
     return {
-        "install_dir": str(game_info.install_dir),
+        "install_dir": os.path.normpath(str(game_info.install_dir)),
         "game_title": game_info.game_title,
         "ue4ss_version": game_info.ue4ss_version,
         "last_installed_version": game_info.last_installed_version,
@@ -265,11 +326,11 @@ def save_game_info_to_settings_file(game_info: data_structures.GameInfo):
     loaded_settings = get_settings()
     games_list = loaded_settings.get("games", [])
 
-    install_dir_str = str(game_info.install_dir)
+    install_dir_str = os.path.normpath(str(game_info.install_dir))
     updated_game_dict = game_info_data_class_to_game_info_dict(game_info)
 
     for game in games_list:
-        if game["install_dir"] == install_dir_str:
+        if os.path.normpath(game["install_dir"]) == install_dir_str:
             game.update(updated_game_dict)
             break
     else:
@@ -289,7 +350,7 @@ def remove_game_entries_by_game_dirs(
         updated_games = []
 
         for game in games:
-            install_dir = game.get("install_dir")
+            install_dir = os.path.normpath(game.get("install_dir"))
             if install_dir is None:
                 updated_games.append(game)
                 continue
@@ -302,10 +363,126 @@ def remove_game_entries_by_game_dirs(
     return loaded_settings
 
 
-def is_exe():
-    """
-    Checks if the currently running script is a PyInstaller-built executable (.exe).
+def get_settings_gui_section_from_settings():
+    return get_settings().get("GUI", {})
 
-    :return: True if running as a PyInstaller-built executable, False otherwise.
-    """
-    return getattr(sys, "frozen", False) and os.path.isfile(sys.executable)
+
+def get_default_theme_name() -> str:
+    return 'grey'
+
+
+def get_preferred_theme_name_from_settings():
+    return get_settings_gui_section_from_settings().get("preferred_theme", get_default_theme_name())
+
+
+def get_game_entries_in_settings():
+    return get_settings().get("games", [])
+
+
+def get_custom_game_directories():
+    return get_settings().get("custom_game_directories", [])
+
+
+def save_global_font_scale(font_scale: float):
+    loaded_settings = get_settings()
+    gui_settings = loaded_settings.get("GUI", {})
+    gui_settings["global_font_scale"] = font_scale
+    loaded_settings["GUI"] = gui_settings
+    save_settings(loaded_settings)
+
+
+def get_gui_setting(key, default=None):
+    return get_settings_gui_section_from_settings().get(key, default)
+
+
+def get_use_force_online_mode_in_settings():
+    return get_gui_setting("use_force_offline_mode", False)
+
+
+def get_use_automatic_game_scanning_in_settings():
+    return get_gui_setting("use_automatic_game_scanning", True)
+
+
+def get_language_from_settings():
+    return get_gui_setting("language", get_default_locale())
+
+
+def get_use_language_override_from_settings():
+    return get_gui_setting("use_language_override", False)
+
+
+def get_custom_font_path_from_settings():
+    return get_gui_setting("custom_font_path", get_system_font_path())
+
+
+def get_use_custom_font_from_settings():
+    return get_gui_setting("use_custom_font", False)
+
+
+def get_global_font_scale_from_settings():
+    return get_gui_setting("global_font_scale", 1.0)
+
+
+def get_system_font_path() -> str | None:
+    system = platform.system()
+    if system == "Windows":
+        return os.path.normpath("C:/Windows/Fonts/arial.ttf")
+    elif system == "Linux":
+        possible_paths = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+            "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+        ]
+        for path in possible_paths:
+            if os.path.isfile(path):
+                return os.path.normpath(path)
+    return None
+
+
+def set_app_window_properties_in_settings(width, height, x_position, y_position):
+    loaded_settings = get_settings()
+    gui_settings = loaded_settings.get('GUI', {})
+
+    gui_settings['x'] = x_position
+    gui_settings['y'] = y_position
+    gui_settings['width'] = width
+    gui_settings['height'] = height
+
+    loaded_settings['GUI'] = gui_settings
+    save_settings(loaded_settings)
+
+
+def update_gui_setting(key, value):
+    loaded_settings = get_settings()
+    gui_settings = loaded_settings.get("GUI", {})
+    gui_settings[key] = value
+    loaded_settings["GUI"] = gui_settings
+    save_settings(loaded_settings)
+
+
+def save_custom_font_path_to_settings(app_data):
+    update_gui_setting("custom_font_path", app_data["file_path_name"])
+
+
+def toggle_force_offline_mode_in_settings_file(sender, app_data, user_data):
+    update_gui_setting("use_force_offline_mode", app_data)
+
+
+def toggle_use_custom_font_in_settings_file(app_data):
+    update_gui_setting("use_custom_font", app_data)
+
+
+def toggle_use_automatic_game_scanning_in_settings_file(sender, app_data, user_data):
+    update_gui_setting("use_automatic_game_scanning", app_data)
+
+
+def language_combo_box_selection_changed(sender, app_data, user_data):
+    update_gui_setting("language", app_data)
+
+
+def toggle_use_language_override_in_settings_file(app_data):
+    update_gui_setting("use_language_override", app_data)
+
+
+def change_preferred_theme_in_settings(app_data):
+    update_gui_setting("preferred_theme", app_data or "default")

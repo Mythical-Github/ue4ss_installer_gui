@@ -1,17 +1,8 @@
 import pathlib
+
 import dearpygui.dearpygui as dpg
 
-
-def add_centered_text(text, parent):
-    char_width = 7.25
-    available_width = 508
-
-    text_width = len(text) * char_width
-    center_x = int((available_width - text_width) / 2) - 2
-
-    with dpg.group(horizontal=True, parent=parent):
-        dpg.add_spacer(width=center_x)
-        dpg.add_text(text)
+from ue4ss_installer_gui import auto_align
 
 
 def push_notification_screen(notification_text: str, game_directory: pathlib.Path):
@@ -28,8 +19,9 @@ def push_notification_screen(notification_text: str, game_directory: pathlib.Pat
         no_open_over_existing_popup=False,
         no_resize=True,
         height=-1,
+        no_move=True,
     ):
-        add_centered_text(notification_text, parent="notification_modal")
+        auto_align.add_centered_text(notification_text, parent="notification_modal")
         dpg.add_spacer()
         dpg.add_button(
             label="Close",

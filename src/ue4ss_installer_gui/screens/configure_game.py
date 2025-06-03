@@ -1,16 +1,26 @@
 import pathlib
 import shutil
 import os
+import uuid
 import subprocess
+from typing import Callable, Any
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import settings, ue4ss, constants, translator, file_io
-from ue4ss_installer_gui.screens import setup_screen, notification_screen
+from ue4ss_installer_gui import grid, settings, ue4ss, constants, translator, file_io, auto_align
+from ue4ss_installer_gui.screens import (
+    setup_screen, 
+    notification_screen, 
+    main_ue4ss_screen, 
+    ue4ss_settings_configurator, 
+    ue4ss_mods_configurator,
+    bp_mod_loader_configurator,
+    developer_screen
+)
 from ue4ss_installer_gui.checks import online_check
 
 
-def filter_ue4sS_tag(sender, app_data, user_data):
+def filter_ue4ss_tag(sender, app_data, user_data):
     refresh_ue4ss_tags_combo_box(user_data=user_data)
     refresh_file_to_install_combo_box(user_data)
 
@@ -251,6 +261,8 @@ def uninstall_ue4ss(user_data):
     else:
         push_uninstall_failed_screen(user_data=user_data)
 
+    main_ue4ss_screen.refresh_game_list_scroll_box()
+
 
 def install_ue4ss(user_data):
     exe_dir = get_exe_dir_from_game_dir(user_data)
@@ -272,7 +284,6 @@ def download_ue4ss(user_data):
         user_data
     )
     if game_info:
-        print(file_io.get_temp_dir())
         os.makedirs(str(file_io.get_temp_dir()), exist_ok=True)
         file_names_to_download_links = ue4ss.get_file_name_to_download_links_from_tag(
             game_info.ue4ss_version
@@ -435,27 +446,14 @@ def dismiss_configure_game_modal():
     dpg.delete_item("configure_game_modal")
 
 
-def add_centered_text(text, parent, wrap=None):
-    char_width = 7.25
-    available_width = 508
-
-    text_width = len(text) * char_width
-    center_x = int((available_width - text_width) / 2) - 2
-    wrap_width = wrap if wrap is not None else available_width
-
-    with dpg.group(horizontal=True, parent=parent):
-        dpg.add_spacer(width=max(center_x, 0))
-        dpg.add_text(text, wrap=wrap_width)
-
-
 def push_configure_game_screen(sender, app_data, user_data):
     game_info = settings.get_game_info_instance_in_settings_from_game_directory(
         str(user_data)
     )
     if online_check.is_online:
-        pos_y = 148
+        pos_y = 120
     else:
-        pos_y = 288
+        pos_y = 260
     if game_info:
         if dpg.does_item_exist("configure_game_modal"):
             dpg.delete_item("configure_game_modal")
@@ -468,6 +466,8 @@ def push_configure_game_screen(sender, app_data, user_data):
             autosize=True,
             no_open_over_existing_popup=False,
             pos=[30, pos_y],
+            no_move=True,
+            no_resize=True,
         )
 
         install_dir = str(game_info.install_dir)
@@ -486,11 +486,11 @@ def push_configure_game_screen(sender, app_data, user_data):
         if not matched:
             centered_game_name_text = f"Game: {game_info.game_title}"
 
-        add_centered_text(centered_game_name_text, parent="configure_game_modal")
+        auto_align.add_multi_line_centered_text(centered_game_name_text, parent="configure_game_modal")
 
         dpg.add_spacer(parent="configure_game_modal")
 
-        add_centered_text(
+        auto_align.add_multi_line_centered_text(
             f"{translator.translator.translate('game_directory_text_label')} {str(game_info.install_dir)}",
             parent="configure_game_modal",
         )
@@ -498,7 +498,7 @@ def push_configure_game_screen(sender, app_data, user_data):
         dpg.add_spacer(parent="configure_game_modal")
 
         if online_check.is_online:
-            add_centered_text(
+            auto_align.add_centered_text(
                 translator.translator.translate("ue4ss_version_text_label"),
                 parent="configure_game_modal",
             )
@@ -516,10 +516,10 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             dpg.add_input_text(
                 width=-1,
-                hint="filter ue4ss version here...",
+                hint=translator.translator.translate("filter_ue4ss_version_hint"),
                 parent="configure_game_modal",
                 tag="filter_ue4ss_tag",
-                callback=filter_ue4sS_tag,
+                callback=filter_ue4ss_tag,
                 user_data=user_data,
             )
 
@@ -535,7 +535,7 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             dpg.add_spacer(parent="configure_game_modal")
 
-            add_centered_text(
+            auto_align.add_centered_text(
                 translator.translator.translate("ue4ss_file_to_install_text_label"),
                 parent="configure_game_modal",
             )
@@ -543,7 +543,7 @@ def push_configure_game_screen(sender, app_data, user_data):
             dpg.add_spacer(parent="configure_game_modal")
 
             dpg.add_input_text(
-                hint="filter file archive to install here...",
+                hint=translator.translator.translate("filter_ue4ss_file_hint"),
                 parent="configure_game_modal",
                 width=-1,
                 tag="filter_ue4ss_file_to_install",
@@ -562,7 +562,7 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             refresh_file_to_install_combo_box(user_data)
 
-            dpg.add_spacer(parent="configure_game_modal")
+            dpg.add_spacer(parent="configure_game_modal", height=4)
             with dpg.group(horizontal=True, parent="configure_game_modal"):
                 dpg.add_checkbox(
                     default_value=game_info.show_pre_releases,
@@ -616,105 +616,161 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             dpg.add_spacer(parent="configure_game_modal")
 
-        with dpg.group(
-            horizontal=True, tag="button_row", parent="configure_game_modal"
-        ):
-            if online_check.is_online:
-                should_show_buttons = get_should_show_uninstall_button(user_data)
-                dpg.add_button(
-                    label=translator.translator.translate("install_button_text"),
-                    height=28,
-                    callback=push_installing_screen,
-                    user_data=pathlib.Path(user_data),
-                    show=not should_show_buttons,
-                )
-                dpg.add_button(
-                    label=translator.translator.translate(
-                        "install_from_zip_button_text"
-                    ),
-                    height=28,
-                    callback=push_installing_from_zip_screen_file_selection,
-                    user_data=pathlib.Path(user_data),
-                    show=not should_show_buttons,
-                )
-                dpg.add_button(
-                    label=translator.translator.translate("reinstall_button_text"),
-                    height=28,
-                    callback=push_reinstalling_screen,
-                    user_data=pathlib.Path(user_data),
-                    show=should_show_buttons,
-                )
-                dpg.add_button(
-                    label=translator.translator.translate("uninstall_button_text"),
-                    height=28,
-                    callback=push_uninstalling_screen,
-                    user_data=pathlib.Path(user_data),
-                    show=should_show_buttons,
-                )
-            else:
-                should_show_buttons = get_should_show_uninstall_button(user_data)
-                dpg.add_button(
-                    label=translator.translator.translate(
-                        "install_from_zip_button_text"
-                    ),
-                    height=28,
-                    callback=push_installing_from_zip_screen_file_selection,
-                    user_data=pathlib.Path(user_data),
-                    show=not should_show_buttons,
-                )
-                dpg.add_button(
-                    label=translator.translator.translate("uninstall_button_text"),
-                    height=28,
-                    callback=push_uninstalling_screen,
-                    user_data=pathlib.Path(user_data),
-                    show=should_show_buttons,
-                )
 
-        resize_install_related_buttons()
+        is_installed = get_should_show_uninstall_button(user_data)
+        online_and_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+            "uninstall_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("uninstall_button_text"),
+                    "height": 28,
+                    "width": -1,
+                    "callback": push_uninstalling_screen,
+                    "user_data": pathlib.Path(user_data),
+                    "show": is_installed,
+                }
+            },
+            "reinstall_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("reinstall_button_text"),
+                    "height": 28,
+                    "width": -1,
+                    "callback": push_reinstalling_screen,
+                    "user_data": pathlib.Path(user_data),
+                    "show": is_installed,
+                }
+            }
+        }
 
-        dpg.add_spacer(parent="configure_game_modal")
 
-        with dpg.group(
-            horizontal=True, tag="button_row_dirs", parent="configure_game_modal"
-        ):
-            dpg.add_button(
-                label=translator.translator.translate("open_game_exe_directory"),
-                width=250,
-                height=28,
-                callback=open_game_exe_dir,
-                user_data=str(game_info.install_dir),
-            )
-            # finish this, have the button text be localized
-            dpg.add_button(
-                label="Open game paks directory",
-                width=250,
-                height=28,
-                callback=open_game_paks_dir,
-                user_data=str(game_info.install_dir),
-            )
+        online_and_not_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+            "install_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("install_button_text"),
+                    "height": 28,
+                    "width": -1,
+                    "callback": push_installing_screen,
+                    "user_data": pathlib.Path(user_data),
+                    "show": not is_installed,
+                }
+            },
+            "install_from_zip_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("install_from_zip_button_text"),
+                    "height": 28,
+                    "width": -1,
+                    "callback": push_installing_from_zip_screen_file_selection,
+                    "user_data": pathlib.Path(user_data),
+                    "show": not is_installed,
+                }
+            }
+        }
 
-        # dpg.add_spacer(parent="configure_game_modal")
-        # with dpg.group(
-        #     horizontal=True, tag="configure_button_row", parent="configure_game_modal"
-        # ):
-        #     # finish this, have the button text be localized
-        #     dpg.add_button(
-        #         label='Configure Mods',
-        #         width=250,
-        #         height=28,
-        #         callback=configure_mods,
-        #         user_data=str(game_info.install_dir),
-        #     )
-        #     # finish this, have the button text be localized
-        #     dpg.add_button(
-        #         label='Configure UE4SS Settings',
-        #         width=250,
-        #         height=28,
-        #         callback=configure_ue4ss_settings,
-        #         user_data=str(game_info.install_dir),
-        #     )
 
-        dpg.add_spacer(parent="configure_game_modal", height=-1)
+        offline_and_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+            "uninstall_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("uninstall_button_text"),
+                    "height": 28,
+                    "width": -1,
+                    "callback": push_uninstalling_screen,
+                    "user_data": pathlib.Path(user_data),
+                    "show": is_installed,
+                }
+            }
+        }
+
+
+        offline_and_not_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+            "install_from_zip_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("install_from_zip_button_text"),
+                    "height": 28,
+                    "width": -1,
+                    "callback": push_installing_from_zip_screen_file_selection,
+                    "user_data": pathlib.Path(user_data),
+                    "show": not is_installed,
+                }
+            }
+        }
+
+        is_online = online_check.is_online
+
+        if is_online and is_installed:
+            button_set_one = online_and_installed_buttons
+        elif is_online and not is_installed:
+            button_set_one = online_and_not_installed_buttons
+        elif not is_online and is_installed:
+            button_set_one = offline_and_installed_buttons
+        else:
+            # not is_online and not is_installed
+            button_set_one = offline_and_not_installed_buttons
+        
+
+        button_set_two: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+            "open_exe_dir_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("open_game_exe_directory"),
+                    "width": -1,
+                    "height": 28,
+                    "callback": open_game_exe_dir,
+                    "user_data": str(game_info.install_dir),
+                }
+            },
+            "open_paks_dir_button": {
+                dpg.add_button: {
+                    "label": translator.translator.translate("open_game_paks_directory"),
+                    "width": -1,
+                    "height": 28,
+                    "callback": open_game_paks_dir,
+                    "user_data": str(game_info.install_dir),
+                }
+            },
+            # "configure_lua_cpp_mods_button": {
+            #     dpg.add_button: {
+            #         "label": translator.translator.translate("configure_lua_cpp_mods"),
+            #         "width": -1,
+            #         "height": 28,
+            #         "callback": ue4ss_mods_configurator.push_ue4ss_mods_configurator_screen,
+            #         "user_data": str(game_info.install_dir),
+            #     }
+            # },
+            # "configure_ue4ss_settings_button": {
+            #     dpg.add_button: {
+            #         "label": translator.translator.translate("configure_ue4ss_settings"),
+            #         "width": -1,
+            #         "height": 28,
+            #         "callback": ue4ss_settings_configurator.push_screen,
+            #         "user_data": str(game_info.install_dir),
+            #     }
+            # },
+            # "configure_bp_mods_button": {
+            #     dpg.add_button: {
+            #         "label": translator.translator.translate("configure_ue4ss_bp_mods"),
+            #         "width": -1,
+            #         "height": 28,
+            #         "callback": bp_mod_loader_configurator.push_bp_mod_loader_configuration_screen,
+            #         "user_data": str(game_info.install_dir),
+            #     }
+            # },
+            # "developer_utilities_button": {
+            #     dpg.add_button: {
+            #         "label": translator.translator.translate("developer_utilities"),
+            #         "width": -1,
+            #         "height": 28,
+            #         "callback": developer_screen.push_developer_screen,
+            #         "user_data": str(game_info.install_dir),
+            #     }
+            # },
+        }
+
+        grid.add_spaced_item_grid(
+            parent_tag="configure_game_modal",
+            callbacks_with_kwargs=button_set_one | button_set_two,
+            column_row_preference=grid.ColumnRowPreference.Row,
+            max_columns=2
+        )
+
+
         dpg.add_button(
             label=translator.translator.translate("close_button_text"),
             parent="configure_game_modal",
@@ -730,29 +786,6 @@ def open_game_exe_dir(sender, app_data, game_directory: pathlib.Path):
         os.startfile(exe_dir)
     else:
         subprocess.run(["xdg-open", exe_dir])
-
-
-def resize_install_related_buttons():
-    all_children = dpg.get_item_children("button_row", 1)
-    visible_children = [
-        child
-        for child in all_children  # type: ignore
-        if dpg.get_item_configuration(child).get("show", True)
-    ]
-
-    button_count = len(visible_children)
-    if button_count == 0:
-        return
-
-    if button_count == 2:
-        button_width = 250
-    elif button_count == 1:
-        button_width = -1
-    else:
-        button_width = 164
-
-    for i, child_id in enumerate(visible_children):
-        dpg.configure_item(child_id, width=button_width)
 
 
 def get_should_show_uninstall_button(game_directory: pathlib.Path) -> bool:
