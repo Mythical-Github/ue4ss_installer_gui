@@ -10,10 +10,17 @@ from ue4ss_installer_gui.screens import (
     configure_game,
     main_ue4ss_screen,
     main_settings_screen,
-    scanning_for_games
+    scanning_for_games,
 )
 
-from ue4ss_installer_gui import constants, settings, translator, auto_align, unreal_engine, grid
+from ue4ss_installer_gui import (
+    constants,
+    settings,
+    translator,
+    auto_align,
+    unreal_engine,
+    grid,
+)
 
 from ue4ss_installer_gui.checks import online_check
 
@@ -45,18 +52,18 @@ used_game_button_strings = set()
 def init_main_screen_header():
     with dpg.group():
         auto_align.add_centered_text(
-            f"{translator.translator.translate('header_text')}", 
+            f"{translator.translator.translate('header_text')}",
             auto_align.AlignmentType.HORIZONTAL,
-            tag='HeaderText'
+            tag="HeaderText",
         )
-    
+
 
 def init_main_screen_sub_header():
     with dpg.group():
         auto_align.add_centered_text(
-            f"{translator.translator.translate('sub_header_text')}", 
+            f"{translator.translator.translate('sub_header_text')}",
             auto_align.AlignmentType.HORIZONTAL,
-            tag='SubHeaderText'
+            tag="SubHeaderText",
         )
 
 
@@ -119,7 +126,9 @@ def refresh_game_list_scroll_box():
 
     install_dirs_to_game_titles = settings.get_install_dirs_to_game_titles()
 
-    sorted_items = sorted(install_dirs_to_game_titles.items(), key=lambda item: item[1].lower())
+    sorted_items = sorted(
+        install_dirs_to_game_titles.items(), key=lambda item: item[1].lower()
+    )
 
     for install_dir, game_title in sorted_items:
         add_new_game_to_games_list(game_title, install_dir)
@@ -149,9 +158,9 @@ def add_custom_game_directory(games_dir):
     loaded_settings["custom_game_directories"] = extra_games_dirs_to_scan
     settings.save_settings(loaded_settings)
     games_list_path = []
-    for (
-        game_path
-    ) in unreal_engine.get_all_unreal_game_directories_in_directory_tree(games_dir):
+    for game_path in unreal_engine.get_all_unreal_game_directories_in_directory_tree(
+        games_dir
+    ):
         games_list_path.append(pathlib.Path(game_path))
     settings.save_settings(
         scanning_for_games.add_manual_games_to_settings_file(games_list_path)
@@ -181,21 +190,23 @@ def init_main_screen_footer_section():
             "button_1": {
                 dpg.add_button: {
                     "label": translator.translator.translate(
-                    "add_directory_to_scan_for_games_button_text"
-                ),
+                        "add_directory_to_scan_for_games_button_text"
+                    ),
                     "width": -1,
                     "height": 28,
-                    "callback": push_custom_games_dir_dir_selector
+                    "callback": push_custom_games_dir_dir_selector,
                 }
             },
             "button_2": {
                 dpg.add_button: {
-                    "label": translator.translator.translate("add_game_by_game_directory"),
+                    "label": translator.translator.translate(
+                        "add_game_by_game_directory"
+                    ),
                     "width": -1,
                     "height": 28,
-                    "callback": add_game.choose_directory
+                    "callback": add_game.choose_directory,
                 }
-            }
+            },
         }
 
         grid.add_spaced_item_grid(directory_buttons)
@@ -211,7 +222,7 @@ def init_main_screen_footer_section():
                         "label": translator.translator.translate("docs_button_text"),
                         "width": -1,
                         "height": 28,
-                        "callback": lambda: webbrowser.open("https://docs.ue4ss.com/")
+                        "callback": lambda: webbrowser.open("https://docs.ue4ss.com/"),
                     }
                 },
                 "discord_button": {
@@ -219,7 +230,9 @@ def init_main_screen_footer_section():
                         "label": translator.translator.translate("discord_button_text"),
                         "width": -1,
                         "height": 28,
-                        "callback": lambda: webbrowser.open("https://discord.com/invite/7qhRGHF9Tt")
+                        "callback": lambda: webbrowser.open(
+                            "https://discord.com/invite/7qhRGHF9Tt"
+                        ),
                     }
                 },
                 "github_button": {
@@ -227,7 +240,9 @@ def init_main_screen_footer_section():
                         "label": translator.translator.translate("github_button_text"),
                         "width": -1,
                         "height": 28,
-                        "callback": lambda: webbrowser.open("https://github.com/UE4SS-RE/RE-UE4SS")
+                        "callback": lambda: webbrowser.open(
+                            "https://github.com/UE4SS-RE/RE-UE4SS"
+                        ),
                     }
                 },
                 "settings_button": {
@@ -235,9 +250,9 @@ def init_main_screen_footer_section():
                         "label": "Settings",
                         "width": -1,
                         "height": 28,
-                        "callback": push_settings_screen
+                        "callback": push_settings_screen,
                     }
-                }
+                },
             }
             grid.add_spaced_item_grid(social_buttons, max_rows=1)
         else:

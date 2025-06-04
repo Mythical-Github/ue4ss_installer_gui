@@ -13,14 +13,14 @@ class AlignmentType(Enum):
 
 
 def auto_align(
-        item: int | str,
-        alignment_type: AlignmentType = AlignmentType.HORIZONTAL, 
-        x_align: float = 0.5, 
-        y_align: float = 0.5
-    ):
+    item: int | str,
+    alignment_type: AlignmentType = AlignmentType.HORIZONTAL,
+    x_align: float = 0.5,
+    y_align: float = 0.5,
+):
     def _center_h(_s, _d, data):
         parent = dpg.get_item_parent(data[0])
-        while dpg.get_item_info(parent)['type'] != "mvAppItemType::mvWindowAppItem":  # type: ignore
+        while dpg.get_item_info(parent)["type"] != "mvAppItemType::mvWindowAppItem":  # type: ignore
             parent = dpg.get_item_parent(parent)  # type: ignore
         parent_width = dpg.get_item_rect_size(parent)[0]  # type: ignore
         width = dpg.get_item_rect_size(data[0])[0]
@@ -29,7 +29,7 @@ def auto_align(
 
     def _center_v(_s, _d, data):
         parent = dpg.get_item_parent(data[0])
-        while dpg.get_item_info(parent)['type'] != "mvAppItemType::mvWindowAppItem":  # type: ignore
+        while dpg.get_item_info(parent)["type"] != "mvAppItemType::mvWindowAppItem":  # type: ignore
             parent = dpg.get_item_parent(parent)  # type: ignore
         parent_height = dpg.get_item_rect_size(parent)[1]  # type: ignore
         height = dpg.get_item_rect_size(data[0])[1]
@@ -39,64 +39,73 @@ def auto_align(
     if alignment_type in AlignmentType:
         with dpg.item_handler_registry() as handler:
             if alignment_type == AlignmentType.HORIZONTAL:
-                dpg.add_item_visible_handler(callback=_center_h, user_data=[item, x_align])
+                dpg.add_item_visible_handler(
+                    callback=_center_h, user_data=[item, x_align]
+                )
             elif alignment_type == AlignmentType.VERTICAL:
-                dpg.add_item_visible_handler(callback=_center_v, user_data=[item, y_align])
+                dpg.add_item_visible_handler(
+                    callback=_center_v, user_data=[item, y_align]
+                )
             elif alignment_type == AlignmentType.BOTH:
-                dpg.add_item_visible_handler(callback=_center_h, user_data=[item, x_align])
-                dpg.add_item_visible_handler(callback=_center_v, user_data=[item, y_align])
+                dpg.add_item_visible_handler(
+                    callback=_center_h, user_data=[item, x_align]
+                )
+                dpg.add_item_visible_handler(
+                    callback=_center_v, user_data=[item, y_align]
+                )
 
         dpg.bind_item_handler_registry(item, handler)
 
 
 def add_centered_text(
-        default_value : str ='',
-        alignment_type: AlignmentType = AlignmentType.HORIZONTAL,
-        *, 
-        label: str | None = None,
-        user_data: Any =None, 
-        use_internal_label: bool =True, 
-        tag: int | str = 0, 
-        indent: int =-1, 
-        parent: int | str = 0, 
-        before: int | str = 0, 
-        source: int | str = 0, 
-        payload_type: str ='$$DPG_PAYLOAD', 
-        drag_callback: Callable | None = None, 
-        drop_callback: Callable | None = None, 
-        show: bool =True, 
-        pos: list[int] | tuple[int, ...] = [], 
-        filter_key: str ='', 
-        tracked: bool =False, 
-        track_offset: float =0.5, 
-        wrap: int =-1, 
-        bullet: bool =False, 
-        color: list[int] | tuple[int, ...] = (-255, 0, 0, 255), 
-        show_label: bool =False, 
-        **kwargs
-    ):
+    default_value: str = "",
+    alignment_type: AlignmentType = AlignmentType.HORIZONTAL,
+    *,
+    label: str | None = None,
+    user_data: Any = None,
+    use_internal_label: bool = True,
+    tag: int | str = 0,
+    indent: int = -1,
+    parent: int | str = 0,
+    before: int | str = 0,
+    source: int | str = 0,
+    payload_type: str = "$$DPG_PAYLOAD",
+    drag_callback: Callable | None = None,
+    drop_callback: Callable | None = None,
+    show: bool = True,
+    pos: list[int] | tuple[int, ...] = [],
+    filter_key: str = "",
+    tracked: bool = False,
+    track_offset: float = 0.5,
+    wrap: int = -1,
+    bullet: bool = False,
+    color: list[int] | tuple[int, ...] = (-255, 0, 0, 255),
+    show_label: bool = False,
+    **kwargs,
+):
     with dpg.group(parent=parent):
         dpg.add_text(
-            default_value, 
-            label=label,   # type: ignore
-            user_data=user_data, 
-            use_internal_label=use_internal_label, 
-            tag=tag, 
-            indent=indent, 
-            before=before, 
-            source=source, 
-            payload_type=payload_type, 
-            drag_callback=drag_callback,   # type: ignore
+            default_value,
+            label=label,  # type: ignore
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            tag=tag,
+            indent=indent,
+            before=before,
+            source=source,
+            payload_type=payload_type,
+            drag_callback=drag_callback,  # type: ignore
             drop_callback=drop_callback,  # type: ignore
-            show=show, pos=pos, 
-            filter_key=filter_key, 
-            tracked=tracked, 
-            track_offset=track_offset, 
-            wrap=wrap, 
-            bullet=bullet, 
-            color=color, 
-            show_label=show_label, 
-            **kwargs
+            show=show,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            wrap=wrap,
+            bullet=bullet,
+            color=color,
+            show_label=show_label,
+            **kwargs,
         )
         auto_align(dpg.last_item(), alignment_type)
 

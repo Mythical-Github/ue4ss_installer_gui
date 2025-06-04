@@ -1,7 +1,6 @@
 import os
 from screeninfo import get_monitors
 
-from ue4ss_installer_gui.checks.online_check import is_online
 
 PRIMARY_MONITOR = get_monitors()[0]
 

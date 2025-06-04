@@ -11,7 +11,7 @@ def set_application_font():
     else:
         font_path = 0
 
-    font_tag = f'{font_path}_font'
+    font_tag = f"{font_path}_font"
 
     font_path_str = str(font_path) if isinstance(font_path, str) else None
     normalized_path = os.path.normpath(font_path_str) if font_path_str else None
@@ -19,9 +19,8 @@ def set_application_font():
     if normalized_path and os.path.exists(normalized_path):
         if not dpg.does_item_exist(font_tag):
             with dpg.font_registry():
-                dpg.add_font(normalized_path, 14, tag=font_tag)      
+                dpg.add_font(normalized_path, 14, tag=font_tag)
             print(f'font_tag generated: "{font_tag}"')
         dpg.bind_font(font_tag)
     else:
         dpg.bind_font(0)
-

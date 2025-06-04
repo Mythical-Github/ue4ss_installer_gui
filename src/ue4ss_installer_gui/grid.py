@@ -16,7 +16,7 @@ def calculate_grid_dimensions(
     items: Sized,
     column_row_preference: ColumnRowPreference = ColumnRowPreference.Column,
     max_columns: Optional[int] = None,
-    max_rows: Optional[int] = None
+    max_rows: Optional[int] = None,
 ) -> tuple[int, int]:
     count = len(items)
     if count == 0:
@@ -40,26 +40,28 @@ def calculate_grid_dimensions(
 
 
 def add_spaced_item_grid(
-        callbacks_with_kwargs: dict[str, dict[Callable[..., Any], dict[str, Any]]], 
-        column_row_preference: ColumnRowPreference = ColumnRowPreference.Column,
-        max_columns: Optional[int] = None,
-        max_rows: Optional[int] = None, 
-        parent_tag: str | int | None = None
-    ):
+    callbacks_with_kwargs: dict[str, dict[Callable[..., Any], dict[str, Any]]],
+    column_row_preference: ColumnRowPreference = ColumnRowPreference.Column,
+    max_columns: Optional[int] = None,
+    max_rows: Optional[int] = None,
+    parent_tag: str | int | None = None,
+):
     counter = 0
     total = len(callbacks_with_kwargs)
-    column_amount, row_amount = calculate_grid_dimensions(callbacks_with_kwargs, column_row_preference, max_columns, max_rows)
+    column_amount, row_amount = calculate_grid_dimensions(
+        callbacks_with_kwargs, column_row_preference, max_columns, max_rows
+    )
 
     table_kwargs = dict(
         header_row=False,
         resizable=False,
         policy=dpg.mvTable_SizingStretchProp,
-        width=-1
+        width=-1,
     )
     if parent_tag is not None:
-        table_kwargs["parent"] = parent_tag # type: ignore
+        table_kwargs["parent"] = parent_tag  # type: ignore
 
-    with dpg.table(**table_kwargs): # type: ignore
+    with dpg.table(**table_kwargs):  # type: ignore
         for _ in range(column_amount):
             dpg.add_table_column()
 
