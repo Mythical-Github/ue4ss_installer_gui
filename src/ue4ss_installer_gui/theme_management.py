@@ -6,7 +6,7 @@ from ue4ss_installer_gui.themes import (
     tokyo_night,
     tokyo_night_dark,
     retro,
-    jaguar
+    jaguar,
 )
 
 
@@ -37,5 +37,5 @@ theme_labels_to_themes = {
     "tokyo_night": tokyo_night.create_theme,
     "tokyo_night_dark": tokyo_night_dark.create_theme,
     "halloween": halloween.create_theme,
-    "jaguar": jaguar.create_theme
+    "jaguar": jaguar.create_theme,
 }

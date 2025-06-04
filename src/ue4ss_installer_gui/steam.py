@@ -26,19 +26,34 @@ def get_windows_steam_registry_paths() -> list[pathlib.Path]:
 def get_windows_default_steam_paths() -> list[pathlib.Path]:
     """Get Steam library paths from default drive locations."""
     steam_dirs = []
+
+    # most steam installs on c drive, but not always
+    # games installed on same drive as steam vs not have different pathing
+    # drive check and break here are meant to minimize drive reading
+
     for drive_letter in file_io.get_all_drive_letter_paths():
         if drive_letter.startswith("C"):
-            steam_directory = os.path.normpath(
-                f"{drive_letter}Program Files (x86)/Steam/steamapps/common"
-            )
+            steam_common_paths = [
+                os.path.normpath(
+                    f"{drive_letter}Program Files (x86)/Steam/steamapps/common"
+                ),
+                os.path.normpath(f"{drive_letter}SteamLibrary/steamapps/common"),
+            ]
         else:
-            steam_directory = os.path.normpath(
-                f"{drive_letter}SteamLibrary/steamapps/common"
-            )
-        if os.path.isdir(steam_directory):
-            for game_dir in pathlib.Path(steam_directory).iterdir():
-                if game_dir.is_dir():
-                    steam_dirs.append(game_dir)
+            steam_common_paths = [
+                os.path.normpath(f"{drive_letter}SteamLibrary/steamapps/common"),
+                os.path.normpath(
+                    f"{drive_letter}Program Files (x86)/Steam/steamapps/common"
+                ),
+            ]
+
+        for steam_directory in steam_common_paths:
+            if os.path.isdir(steam_directory):
+                for game_dir in pathlib.Path(steam_directory).iterdir():
+                    if game_dir.is_dir():
+                        steam_dirs.append(game_dir)
+                break
+
     return steam_dirs
 
 

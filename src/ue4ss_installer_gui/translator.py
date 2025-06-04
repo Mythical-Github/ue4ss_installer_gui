@@ -12,7 +12,9 @@ translator = None
 
 def init_translator():
     global translator
-    translator = Translator(os.path.normpath(f"{file_io.SCRIPT_DIR}/assets/localization"))
+    translator = Translator(
+        os.path.normpath(f"{file_io.SCRIPT_DIR}/assets/localization")
+    )
 
     language = settings.get_settings().get("GUI", {}).get("language", "en")
 

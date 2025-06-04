@@ -31,6 +31,7 @@ def remove_maximize_button(title=constants.APP_TITLE):
 last_resize_time = 0
 RESIZE_THROTTLE_SECONDS = 0.25
 
+
 def on_viewport_ready(sender, app_data):
     global last_resize_time
 
@@ -45,7 +46,9 @@ def on_viewport_ready(sender, app_data):
     app_width = dpg.get_viewport_width()
     app_height = dpg.get_viewport_height()
 
-    settings.set_app_window_properties_in_settings(app_width, app_height, app_x_position, app_y_position)
+    settings.set_app_window_properties_in_settings(
+        app_width, app_height, app_x_position, app_y_position
+    )
 
     remove_maximize_button(constants.APP_TITLE)
 
@@ -70,10 +73,10 @@ def main():
 
     gui_settings = settings.get_settings_gui_section_from_settings()
 
-    viewport_x = gui_settings.get('x', constants.X)
-    viewport_y = gui_settings.get('y', constants.Y)
-    viewport_width = gui_settings.get('width', constants.WINDOW_WIDTH)
-    viewport_height = gui_settings.get('height', constants.WINDOW_HEIGHT)
+    viewport_x = gui_settings.get("x", constants.X)
+    viewport_y = gui_settings.get("y", constants.Y)
+    viewport_width = gui_settings.get("width", constants.WINDOW_WIDTH)
+    viewport_height = gui_settings.get("height", constants.WINDOW_HEIGHT)
 
     dpg.create_viewport(
         title=constants.APP_TITLE,
@@ -83,14 +86,14 @@ def main():
         y_pos=viewport_y,
         resizable=False,
     )
-    
+
     dpg.set_viewport_small_icon(icon_path)
     dpg.set_viewport_large_icon(icon_path)
     dpg.set_global_font_scale(settings.get_global_font_scale_from_settings())
     dpg.configure_app(auto_device=True)
 
     font.set_application_font()
-    
+
     main_screen.push_main_app_screen()
 
     dpg.set_viewport_pos([viewport_x, viewport_y])

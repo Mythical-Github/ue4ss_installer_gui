@@ -53,10 +53,10 @@ def get_paths_of_files_in_zip(zip_file: pathlib.Path) -> list[str]:
 
 
 def get_contents_of_file(file_path: str) -> str:
-    with open(file_path, 'r', encoding='utf-8-sig') as file:
+    with open(file_path, "r", encoding="utf-8-sig") as file:
         return file.read()
 
 
 def save_content_to_file(content: str, file_path: str):
-    with open(file_path, 'w', encoding='utf-8') as file:
+    with open(file_path, "w", encoding="utf-8") as file:
         file.write(content)

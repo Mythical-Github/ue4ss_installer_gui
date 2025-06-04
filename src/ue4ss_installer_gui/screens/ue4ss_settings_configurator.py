@@ -41,7 +41,7 @@ def edit_settings_file_callback(sender, app_data, user_data):
     else:
         payload = {
             "file_path": str(ue4ss.get_ue4ss_settings_path(user_data)),
-            "finished_callback": push_screen
+            "finished_callback": push_screen,
         }
 
     text_editor_screen.push_text_editor_screen(sender, app_data, payload)
@@ -68,7 +68,7 @@ def push_screen(sender, app_data, user_data):
         no_resize=True,
         min_size=[524, 400],
         max_size=[524, 9999],
-        no_move=True
+        no_move=True,
     ):
         # settings_path = ue4ss.get_ue4ss_settings_path(user_data)
         # settings_content = file_io.get_contents_of_file(str(settings_path))
@@ -80,7 +80,7 @@ def push_screen(sender, app_data, user_data):
                     "label": "Cancel edits",
                     "width": -1,
                     "height": 28,
-                    "callback": cancel_edits_callback
+                    "callback": cancel_edits_callback,
                 }
             },
             "button_4": {
@@ -88,7 +88,7 @@ def push_screen(sender, app_data, user_data):
                     "label": "Save edits",
                     "width": -1,
                     "height": 28,
-                    "callback": save_edits_callback
+                    "callback": save_edits_callback,
                 }
             },
             "button_1": {
@@ -97,7 +97,7 @@ def push_screen(sender, app_data, user_data):
                     "width": -1,
                     "height": 28,
                     "callback": edit_settings_file_callback,
-                    "user_data": user_data
+                    "user_data": user_data,
                 }
             },
             "button_2": {
@@ -106,7 +106,7 @@ def push_screen(sender, app_data, user_data):
                     "width": -1,
                     "height": 28,
                     "callback": open_settings_file_callback,
-                    "user_data": user_data
+                    "user_data": user_data,
                 }
             },
         }
@@ -135,5 +135,10 @@ def push_screen(sender, app_data, user_data):
         grid.add_spaced_item_grid(grid_buttons)
 
         dpg.add_button(
-            label="Close", height=28, width=-1, callback=lambda: configure_game.push_configure_game_screen(sender, app_data, user_data)
+            label="Close",
+            height=28,
+            width=-1,
+            callback=lambda: configure_game.push_configure_game_screen(
+                sender, app_data, user_data
+            ),
         )

@@ -11,7 +11,7 @@ def set_application_font():
     else:
         font_path = 0
 
-    font_tag = f'{font_path}_font'
+    font_tag = f"{font_path}_font"
 
     font_path_str = str(font_path) if isinstance(font_path, str) else None
     normalized_path = os.path.normpath(font_path_str) if font_path_str else None
@@ -32,4 +32,3 @@ def set_application_font():
         dpg.bind_font(font_tag)
     else:
         dpg.bind_font(0)
-
