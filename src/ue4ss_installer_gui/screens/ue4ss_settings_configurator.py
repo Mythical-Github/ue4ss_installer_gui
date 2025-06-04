@@ -6,7 +6,7 @@ from typing import Callable, Any
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import ue4ss, grid
+from ue4ss_installer_gui import ue4ss, grid, translator
 from ue4ss_installer_gui.screens import text_editor_screen, configure_game
 
 # there should be an edit file directly button, and a close button at the bottom

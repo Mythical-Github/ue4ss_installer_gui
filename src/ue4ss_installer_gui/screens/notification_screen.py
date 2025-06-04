@@ -2,7 +2,7 @@ import pathlib
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import auto_align
+from ue4ss_installer_gui import auto_align,translator
 
 
 def push_notification_screen(notification_text: str, game_directory: pathlib.Path):
