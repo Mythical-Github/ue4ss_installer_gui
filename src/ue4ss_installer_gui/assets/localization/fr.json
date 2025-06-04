@@ -33,5 +33,16 @@
   "uninstall_failed_message_text": "La désinstallation a échoué",
   "uninstall_succeeded_message_text": "La désinstallation a réussi",
   "uninstalling_old_ue4ss_files_step_text": "Suppression anciens fichiers UE4SS",
-  "uninstalling_ue4ss_task_text": "Désinstallation de UE4SS"
+  "uninstalling_ue4ss_task_text": "Désinstallation de UE4SS",
+  "Global_font_scale": "Échelle globale de la police",
+  "Use_custom_font": "Utiliser une police personnalisée",
+  "Use_language_override": "Utiliser remplacement de langue (redémarrage requis)",
+  "Use_automatic_game_detection_scanning": "Utiliser détection automatique des jeux",
+  "Force_offline_mode": "Forcer mode hors ligne (redémarrage requis)",
+  "Theme": "Thème",
+  "Edit_settings_file": "Modifier fichier de configuration",
+  "Open_settings_file": "Ouvrir fichier de configuration",
+  "Change_font_path": "Changer le chemin de la police",
+  "font_path": "chemin de la police :",
+  "Language_override": "Remplacement de langue"
 }
