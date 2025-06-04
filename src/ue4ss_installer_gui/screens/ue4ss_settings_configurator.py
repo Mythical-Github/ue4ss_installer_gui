@@ -135,7 +135,7 @@ def push_screen(sender, app_data, user_data):
         grid.add_spaced_item_grid(grid_buttons)
 
         dpg.add_button(
-            label="Close",
+            label= f"{translator.translator.translate('close_button_text')}",
             height=28,
             width=-1,
             callback=lambda: configure_game.push_configure_game_screen(
