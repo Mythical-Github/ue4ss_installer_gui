@@ -5,6 +5,6 @@ call install_hatch.bat
 
 cd /d "..\..\.."
 
-hatch env create dev
+hatch run pre-commit run --all-files
 
 exit /b
