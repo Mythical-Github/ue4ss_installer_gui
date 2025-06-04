@@ -31,6 +31,7 @@ UE4SS consists of an injectable LUA scripting system, SDK generator, live proper
 - Developer install filter
 - Prerelease install filter
 - Social buttons
+- Theme support
 
 
 ### Join the Discord
