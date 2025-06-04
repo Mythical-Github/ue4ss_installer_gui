@@ -5,6 +5,6 @@ call install_hatch.bat
 
 cd /d "..\..\.."
 
-hatch env create
+hatch run mkdocs serve
 
 exit /b
