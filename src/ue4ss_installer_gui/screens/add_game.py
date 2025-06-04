@@ -112,7 +112,10 @@ def game_already_in_list_check_multi(
 
 
 def add_manual_game_to_settings_file(game_dir_path: pathlib.Path) -> bool:
-    if os.path.normpath(str(game_dir_path)[0]) == os.path.normpath(str(game_dir_path)[0]).lower():
+    if (
+        os.path.normpath(str(game_dir_path)[0])
+        == os.path.normpath(str(game_dir_path)[0]).lower()
+    ):
         return False
     if not os.path.isdir(game_dir_path):
         return False

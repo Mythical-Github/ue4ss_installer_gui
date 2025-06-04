@@ -28,11 +28,11 @@ def push_scanning_for_games_modal_screen():
 
 def init_game_scanning():
     games_to_add = settings.collect_games_to_add()
-    games_to_remove =  settings.collect_games_to_remove()
+    games_to_remove = settings.collect_games_to_remove()
 
     game_directories = games_to_remove
-    loaded_settings =  add_manual_games_to_settings_file(games_to_add)
-    updated_settings =  settings.remove_game_entries_by_game_dirs(
+    loaded_settings = add_manual_games_to_settings_file(games_to_add)
+    updated_settings = settings.remove_game_entries_by_game_dirs(
         game_directories, loaded_settings
     )
 
@@ -49,7 +49,10 @@ def add_manual_games_to_settings_file(game_dir_paths: list[pathlib.Path]) -> dic
     bool_list = []
     loaded_settings = settings.get_settings()
     for game_dir_path in game_dir_paths:
-        if not os.path.isdir(game_dir_path) or str(game_dir_path)[0] == str(game_dir_path)[0].lower():
+        if (
+            not os.path.isdir(game_dir_path)
+            or str(game_dir_path)[0] == str(game_dir_path)[0].lower()
+        ):
             bool_list.append(False)
             continue
 

@@ -1,21 +1,24 @@
 import pathlib
 import shutil
 import os
-import uuid
 import subprocess
 from typing import Callable, Any
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import grid, settings, ue4ss, constants, translator, file_io, auto_align
+from ue4ss_installer_gui import (
+    grid,
+    settings,
+    ue4ss,
+    constants,
+    translator,
+    file_io,
+    auto_align,
+)
 from ue4ss_installer_gui.screens import (
-    setup_screen, 
-    notification_screen, 
-    main_ue4ss_screen, 
-    ue4ss_settings_configurator, 
-    ue4ss_mods_configurator,
-    bp_mod_loader_configurator,
-    developer_screen
+    setup_screen,
+    notification_screen,
+    main_ue4ss_screen,
 )
 from ue4ss_installer_gui.checks import online_check
 
@@ -486,7 +489,9 @@ def push_configure_game_screen(sender, app_data, user_data):
         if not matched:
             centered_game_name_text = f"Game: {game_info.game_title}"
 
-        auto_align.add_multi_line_centered_text(centered_game_name_text, parent="configure_game_modal")
+        auto_align.add_multi_line_centered_text(
+            centered_game_name_text, parent="configure_game_modal"
+        )
 
         dpg.add_spacer(parent="configure_game_modal")
 
@@ -616,9 +621,10 @@ def push_configure_game_screen(sender, app_data, user_data):
 
             dpg.add_spacer(parent="configure_game_modal")
 
-
         is_installed = get_should_show_uninstall_button(user_data)
-        online_and_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+        online_and_installed_buttons: dict[
+            str, dict[Callable[..., Any], dict[str, Any]]
+        ] = {
             "uninstall_button": {
                 dpg.add_button: {
                     "label": translator.translator.translate("uninstall_button_text"),
@@ -638,11 +644,12 @@ def push_configure_game_screen(sender, app_data, user_data):
                     "user_data": pathlib.Path(user_data),
                     "show": is_installed,
                 }
-            }
+            },
         }
 
-
-        online_and_not_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+        online_and_not_installed_buttons: dict[
+            str, dict[Callable[..., Any], dict[str, Any]]
+        ] = {
             "install_button": {
                 dpg.add_button: {
                     "label": translator.translator.translate("install_button_text"),
@@ -655,18 +662,21 @@ def push_configure_game_screen(sender, app_data, user_data):
             },
             "install_from_zip_button": {
                 dpg.add_button: {
-                    "label": translator.translator.translate("install_from_zip_button_text"),
+                    "label": translator.translator.translate(
+                        "install_from_zip_button_text"
+                    ),
                     "height": 28,
                     "width": -1,
                     "callback": push_installing_from_zip_screen_file_selection,
                     "user_data": pathlib.Path(user_data),
                     "show": not is_installed,
                 }
-            }
+            },
         }
 
-
-        offline_and_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+        offline_and_installed_buttons: dict[
+            str, dict[Callable[..., Any], dict[str, Any]]
+        ] = {
             "uninstall_button": {
                 dpg.add_button: {
                     "label": translator.translator.translate("uninstall_button_text"),
@@ -679,11 +689,14 @@ def push_configure_game_screen(sender, app_data, user_data):
             }
         }
 
-
-        offline_and_not_installed_buttons: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
+        offline_and_not_installed_buttons: dict[
+            str, dict[Callable[..., Any], dict[str, Any]]
+        ] = {
             "install_from_zip_button": {
                 dpg.add_button: {
-                    "label": translator.translator.translate("install_from_zip_button_text"),
+                    "label": translator.translator.translate(
+                        "install_from_zip_button_text"
+                    ),
                     "height": 28,
                     "width": -1,
                     "callback": push_installing_from_zip_screen_file_selection,
@@ -704,7 +717,6 @@ def push_configure_game_screen(sender, app_data, user_data):
         else:
             # not is_online and not is_installed
             button_set_one = offline_and_not_installed_buttons
-        
 
         button_set_two: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
             "open_exe_dir_button": {
@@ -718,7 +730,9 @@ def push_configure_game_screen(sender, app_data, user_data):
             },
             "open_paks_dir_button": {
                 dpg.add_button: {
-                    "label": translator.translator.translate("open_game_paks_directory"),
+                    "label": translator.translator.translate(
+                        "open_game_paks_directory"
+                    ),
                     "width": -1,
                     "height": 28,
                     "callback": open_game_paks_dir,
@@ -767,9 +781,8 @@ def push_configure_game_screen(sender, app_data, user_data):
             parent_tag="configure_game_modal",
             callbacks_with_kwargs=button_set_one | button_set_two,
             column_row_preference=grid.ColumnRowPreference.Row,
-            max_columns=2
+            max_columns=2,
         )
-
 
         dpg.add_button(
             label=translator.translator.translate("close_button_text"),

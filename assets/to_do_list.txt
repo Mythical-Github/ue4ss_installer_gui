@@ -9,7 +9,7 @@ Next:
 # improve ue4ss install detection, when it hasn't been installed from this app
 #
 
-Later: 
+Later:
 #
 # configure lua/C++ menu, for when installed
 # configure bp mods menu, for when installedw
@@ -22,7 +22,7 @@ Later:
 # install from url option/install from specified dir, install from specified zip
 #
 # settings function to get if ue4ss is installed for a game if this does not already exist
-# ue4ss settinge configurator edit settings button in app text editor fails if you cancel then try again 
+# ue4ss settinge configurator edit settings button in app text editor fails if you cancel then try again
 #
 #
 #
@@ -37,4 +37,3 @@ Maybes:
 # basic/advanced mode
 # create preset, install from preset options, for specific games/situations
 # app resizing, maximizing, fix ui to look nice with this
-  

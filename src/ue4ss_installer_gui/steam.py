@@ -34,15 +34,19 @@ def get_windows_default_steam_paths() -> list[pathlib.Path]:
     for drive_letter in file_io.get_all_drive_letter_paths():
         if drive_letter.startswith("C"):
             steam_common_paths = [
-                os.path.normpath(f"{drive_letter}Program Files (x86)/Steam/steamapps/common"),
-                os.path.normpath(f"{drive_letter}SteamLibrary/steamapps/common")
+                os.path.normpath(
+                    f"{drive_letter}Program Files (x86)/Steam/steamapps/common"
+                ),
+                os.path.normpath(f"{drive_letter}SteamLibrary/steamapps/common"),
             ]
         else:
             steam_common_paths = [
                 os.path.normpath(f"{drive_letter}SteamLibrary/steamapps/common"),
-                os.path.normpath(f"{drive_letter}Program Files (x86)/Steam/steamapps/common")
+                os.path.normpath(
+                    f"{drive_letter}Program Files (x86)/Steam/steamapps/common"
+                ),
             ]
-        
+
         for steam_directory in steam_common_paths:
             if os.path.isdir(steam_directory):
                 for game_dir in pathlib.Path(steam_directory).iterdir():

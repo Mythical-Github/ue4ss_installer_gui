@@ -12,7 +12,7 @@ from ue4ss_installer_gui import (
     unreal_engine,
     ue4ss,
     constants,
-    data_structures
+    data_structures,
 )
 
 
@@ -39,7 +39,7 @@ SETTINGS_FILE = os.path.join(config_dir, "settings.toml")
 
 
 def get_default_locale() -> str:
-    return 'en'
+    return "en"
 
 
 def is_windows():
@@ -55,7 +55,7 @@ def make_settings_file():
         "games": [],
         "GUI": {
             "use_custom_font": False,
-            f"custom_font_path": get_system_font_path(),
+            "custom_font_path": get_system_font_path(),
             "language": "en",
         },
     }
@@ -368,11 +368,13 @@ def get_settings_gui_section_from_settings():
 
 
 def get_default_theme_name() -> str:
-    return 'grey'
+    return "grey"
 
 
 def get_preferred_theme_name_from_settings():
-    return get_settings_gui_section_from_settings().get("preferred_theme", get_default_theme_name())
+    return get_settings_gui_section_from_settings().get(
+        "preferred_theme", get_default_theme_name()
+    )
 
 
 def get_game_entries_in_settings():
@@ -441,14 +443,14 @@ def get_system_font_path() -> str | None:
 
 def set_app_window_properties_in_settings(width, height, x_position, y_position):
     loaded_settings = get_settings()
-    gui_settings = loaded_settings.get('GUI', {})
+    gui_settings = loaded_settings.get("GUI", {})
 
-    gui_settings['x'] = x_position
-    gui_settings['y'] = y_position
-    gui_settings['width'] = width
-    gui_settings['height'] = height
+    gui_settings["x"] = x_position
+    gui_settings["y"] = y_position
+    gui_settings["width"] = width
+    gui_settings["height"] = height
 
-    loaded_settings['GUI'] = gui_settings
+    loaded_settings["GUI"] = gui_settings
     save_settings(loaded_settings)
 
 
