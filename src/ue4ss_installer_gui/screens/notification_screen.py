@@ -2,7 +2,7 @@ import pathlib
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import auto_align
+from ue4ss_installer_gui import auto_align,translator
 
 
 def push_notification_screen(notification_text: str, game_directory: pathlib.Path):
@@ -24,7 +24,7 @@ def push_notification_screen(notification_text: str, game_directory: pathlib.Pat
         auto_align.add_centered_text(notification_text, parent="notification_modal")
         dpg.add_spacer()
         dpg.add_button(
-            label="Close",
+            label= f"{translator.translator.translate('close_button_text')}",
             width=-1,
             height=28,
             callback=configure_game.push_configure_game_screen,
