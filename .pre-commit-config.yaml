@@ -38,11 +38,10 @@ repos:
     -   id: check-xml
     -   id: check-yaml
 
-# temporarily removing
-# - repo: https://github.com/crate-ci/typos
-#   rev: v1.31.0
-#   hooks:
-#     - id: typos
+-   repo: https://github.com/adhtruong/mirrors-typos
+    rev: v1.34.0
+    hooks:
+    -   id: typos
 
 - repo: https://github.com/RobertCraigie/pyright-python
   rev: v1.1.399
