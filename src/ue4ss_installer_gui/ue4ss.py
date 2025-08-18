@@ -4,6 +4,8 @@ import requests
 from typing import List
 from dataclasses import dataclass, field
 
+import ue4ss_installer_gui.file_io
+
 
 cached_repo_releases_info = None
 
@@ -292,3 +294,30 @@ def get_ue4ss_settings_path(game_directory: pathlib.Path) -> pathlib.Path:
         return pathlib.Path(path_two)
     else:
         raise RuntimeError("No ue4ss settings found.")
+
+
+def install_latest_ue4ss_to_dir(cache_dir: str, game_exe_directory: str):
+    ue4ss_zip_path = pathlib.Path(f"{cache_dir}/ue4ss.zip")
+
+    if not ue4ss_zip_path.exists():
+        if not cached_repo_releases_info:
+            cache_repo_releases_info("UE4SS-RE", "RE-UE4SS")
+
+        tag = get_default_ue4ss_version_tag()
+        file_names_to_download_links = get_file_name_to_download_links_from_tag(tag)
+
+        final_download_link = next(
+            (link for link in file_names_to_download_links.values()
+             if "ue4ss" in link.lower() and "zdev" not in link.lower()),
+            None
+        )
+        if not final_download_link:
+            raise RuntimeError(f'Unable to find a compatible UE4SS release for tag "{tag}"')
+
+        ue4ss_installer_gui.file_io.download_file(
+            final_download_link,
+            str(ue4ss_zip_path),
+        )
+
+    ue4ss_installer_gui.file_io.unzip_zip(ue4ss_zip_path, pathlib.Path(game_exe_directory))
+    ue4ss_zip_path.unlink()
