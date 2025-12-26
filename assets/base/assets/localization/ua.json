@@ -33,5 +33,16 @@
   "uninstall_failed_message_text": "Видалення не вдалося",
   "uninstall_succeeded_message_text": "Видалення пройшло успішно",
   "uninstalling_old_ue4ss_files_step_text": "Видалення старих файлів UE4SS",
-  "uninstalling_ue4ss_task_text": "Видалення UE4SS"
+  "uninstalling_ue4ss_task_text": "Видалення UE4SS",
+  "Global_font_scale": "Глобальний масштаб шрифту",
+  "Use_custom_font": "Використовувати власний шрифт",
+  "Use_language_override": "Використовувати заміну мови (потрібен перезапуск)",
+  "Use_automatic_game_detection_scanning": "Використовувати автоматичне сканування ігор",
+  "Force_offline_mode": "Примусовий офлайн режим (потрібен перезапуск)",
+  "Theme": "Тема",
+  "Edit_settings_file": "Редагувати файл налаштувань",
+  "Open_settings_file": "Відкрити файл налаштувань",
+  "Change_font_path": "Змінити шлях до шрифту",
+  "font_path": "шлях до шрифту:",
+  "Language_override": "Заміна мови"
 }

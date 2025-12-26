@@ -5,7 +5,7 @@ from typing import Any, Callable
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import settings, auto_align, font, constants, file_io, grid
+from ue4ss_installer_gui import settings, auto_align, font, constants, file_io, grid , translator
 import ue4ss_installer_gui.theme_management
 from ue4ss_installer_gui.screens import text_editor_screen
 
@@ -93,7 +93,7 @@ def push_main_settings_screen():
         dpg.add_spacer(height=2)
 
         with dpg.group(horizontal=True):
-            dpg.add_text("Global font scale")
+            dpg.add_text(f"{translator.translator.translate('Global_font_scale')}")
             dpg.add_drag_float(
                 default_value=settings.get_global_font_scale_from_settings(),
                 speed=0.1,
@@ -110,15 +110,15 @@ def push_main_settings_screen():
                 callback=toggle_using_custom_font,
                 default_value=settings.get_use_custom_font_from_settings(),
             )
-            dpg.add_text("Use custom font")
+            dpg.add_text(f"{translator.translator.translate('Use_custom_font')}")
         with dpg.group(
             enabled=settings.get_use_custom_font_from_settings(), tag="font_holder"
         ):
             dpg.add_text(
-                default_value=f"Font path: {settings.get_custom_font_path_from_settings()}"
+               default_value = f"{translator.translator.translate('font_path')}{settings.get_custom_font_path_from_settings()}"
             )
             dpg.add_button(
-                label="Change font path",
+                label=f"{translator.translator.translate('Change_font_path')}",
                 width=-1,
                 height=28,
                 callback=change_font_button_selected,
@@ -133,14 +133,14 @@ def push_main_settings_screen():
                 callback=toggle_use_language_override,
                 default_value=settings.get_use_language_override_from_settings(),
             )
-            dpg.add_text("Use language override (requires restart)")
+            dpg.add_text(f"{translator.translator.translate('Use_language_override')}")
 
         with dpg.group(
             horizontal=True,
             enabled=settings.get_use_language_override_from_settings(),
             tag="lang_override_group",
         ):
-            dpg.add_text(default_value="Language override")
+            dpg.add_text(default_value=f"{translator.translator.translate('Language_override')}")
             default_combo_value = settings.get_language_from_settings()
             dpg.add_combo(
                 items=get_valid_language_options(),
@@ -159,7 +159,7 @@ def push_main_settings_screen():
                 default_value=default,
                 callback=settings.toggle_use_automatic_game_scanning_in_settings_file,
             )
-            dpg.add_text("Use automatic game detection scanning")
+            dpg.add_text(f"{translator.translator.translate('Use_automatic_game_detection_scanning')}")
 
         with dpg.group(horizontal=False):
             dpg.add_spacer(height=2)
@@ -171,7 +171,7 @@ def push_main_settings_screen():
                 callback=settings.toggle_force_offline_mode_in_settings_file,
                 default_value=settings.get_use_force_online_mode_in_settings(),
             )
-            dpg.add_text("Force offline mode (requires restart)")
+            dpg.add_text(f"{translator.translator.translate('Force_offline_mode')}")
 
         dpg.add_spacer(height=2)
         dpg.add_separator()
@@ -184,7 +184,7 @@ def push_main_settings_screen():
                 if theme_name != settings.get_default_theme_name()
             )
             after_default_items.insert(0, settings.get_default_theme_name())
-            dpg.add_text(default_value="Theme")
+            dpg.add_text(default_value=f"{translator.translator.translate('Theme')}")
             dpg.add_combo(
                 items=after_default_items,
                 width=-1,
@@ -204,7 +204,7 @@ def push_main_settings_screen():
         example_variable: dict[str, dict[Callable[..., Any], dict[str, Any]]] = {
             "button_1": {
                 dpg.add_button: {
-                    "label": "Edit settings file",
+                    "label": f"{translator.translator.translate('Edit_settings_file')}",
                     "width": -1,
                     "height": 28,
                     "callback": text_editor_screen.push_text_editor_screen,
@@ -213,7 +213,7 @@ def push_main_settings_screen():
             },
             "button_2": {
                 dpg.add_button: {
-                    "label": "Open settings file",
+                    "label": f"{translator.translator.translate('Open_settings_file')}",
                     "width": -1,
                     "height": 28,
                     "callback": open_settings_file_in_default_text_editor,
@@ -224,7 +224,7 @@ def push_main_settings_screen():
         grid.add_spaced_item_grid(example_variable)
 
         dpg.add_button(
-            label="Close", height=28, width=-1, callback=close_main_settings_menu
+            label= f"{translator.translator.translate('close_button_text')}", height=28, width=-1, callback=close_main_settings_menu
         )
 
 

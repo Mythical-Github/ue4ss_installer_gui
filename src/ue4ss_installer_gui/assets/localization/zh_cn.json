@@ -33,5 +33,16 @@
   "uninstall_failed_message_text": "卸载失败",
   "uninstall_succeeded_message_text": "卸载成功",
   "uninstalling_old_ue4ss_files_step_text": "正在卸载旧的 UE4SS 文件",
-  "uninstalling_ue4ss_task_text": "正在卸载 UE4SS"
+  "uninstalling_ue4ss_task_text": "正在卸载 UE4SS",
+  "Global_font_scale": "全局字体缩放",
+  "Use_custom_font": "使用自定义字体",
+  "Use_language_override": "使用语言覆盖（需要重启）",
+  "Use_automatic_game_detection_scanning": "使用自动游戏检测扫描",
+  "Force_offline_mode": "强制离线模式（需要重启）",
+  "Theme": "主题",
+  "Edit_settings_file": "编辑设置文件",
+  "Open_settings_file": "打开设置文件",
+  "Change_font_path" : "更改字体路径",
+  "font_path" : "字体路径：",
+  "Language_override": "语言覆盖"
 }

@@ -48,7 +48,7 @@ def init_not_an_unreal_game_popup(game_directory: pathlib.Path):
     dpg.add_text(message_two, parent="not_an_unreal_game_pop_up", wrap=384)
     dpg.add_separator(parent="not_an_unreal_game_pop_up")
     dpg.add_button(
-        label="Close",
+        label= f"{translator.translator.translate('close_button_text')}",
         parent="not_an_unreal_game_pop_up",
         width=-1,
         height=-1,
