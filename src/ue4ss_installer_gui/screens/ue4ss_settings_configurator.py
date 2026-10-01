@@ -6,7 +6,7 @@ from typing import Callable, Any
 
 import dearpygui.dearpygui as dpg
 
-from ue4ss_installer_gui import ue4ss, grid
+from ue4ss_installer_gui import ue4ss, grid, translator
 from ue4ss_installer_gui.screens import text_editor_screen, configure_game
 
 # there should be an edit file directly button, and a close button at the bottom
@@ -135,7 +135,7 @@ def push_screen(sender, app_data, user_data):
         grid.add_spaced_item_grid(grid_buttons)
 
         dpg.add_button(
-            label="Close",
+            label= f"{translator.translator.translate('close_button_text')}",
             height=28,
             width=-1,
             callback=lambda: configure_game.push_configure_game_screen(
